@@ -1,0 +1,19 @@
+.requiredStar {
+    color: red;
+}
+form {
+    color: black;
+}
+
+.metismenu {
+    font-size: 0.9rem;
+}
+
+/* .custom-control-label::before {
+    background-color: #dc3545!important;
+} */
+
+.custom-switch.custom-switch-md .custom-control-label::after {
+    top: 4px!important;
+    background: white;
+}
