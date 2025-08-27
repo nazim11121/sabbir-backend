@@ -81,7 +81,7 @@
 
       <!-- Hidden Inputs -->
       <input type="hidden" name="user_id" id="user_id" value="{{$data->user_id}}">
-      <input type="hidden" name="binance_id" id="binance_id" value="12345567787">
+      <input type="hidden" name="binance_id" id="binance_id" value="972857500">
       <input type="hidden" name="amount" id="amount" value="{{$data->amount}}">
 
       <!-- QR / Provider -->
@@ -93,10 +93,17 @@
         </div>
       </div>
 
+      <!-- Order ID Field -->
+      <div class="mt-4">
+        <label for="order_id" class="form-label fw-semibold">Order ID</label>
+        <input type="number" class="form-control" id="order_id" name="order_id" 
+               placeholder="Enter your order ID">
+      </div>
+
       <!-- Upload Proof -->
       <div class="mt-4">
         <label for="payment_proof" class="form-label fw-semibold">Upload Payment Proof</label>
-        <input class="form-control" type="file" id="deposite_proof" name="deposite_proof" accept="image/*" onchange="previewImage(event)">
+        <input class="form-control" type="file" id="deposit_proof" name="deposit_proof" accept="image/*" onchange="previewImage(event)" required>
         <div class="mt-3 text-center">
           <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded shadow-sm d-none" style="max-height: 200px;">
         </div>

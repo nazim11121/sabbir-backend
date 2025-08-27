@@ -114,7 +114,7 @@
       <!-- Contact Us (Desktop only) -->
       <a href="#contactUs" class="btn btn-sm d-none d-lg-inline">Contact Us</a>
       <!-- Login (Always show) -->
-      <a href="{{route('login')}}" class="btn btn-primary btn-sm">Login</a>
+      <a href="{{url('/login')}}" class="btn btn-primary btn-sm">Login</a>
     </div>
   </div>
 </nav>

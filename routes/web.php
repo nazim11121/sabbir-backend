@@ -43,16 +43,13 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('frontend.register');
 })->name('frontend.register');
+Route::post('/register/store', [UserCo::class, 'register'])->name('register.store');
 /*users panel login endpoint*/
 Route::post('/profile/login', [UserCo::class, 'manualLogin'])->name('profile.login');
 /*admin panel login endpoint*/
 Route::get('/admin/login', function () {
     return view('auth.login');
 })->name('admin.login');
-
-/*test stripe price table endpoints*/ 
-Route::post('/register/store', [UserCo::class, 'register'])->name('register.store');
-
 
 /*user delete policy endpoint*/
 Route::get('/user/delete-policy', function () {
@@ -70,8 +67,11 @@ Route::get('/deposit-form', [UserCo::class, 'depositForm'])->name('deposit');
 Route::post('/deposit-form/store', [UserCo::class, 'depositFormStore'])->name('deposit-form.store');
 Route::post('/deposit-confirm/store', [UserCo::class, 'depositConfirm'])->name('deposit-confirm.store');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::post('/buy-package/funded', [UserCo::class, 'buyFundedPackage'])->name('buy-package.funded');
 
+Route::post('/invest-form', [UserCo::class, 'investForm'])->name('frontend.invest');
+
+Route::middleware(['auth', 'verified'])->group(function () {
     
     /*Dashboard*/ 
     Route::get('/dashboard', [AdminDashboardCo::class, 'index'])->name('dashboard');
@@ -82,6 +82,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/user-management/roles', AdminRoleCo::class);
     Route::resource('/permissions', AdminPermissionCo::class);
     Route::resource('/permission-under-role', AdminPermissionUnderRoleCo::class);
+
+    Route::get('/deposit-list', [UserCo::class, 'depositList'])->name('deposit-list');
+    Route::get('/deposit-accept/status/{id}', [UserCo::class, 'depositConfirmStatus'])->name('deposit-accept.status');
+
+    Route::get('/invest-list', [UserCo::class, 'investList'])->name('invest-list');
+    Route::get('/invest-accept/status/{id}', [UserCo::class, 'investConfirmStatus'])->name('invest-accept.status');
+
+    Route::get('/buy-packages-list', [UserCo::class, 'buyPackageList'])->name('buy-packages-list');
+    // Route::get('/invest-accept/status/{id}', [UserCo::class, 'investConfirmStatus'])->name('invest-accept.status');
 
     Route::group(['prefix'  => 'assign-role', 'as' => 'assign-role.'], function () {
         Route::controller(AdminAssignRoleCo::class)->group(function () {

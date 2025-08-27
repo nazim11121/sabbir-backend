@@ -3,7 +3,7 @@
     <div class="content-body">
         <!-- row -->
         <div class="container-fluid">
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-3 col-sm-6">
                     <div class="card">
                         <div class="stat-widget-two card-body">
@@ -61,11 +61,9 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /# card -->
                 </div>
-                <!-- /# column -->
-            </div>
-            <div class="row">
+            </div> -->
+            <!-- <div class="row">
                 {{-- bar chart --}}
                 <div class="col-xl-7 col-lg-7 col-md-7 my-3">
                     <div class="card">
@@ -108,7 +106,7 @@
                         </div>
                     </div>
                 </div> --}}
-            </div>
+            </div> -->
         </div>
     </div>
 @endsection

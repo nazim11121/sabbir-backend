@@ -8,7 +8,6 @@
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     /* ===== Base Styles ===== */
     body {
@@ -120,7 +119,8 @@
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container d-flex justify-content-between align-items-center flex-wrap flex-lg-nowrap">
     @php
-      $user = session('referrer');
+      $data = session('referrer');
+      $user = $data ? App\Models\User::find($data->id) : null;
     @endphp
 
     <!-- Brand Logo -->
@@ -136,29 +136,30 @@
       @if($user)
         <!-- Deposit Button -->
         <a href="#" class="btn btn-info d-flex align-items-center">
-          <i class="bi bi-wallet2 me-1"></i> 
-          <span>0 $</span>
+          <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
         </a>
-        <!-- User -->
-        <!-- User Dropdown (Image Only Trigger) -->
-      <div class="dropdown">
-        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-          <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li>
-            <form action="{{ route('logout.user') }}" method="POST">
-              @csrf
-              <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
-            </form>
-          </li>
-        </ul>
-      </div>
+        <div class="dropdown">
+          <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form action="{{ route('logout.user') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                  <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
       @else
         <!-- Login (Always show) -->
-        <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Login</a>
+        <a href="{{ url('/login') }}" class="btn btn-primary btn-sm">Login</a>
       @endif
     </div>
   </div>
@@ -264,71 +265,114 @@
   <div class="container mb-4">
     <div class="row justify-content-center">
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card investmentOpenModalBtn" 
+           data-id="Trusted Company Investment" 
+           data-name="Trusted Company Investment" 
+           data-category="Our Services"
+           data-img="{{asset('images/service/investment.jpg')}}">
           <img src="images/service/investment.jpg" alt="Offer">
-          <div class="p-2">Trusted company investment</div>
+          <div class="p-2">Trusted Company Investment</div>
         </div>
       </div>
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card loanOpenModalBtn" 
+           data-id="Get Company Loan and Start Trading" 
+           data-name="Get Company Loan and Start Trading" 
+           data-category="Our Services"
+           data-price="" 
+           data-img="{{asset('images/service/loan.jpg')}}">
           <img src="images/service/loan.jpg" alt="Offer">
-          <div class="p-2">Get company loan and start trading</div>
+          <div class="p-2">Get Company Loan and Start Trading</div>
         </div>
       </div>
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card tournamentOpenModalBtn" 
+           data-id="500$ Tournament" 
+           data-name="500$ Tournament" 
+           data-category="Our Services"
+           data-price="20" 
+           data-img="{{asset('images/service/tournament.jpg')}}">
           <img src="images/service/tournament.jpg" alt="Offer">
           <div class="p-2">500$ Tournament</div>
-          <h6>Fee 20$</h6>
+          <h6>FEE 20$</h6>
         </div>
       </div>
     </div>
   </div>
-
   <!-- ===== Funded Packages ===== -->
   <h2 class="section-title">Funded Packages</h2>
   <div class="container mb-5">
     <div class="row g-3">
       <div class="col-4 col-md-4">
-        <div class="product-card">
-          <img src="images/funded/f1.jpg" alt="Topup">
+        <div class="product-card openModalBtn" 
+           data-id="100$ fundad account" 
+           data-name="100$ fundad account" 
+           data-category="Funded Packages"
+           data-price="15" 
+           data-img="{{asset('images/funded/f1.jpg')}}">
+          <img src="{{asset('images/funded/f1.jpg')}}" alt="Topup">
           <div class="p-2">100$ fundad account</div>
-          <h6>Fee 15$</h6>
+          <h6>FEE 15$</h6>
         </div>
       </div>
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card openModalBtn" 
+           data-id="200$ fundad account" 
+           data-name="200$ fundad account" 
+           data-category="Funded Packages"
+           data-price="30" 
+           data-img="{{asset('images/funded/f2.jpg')}}">
           <img src="images/funded/f2.jpg" alt="Combo">
           <div class="p-2">200$ fundad account</div>
-          <h6>Fee 30$</h6>
+          <h6>FEE 30$</h6>
         </div>
       </div>
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card openModalBtn" 
+           data-id="300$ fundad account" 
+           data-name="300$ fundad account" 
+           data-category="Funded Packages"
+           data-price="40" 
+           data-img="{{asset('images/funded/f3.jpg')}}">
           <img src="images/funded/f3.jpg" alt="PUBG">
           <div class="p-2">300$ fundad account</div>
-          <h6>Fee 40$</h6>
+          <h6>FEE 40$</h6>
         </div>
       </div>
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card openModalBtn" 
+           data-id="400$ fundad account" 
+           data-name="400$ fundad account" 
+           data-category="Funded Packages"
+           data-price="50" 
+           data-img="{{asset('images/funded/f4.jpg')}}">
           <img src="images/funded/f4.jpg" alt="PUBG">
           <div class="p-2">400$ fundad account</div>
-          <h6>Fee 50$</h6>
+          <h6>FEE 50$</h6>
         </div>
       </div>
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card openModalBtn" 
+           data-id="500$ fundad account" 
+           data-name="500$ fundad account" 
+           data-category="Funded Packages"
+           data-price="60" 
+           data-img="{{asset('images/funded/f5.jpg')}}">
           <img src="images/funded/f5.jpg" alt="PUBG">
           <div class="p-2">500$ fundad account</div>
-          <h6>Fee 60$</h6>
+          <h6>FEE 60$</h6>
         </div>
       </div>
       <div class="col-4 col-md-4">
-        <div class="product-card">
+        <div class="product-card openModalBtn" 
+           data-id="1000$ fundad account" 
+           data-name="1000$ fundad account" 
+           data-category="Funded Packages"
+           data-price="120" 
+           data-img="{{asset('images/funded/f6.jpg')}}">
           <img src="images/funded/f6.jpg" alt="PUBG">
           <div class="p-2">1000$ fundad account</div>
-          <h6>Fee 120$</h6>
+          <h6>FEE 120$</h6>
         </div>
       </div>
     </div>
@@ -509,40 +553,378 @@
     </a>
   </div>
   <!-- ===== Responsive Popup Modal ===== -->
-<div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content rounded-3 shadow">
-      <div class="modal-body p-0">
-        <div class="row g-0 align-items-center">
-          
-          <!-- Left Side Image -->
-          <div class="col-md-6">
-            <img src="images/popup/popoup1.jpg" class="img-fluid w-100 h-100" alt="Promo Banner" style="object-fit: cover;">
-          </div>
+  <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-3 shadow">
+        <div class="modal-body p-0">
+          <div class="row g-0 align-items-center">
+            
+            <!-- Left Side Image -->
+            <div class="col-md-6">
+              <img src="images/popup/popoup1.jpg" class="img-fluid w-100 h-100" alt="Promo Banner" style="object-fit: cover;">
+            </div>
 
-          <!-- Right Side Text -->
-          <div class="col-md-6 p-3 d-flex flex-column justify-content-center text-center">
-            <h5 class="mb-3 fw-bold">Funding Balance কিভাবে পাবেন? জানতে বিস্তারিত ভিডিও দেখুন</h5>
-            <a href="#" class="btn btn-primary">ক্লিক করুন</a>
+            <!-- Right Side Text -->
+            <div class="col-md-6 p-3 d-flex flex-column justify-content-center text-center">
+              <h5 class="mb-3 fw-bold">Funding Balance কিভাবে পাবেন? জানতে বিস্তারিত ভিডিও দেখুন</h5>
+              <a href="#" class="btn btn-primary">ক্লিক করুন</a>
+            </div>
+            
           </div>
-          
+        </div>
+        <!-- Close Button -->
+        <button type="button"
+                class="btn btn-danger position-absolute top-0 end-0 m-3 rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px;"
+                data-bs-dismiss="modal"
+                aria-label="Close">
+          <i class="bi bi-x-lg fs-4 text-white"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Conditional Rules Model -->
+   <!-- Modal -->
+<!-- Funded Package Modal -->
+<div class="modal fade" id="packageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <img id="modalPackageImg" src="https://via.placeholder.com/60" alt="Package" class="me-3 rounded" style="width: 60px">
+        <div>
+          <h5 class="modal-title" id="modalPackageName">Package Name</h5>
+          <p class="text-muted mb-0">Price: <strong class="text-success" id="modalPackagePrice">$ 0</strong></p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- Left: Rules -->
+          <div class="col-md-7">
+            <h6 class="mb-3">Funding Balance নেওয়ার শর্তাবলী</h6>
+            <ul class="list-group small">
+              <li class="list-group-item">মিনিমাম প্রফিট: প্রতিদিন +10%</li>
+              <li class="list-group-item">ম্যাক্স লস: প্রতিদিন –10%</li>
+              <li class="list-group-item">ট্রেড লিমিট: দিনে সর্বোচ্চ 10</li>
+              <li class="list-group-item">রিস্ক ম্যানেজমেন্ট: প্রতি ট্রেডে ব্যালেন্সের 2%</li>
+              <li class="list-group-item">রুল ভাঙলে: সাথে সাথে অ্যাকাউন্ট ক্যানসেল</li>
+              <li class="list-group-item">প্রফিট শেয়ার: 60% ট্রেডার, 40% কোম্পানি</li>
+            </ul>
+            <p class="mt-2 small text-muted">
+              Note: আপনারা যদি সব শর্ত মেনে চলতে পারেন তবে সহজেই আমাদের ফান্ডিং ব্যালেন্স সুবিধা নিতে পারবেন।
+            </p>
+          </div>
+          <!-- Right: Balance -->
+          <div class="col-md-5 mt-5">
+            <div class="border rounded p-3 mb-3 bg-white text-center">
+              <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
+              <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? ''}}</p>
+            </div>
+            <!-- If no user -->
+            <?php if(empty($user)): ?>
+              <a href="/login" class="btn btn-warning w-100">Login First</a>
+            <?php endif; ?>
+          </div>
         </div>
       </div>
-      <!-- Close Button -->
-      <button type="button"
-              class="btn btn-danger position-absolute top-0 end-0 m-3 rounded-circle d-flex align-items-center justify-content-center"
-              style="width: 40px; height: 40px;"
-              data-bs-dismiss="modal"
-              aria-label="Close">
-        <i class="bi bi-x-lg fs-4 text-white"></i>
-      </button>
+      <!-- Modal Footer -->
+      <div class="modal-footer justify-content-between">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="acceptRules">
+          <label class="form-check-label small" for="acceptRules"> আমি সকল নিয়ম মেনে নিলাম।</label>
+        </div>
+        <!-- Hidden Form -->
+        <form id="buyForm" action="{{route('buy-package.funded')}}" method="POST">
+          @csrf
+          <input type="hidden" name="user_id" value="<?php echo $user->id ?? ''; ?>">
+          <input type="hidden" name="package_id" id="modalPackageId" value="">
+          <input type="hidden" name="amount" id="modalPackageAmount" value="">
+          <button id="buyButton" type="submit" class="btn btn-primary" disabled>Accept & Buy</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <h4 class="text-success">🎉 Purchase Successful!</h4>
+      <p>Your package has been activated successfully.</p>
+      <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+    </div>
+  </div>
+</div>
 
+<!-- Investment Package Modal -->
+<div class="modal fade" id="investmentPackageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <img id="modalPackageImg2" src="https://via.placeholder.com/60" alt="Package" class="me-3 rounded" style="width: 60px">
+        <div>
+          <h5 class="modal-title" id="modalPackageName2">Package Name</h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- Left: Rules -->
+          <div class="col-md-7">
+            <h6 class="mb-3">Investment এর শর্তাবলী</h6>
+            <ul class="list-group small">
+              <li class="list-group-item">আপনার ইনভেস্টমেন্ট থেকে নিয়মিত আয় করুন – প্রতি সপ্তাহে 10% লাভ, মূলধন নিরাপদ</li>
+              <li class="list-group-item">আপনি চাইলে আমাদের কোম্পানিতে ইনভেস্ট করে নিয়মিত কমিশন পেতে পারেন।</li>
+              <li class="list-group-item">আপনার ইনভেস্টমেন্টের উপর 10% প্রতি সপ্তাহে লাভ।</li>
+              <li class="list-group-item">মিনিমাম ইনভেস্টমেন্ট: $100</li>
+              <li class="list-group-item">বড় ইনভেস্ট, বড় লাভ – আপনার ক্যাপিটালকে আয়েশের সুযোগ দিন!</li>
+              <li class="list-group-item">ক্যাপিটাল নিরাপত্তা: ইনভেস্টমেন্টের মূলধন সেফ থাকবে, শুধু কমিশন দেওয়া হবে</li>
+              <li class="list-group-item">মুলধন উত্তোলনের নিয়ম: মুলধন উত্তোলনের জন্য অ্যাপ্লিকেশন দিতে হবে। ৭ দিনের মধ্যে উত্তোলন সম্পন্ন হবে।</li>
+            </ul>
+          </div>
+
+          <!-- Right: Form -->
+          <div class="col-md-5 mt-4">
+            <form id="buyForm2" action="{{route('frontend.invest')}}" method="POST" enctype="multipart/form-data">
+              @csrf
+              <input type="hidden" name="user_id" value="<?php echo $user->id ?? ''; ?>">
+              <input type="hidden" name="package_id" id="modalPackageId2" value="">
+
+              <!-- Balance Info -->
+              <div class="border rounded p-3 mb-3 bg-white text-center">
+                <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
+                <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? '0'}}</p>
+              </div>
+
+              <!-- Amount -->
+              <div class="mb-3">
+                <label for="modalPackageAmount2" class="form-label fw-bold">Invest Amount ($)</label>
+                <input type="number" name="amount" id="modalPackageAmount2" 
+                       class="form-control" placeholder="Enter amount" 
+                       min="100" max="10000000" required>
+                <div class="form-text">Minimum Amount must be 100$.</div>
+              </div>
+              <!-- <input type="hidden" name="binance_id" value=""> -->
+
+              <!-- Order ID -->
+              <div class="mb-3">
+                <label for="orderId" class="form-label fw-bold">Order ID</label>
+                <input type="number" name="order_id" id="orderId" class="form-control" 
+                       placeholder="Enter Transaction / Order ID" required>
+              </div>
+
+              <!-- Proof Upload -->
+              <div class="mb-3">
+                <label for="investProof" class="form-label fw-bold">Investment Proof</label>
+                <input type="file" name="invest_proof" id="investProof" 
+                       class="form-control" accept="image/*" required>
+                <div class="form-text">Upload payment proof (screenshot or receipt).</div>
+                <img id="previewProof" src="" alt="" class="img-thumbnail mt-2 d-none" style="max-height:150px;">
+              </div>
+
+              <!-- Checkbox + Submit -->
+              <div class="row d-flex justify-content-between align-items-center">
+                <div class="form-check float-left">
+                  <input class="form-check-input" type="checkbox" id="acceptRules2">
+                  <label class="form-check-label small" for="acceptRules2">
+                    আমি সকল নিয়ম মেনে নিলাম।
+                  </label>
+                </div>
+                <?php if(empty($user)): ?>
+                  <a href="/login" class="btn btn-warning">Login First</a>
+                <?php else: ?>
+                  <button id="buyButton2" type="submit" class="btn btn-primary" disabled>
+                    Accept & Invest
+                  </button>
+                <?php endif; ?>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // When the modal is hidden (closed)
+  document.getElementById('packageModal').addEventListener('hidden.bs.modal', function () {
+    // Clear modal content
+    modalName.textContent = '';
+    modalPrice.textContent = '$ 0';
+    modalImg.src = 'https://via.placeholder.com/60';
+    modalId.value = '';
+    modalAmount.value = '';
+    checkbox.checked = false;
+    // toggleBuyButton(); // Disable Buy button again
+    // toggleBuyButton2();
+  });
+</script>
+<!-- funded -->
+<script>
+  const checkbox = document.getElementById('acceptRules');
+  const buyButton = document.getElementById('buyButton');
+  const buyForm = document.getElementById('buyForm');
+  const userLoggedIn = <?php echo empty($user) ? 'false' : 'true'; ?>;
+  const userBalance = <?php echo $user->total_deposit_amount ?? 0; ?>;
+
+  const modalName = document.getElementById('modalPackageName');
+  const modalImg = document.getElementById('modalPackageImg');
+  const modalPrice = document.getElementById('modalPackagePrice');
+  const modalId = document.getElementById('modalPackageId');
+  const modalAmount = document.getElementById('modalPackageAmount');
+
+  const balanceBox = document.querySelector('#packageModal .modal-body .col-md-5 .border');
+
+  // Deposit button HTML (string)
+  const depositButtonHtml = `<a href="/deposit-form" class="btn btn-warning w-100 mt-2" id="dynamicDepositBtn">Deposit Your Account</a>`;
+
+  // Funded Modal open
+  document.querySelectorAll('.openModalBtn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      let card = this.closest('.product-card');
+      let id = card.getAttribute('data-id');
+      let name = card.getAttribute('data-name');
+      let price = parseFloat(card.getAttribute('data-price'));
+      let img = card.getAttribute('data-img');
+
+      // fill modal
+      modalName.textContent = name;
+      modalPrice.textContent = "$ " + price;
+      modalImg.src = img;
+      modalId.value = id;
+      modalAmount.value = price;
+
+      // clean old button
+      balanceBox.querySelector('#dynamicDepositBtn')?.remove();
+
+      if (!userLoggedIn) {
+       
+        buyButton.style.display = "disabled";
+      } else {
+        buyButton.style.display = "inline-block";
+
+        if (userBalance < price) {
+          
+          buyButton.disabled = true;
+          balanceBox.insertAdjacentHTML('afterend', depositButtonHtml);
+        } else {
+          buyButton.disabled = !checkbox.checked;
+        }
+      }
+
+      new bootstrap.Modal(document.getElementById('packageModal')).show();
+    });
+  });
+
+  // Checkbox
+  checkbox.addEventListener('change', () => {
+    const price = parseFloat(modalAmount.value);
+    if (userLoggedIn && userBalance >= price) {
+      buyButton.disabled = !checkbox.checked;
+    }
+  });
+
+  // Clear on close
+  document.getElementById('packageModal').addEventListener('hidden.bs.modal', function () {
+    modalName.textContent = 'Package Name';
+    modalPrice.textContent = '$ 0';
+    modalImg.src = 'https://via.placeholder.com/60';
+    modalId.value = '';
+    modalAmount.value = '';
+    checkbox.checked = false;
+    buyButton.disabled = true;
+    balanceBox.querySelector('#dynamicDepositBtn')?.remove();
+  });
+
+</script>
+<script>
+buyForm.addEventListener('submit', function (e) {
+  e.preventDefault(); // ফর্ম সাবমিট থামানো হলো (ajax করলে লাগবে না)
+
+  // 🔥 এখানে তুমি চাইলে Ajax দিয়ে backend এ পাঠাতে পারো।
+  // ডেমোর জন্য শুধু success modal দেখাচ্ছি
+
+  // current modal hide
+  bootstrap.Modal.getInstance(document.getElementById('packageModal')).hide();
+
+  // show success modal
+  new bootstrap.Modal(document.getElementById('successModal')).show();
+});
+</script>
+
+<!-- investment -->
+<script>
+  const checkbox2 = document.getElementById('acceptRules2');
+  const buyButton2 = document.getElementById('buyButton2');
+  const buyForm2 = document.getElementById('buyForm2');
+  const userLoggedIn2 = <?php echo empty($user) ? 'false' : 'true'; ?>;
+
+  const modalName2 = document.getElementById('modalPackageName2');
+  const modalImg2 = document.getElementById('modalPackageImg2');
+  const modalId2 = document.getElementById('modalPackageId2');
+
+  // const balanceBox2 = document.querySelector('#investmentPackageModal .modal-body .col-md-5 .border');
+
+  // Deposit button HTML (string)
+  // const depositButtonHtml2 = `<a href="/deposit-form" class="btn btn-warning w-100 mt-2" id="dynamicDepositBtn">Deposit Your Account</a>`;
+
+  //Invetment 
+  document.querySelectorAll('.investmentOpenModalBtn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      let card = this.closest('.product-card');
+      let id2 = card.getAttribute('data-id');
+      let name2 = card.getAttribute('data-name');
+      let img2 = card.getAttribute('data-img');
+
+      // fill modal
+      modalName2.textContent = name2;
+      modalImg2.src = img2;
+      modalId2.value = id2;
+
+      // clean old button
+      // balanceBox2.querySelector('#dynamicDepositBtn')?.remove();
+
+      if (!userLoggedIn2) {
+       
+        buyButton2.style.display = "disabled";
+      } else {
+        buyButton2.style.display = "inline-block";
+      }
+
+      new bootstrap.Modal(document.getElementById('investmentPackageModal')).show();
+    });
+  });
+
+  // Checkbox
+  checkbox2.addEventListener('change', () => {
+    if (userLoggedIn2) {
+      buyButton2.disabled = !checkbox2.checked;
+    }
+  });
+
+  // Clear on close
+  document.getElementById('investmentPackageModal').addEventListener('hidden.bs.modal', function () {
+    modalName2.textContent = 'Package Name';
+    modalImg2.src = 'https://via.placeholder.com/60';
+    modalId2.value = '';
+    checkbox2.checked = false;
+    buyButton2.disabled = true;
+  });
+
+</script>
+
+
+</script>
   <!-- Floating Button Toggle Script -->
   <script>
     let chatVisible = false;

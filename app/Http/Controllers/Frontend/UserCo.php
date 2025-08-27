@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Admin\TAdminUser;
 use App\Models\UserNidImage;
 use App\Models\Admin\TAdminCountry;
+use App\Models\TDeposit;
+use App\Models\TInvest;
+use App\Models\BuyPackage;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\TAdminUserRequest;
 use DB;
@@ -111,7 +114,7 @@ class UserCo extends Controller
             }
 
             // $credentials = $request->validated();
-            $admin = User::where('email', $request->email)->first();
+            $admin = User::with(['buyPackages','deposits','invests'])->where('email', $request->email)->first();
 
             if ($admin && Hash::check($request->password, $admin->password)){ 
                 $user = $admin; 
@@ -136,8 +139,9 @@ class UserCo extends Controller
     }
 
     public function userDashboard(){
-        
-        $user = session('referrer');
+         
+        $data = session('referrer');
+        $user = User::with(['buyPackages','deposits','invests'])->find($data->id);
         if($user){
             return view('frontend.dashboard', compact('user'));
         }else{
@@ -162,7 +166,7 @@ class UserCo extends Controller
     }
 
     public function depositForm(){
-        
+       
         $user = session('referrer');
         if($user){
             return view('frontend.depositForm', compact('user'));
@@ -178,8 +182,156 @@ class UserCo extends Controller
     }
 
     public function depositConfirm(Request $request){
-      
-        dd($request->all());
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'binance_id' => 'required',
+            'amount' => 'required|string',
+            'order_id' => 'nullable',
+            'deposit_proof' => 'required|image',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        
+        $input = $request->except('deposit_proof'); 
+        // Handle file upload
+        if ($request->hasFile('deposit_proof')) {
+            $image      = $request->file('deposit_proof');
+            $imageName  = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/depositProof'), $imageName);
+
+            $input['deposit_proof'] = 'images/depositProof/' . $imageName;
+        }
+
+        $input['payment_status'] = 0;
+
+        // Save to DB
+        $deposit = TDeposit::create($input);
+
+        // $user = User::find($request->user_id);
+        // $totalAmount = $user->total_deposit_amount+$request->amount;
+        // $user->total_deposit_amount = $totalAmount;
+        // $user->save();
+        // Flash a success message
+        // session()->flash('success', 'Deposit on processing wait for confirmation message.');
+        return redirect()->route('frontend-dashboard');  //->with('success','Deposit on processing wait for confirmation message.');
+    }
+
+    public function buyFundedPackage(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'package_id' => 'required',
+            'amount' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $input = $request->all(); 
+        $input['payment_status'] = 1;
+        $deposit = BuyPackage::create($input);
+        $amountConvert = $request->amount;
+
+        $user = User::find($request->user_id);
+        $user->total_deposit_amount = $user->total_deposit_amount - $amountConvert;
+        $user->save();
+
+        return redirect()->back();
+    }
+
+    public function investForm(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'package_id' => 'required',
+            'amount' => 'required',
+            'order_id' => 'nullable',
+            'invest_proof' => 'required|image',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $user = User::find($request->user_id);
+
+        if($request->amount<100 || $user->total_deposit_amount<$request->amount ){
+            return redirect()->route('deposit'); 
+        }
+        
+        $input = $request->except('invest_proof'); 
+        // Handle file upload
+        if ($request->hasFile('invest_proof')) {
+            $image      = $request->file('invest_proof');
+            $imageName  = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/investProof'), $imageName);
+
+            $input['invest_proof'] = 'images/investProof/' . $imageName;
+        }
+
+        $input['payment_status'] = 0;
+
+        // Save to DB
+        $deposit = TInvest::create($input);
+
+        // Flash a success message
+        // session()->flash('success', 'Deposit on processing wait for confirmation message.');
+        return redirect()->route('frontend-dashboard');  //->with('success','Deposit on processing wait for confirmation message.');
+    }
+
+    public function depositList(){
+        $datas = TDeposit::orderBy('id', 'DESC')->get();
+        return view('admin.deposit.index', compact('datas'));
+    }
+
+    public function depositConfirmStatus($id){
+        $data = TDeposit::find($id);
+        $data->payment_status = 1;
+        $data->save();
+
+        $user = User::find($data->user_id);
+        $user->total_deposit_amount =  $user->total_deposit_amount + $data->amount;
+        $user->save();
+
+        return redirect()->route('deposit-list')->with('success', 'Deposit Accepted Success');
+    }
+
+    public function investList(){
+        $datas = TInvest::orderBy('id', 'DESC')->get();
+        return view('admin.invest.index', compact('datas'));
+    }
+
+    public function investConfirmStatus($id){
+        $data = TInvest::find($id);
+        $data->payment_status = 1;
+        $data->save();
+
+        $user = User::find($data->user_id);
+        $user->total_invest_amount =  $user->total_invest_amount + $data->amount;
+        $user->save();
+
+        return redirect()->route('invest-list')->with('success', 'Invest Accepted Success');
+    }
+
+    public function buyPackageList(){
+        $datas = BuyPackage::orderBy('id', 'DESC')->get();
+        return view('admin.buyPackage.index', compact('datas'));
     }
     
     /**

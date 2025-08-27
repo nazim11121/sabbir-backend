@@ -11,17 +11,17 @@
                                     class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"
                                     href="{{ route('dashboard') }}">Dashboard 1</a></li>
                         @endcan
-                        @can('dashboard-two')
+                        <!-- @can('dashboard-two')
                             <li class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"><a
                                     class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"
                                     href="{{ route('dashboard2') }}">Dashboard 2</a></li>
-                        @endcan
+                        @endcan -->
                     </ul>
                 </li>
             @endcan
 
             @can('business-settings')
-                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                             class="icon icon-app-store"></i><span class="nav-text">Business Settings</span></a>
                     <ul aria-expanded="false"
                         class="mm-collapse {{ setSidebarActive(['creed-tags.*', 'business-type.*', 'business-category.*', 'business-subcategory.*', 'business-tags.*', 'restaurant.*', 'affiliations.*', 'pricing-plan.*', 'add-listing-form-management.*']) }}">
@@ -71,12 +71,12 @@
                                     href="{{ route('add-listing-form-management.index') }}">Form Management</a></li>
                         @endcan
                     </ul>
-                </li>
+                </li> -->
             @endcan
 
 
             @can('customer')
-                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                             class="icon icon-single-04"></i><span class="nav-text">Customer Management</span></a>
                     <ul aria-expanded="false"
                         class="mm-collapse {{ setSidebarActive(['customers.list', 'customers-details.view', 'customers-profile.image', 'customers-list.edit', 'customers.archive.list', 'customers.archive.list.retrieve', 'customers.business.reviews']) }}">
@@ -100,11 +100,29 @@
                                 <a href="{{ route('customers.archive.list') }}">Archieve List</a></li>
                         @endcan
                     </ul>
+                </li> -->
+            @endcan
+
+            @can('contact-creed')
+                <li><a href="{{ route('deposit-list') }}" aria-expanded="false">
+                        <i class="fas fa-envelope"></i><span class="nav-text">Deposit List</span></a>
+                </li>
+            @endcan
+
+            @can('contact-creed')
+                <li><a href="{{ route('invest-list') }}" aria-expanded="false">
+                        <i class="fas fa-envelope"></i><span class="nav-text">Invest List</span></a>
+                </li>
+            @endcan
+
+            @can('contact-creed')
+                <li><a href="{{ route('buy-packages-list') }}" aria-expanded="false">
+                        <i class="fas fa-envelope"></i><span class="nav-text">Buy Packages</span></a>
                 </li>
             @endcan
 
             @can('user')
-                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="fas fa-user-tie"></i><span
+                <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="fas fa-user-tie"></i><span
                             class="nav-text">User Management</span></a>
                     <ul aria-expanded="false"
                         class="mm-collapse {{ setSidebarActive(['users.*', 'roles.*', 'permissions.*']) }}">
@@ -125,12 +143,12 @@
                                     href="{{ route('permissions.index') }}">Permissions</a></li>
                         @endcan
                     </ul>
-                </li>
+                </li> -->
             @endcan
 
             {{-- accounts management --}}
             @can('accounts-management')
-            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+            <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                         class="fas fa-calculator"></i><span class="nav-text">Accounts Management</span></a>
                 <ul aria-expanded="false" class="mm-collapse {{ setSidebarActive(['income.*']) }}">
                     @can('income')
@@ -139,30 +157,25 @@
                             href="{{ route('income.index') }}">Income</a></li>
                     @endcan
                 </ul>
-            </li>
+            </li> -->
             @endcan
 
-            @can('contact-creed')
-                <li><a href="{{ route('contact-creed.list') }}" aria-expanded="false">
-                        <i class="fas fa-envelope"></i><span class="nav-text">Contact Creed List</span></a>
-                </li>
-            @endcan
             @can('business-note')
-                <li><a href="{{ route('business-note.index') }}" aria-expanded="false">
+                <!-- <li><a href="{{ route('business-note.index') }}" aria-expanded="false">
                         <i class="fas fa-sticky-note"></i><span class="nav-text">Business Note List</span></a>
-                </li>
+                </li> -->
             @endcan
             @can('apps-terms-and-conditions')
-                <li><a href="{{ route('app-terms-and-conditions.index') }}" aria-expanded="false">
+                <!-- <li><a href="{{ route('app-terms-and-conditions.index') }}" aria-expanded="false">
                         <i class="fas fa-file-contract"></i><span class="nav-text">Apps Terms&Conditions</span></a>
-                </li>
+                </li> -->
             @endcan
             @can('import-csv')
-                <li><a href="{{ route('csv.form') }}" aria-expanded="false">
+                <!-- <li><a href="{{ route('csv.form') }}" aria-expanded="false">
                         <i class="fas fa-file-import"></i><span class="nav-text">Import CSV</span></a>
-                </li>
+                </li> -->
             @endcan
-            @can('about')
+            <!-- @can('about')
                 <li><a href="{{ route('about-us.index') }}" aria-expanded="false"><i
                             class="fas fa-info-circle"></i><span class="nav-text">About Us</span></a>
                 </li>
@@ -176,7 +189,7 @@
                 <li><a href="{{ route('backup') }}" aria-expanded="false">
                         <i class="fa-solid fa-database"></i><span class="nav-text">Database Backup</span></a>
                 </li>
-            @endcan
+            @endcan -->
             @can('company-info')
                 <li><a href="{{ route('company-info.index') }}" aria-expanded="false">
                         <i class="icon icon-settings"></i><span class="nav-text">Company Info</span></a>

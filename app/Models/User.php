@@ -45,6 +45,7 @@ class User extends Authenticatable
         'own_refer_code',
         'level',
         'nid_image',
+        'total_deposit_amount',
         'status'
     ];
 
@@ -81,6 +82,18 @@ class User extends Authenticatable
     public function businesses()
     {
         return $this->hasManyThrough(\App\Models\Api\TBusiness::class, 'user_id', 'owner_info_id');
+    }
+
+    public function buyPackages(){
+        return $this->hasMany(BuyPackage::class, 'user_id');
+    }
+
+    public function deposits(){
+        return $this->hasMany(TDeposit::class, 'user_id');
+    }
+
+    public function invests(){
+        return $this->hasMany(TInvest::class, 'user_id');
     }
 
     public function getActivitylogOptions(): LogOptions
