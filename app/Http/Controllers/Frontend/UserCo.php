@@ -9,6 +9,7 @@ use App\Models\UserNidImage;
 use App\Models\Admin\TAdminCountry;
 use App\Models\TDeposit;
 use App\Models\TInvest;
+use App\Models\TodoList;
 use App\Models\BuyPackage;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\TAdminUserRequest;
@@ -332,6 +333,52 @@ class UserCo extends Controller
     public function buyPackageList(){
         $datas = BuyPackage::orderBy('id', 'DESC')->get();
         return view('admin.buyPackage.index', compact('datas'));
+    }
+
+    public function buyPackagesTodoList(Request $request)
+    {
+        $request->validate([
+            'buy_id' => 'required|integer',
+            'user_id' => 'required|integer',
+            'rules' => 'nullable|array', 
+        ]);
+
+        $userId = $request->user_id;
+        $buyId = $request->buy_id;
+        $rules = $request->rules ?? []; 
+
+        // All possible rule keys
+        $allRuleKeys = [
+            'min_profit',
+            'max_loss',
+            'trade_limit',
+            'risk_management',
+            'rule_break',
+            'profit_share',
+        ];
+
+        // 1. Delete rules that are not selected
+        TodoList::where('buy_id', $buyId)
+            ->whereIn('rule_key', $allRuleKeys)
+            ->whereNotIn('rule_key', array_keys($rules))
+            ->delete();
+
+        // 2. Add or update selected rules
+        foreach ($rules as $key => $value) {
+            TodoList::updateOrCreate(
+                ['user_id' => $userId, 'buy_id' => $buyId, 'rule_key' => $key],
+                ['rule_value' => $value]
+            );
+        }
+
+        return back()->with('success', 'Rules updated successfully.');
+    }
+
+    public function fetchRules($buy_id)
+    {
+        $rules = TodoList::where('buy_id', $buy_id)->pluck('rule_key')->toArray();
+
+        return response()->json($rules); // just return rule_keys like ['min_profit', 'max_loss']
     }
     
     /**

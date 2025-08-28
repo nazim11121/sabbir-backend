@@ -193,6 +193,210 @@
   </div>
 </div>
 
+<!-- ===== Deposit History ===== -->
+<div class="container my-4">
+  <div class="card card-custom p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0">
+        <i class="bi bi-info-circle me-2"></i>Deposit History
+      </h6>
+      <button class="btn btn-sm btn-outline-secondary d-flex align-items-center" 
+              type="button" 
+              data-bs-toggle="collapse" 
+              data-bs-target="#depositHistoryCollapse" 
+              aria-expanded="false" 
+              aria-controls="depositHistoryCollapse"
+              onclick="toggleIcon(this)">
+        <i class="bi bi-chevron-down" id="collapseIcon"></i>
+      </button>
+    </div>
+
+    <div class="collapse" id="depositHistoryCollapse">
+      @foreach($user->deposits->take(10) as $deposit)
+        <div class="order-card d-flex justify-content-between">
+          <span><strong>{{ $deposit->created_at->format('d-m-Y') }}</strong></span>
+          <span class="text-primary">+ {{ $deposit->amount }} $</span>
+          <span class="text-success">{{ $deposit->status == 1 ? 'Success' : 'Pending' }}</span>
+        </div>
+        <hr>
+      @endforeach
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleIcon(button) {
+    const icon = button.querySelector('i');
+    icon.classList.toggle('bi-chevron-down');
+    icon.classList.toggle('bi-chevron-up');
+  }
+</script>
+<!-- ===== Purchase Package History ===== -->
+<div class="container my-4">
+  <div class="card card-custom p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0">
+        <i class="bi bi-box-seam me-2"></i>Purchased Packages
+      </h6>
+      <button class="btn btn-sm btn-outline-secondary d-flex align-items-center"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#packageListCollapse"
+              aria-expanded="false"
+              aria-controls="packageListCollapse"
+              onclick="toggleIcon(this)">
+        <i class="bi bi-chevron-down" id="packageCollapseIcon"></i>
+      </button>
+    </div>
+
+    <div class="collapse" id="packageListCollapse">
+      @forelse($user->buyPackages as $index => $package)
+        <div class="mb-3">
+          <div class="d-flex justify-content-between">
+            <strong>Package ID: {{ $package->package_id }}</strong>
+            <small>{{ $package->created_at->format('d-m-Y') }}</small>
+          </div>
+          <div class="text-muted mb-2">
+            Status: {{ $package->status == 1 ? 'Active' : 'Inactive' }}
+          </div>
+
+          <!-- Toggle Button for Rules -->
+          <button class="btn btn-sm btn-outline-secondary d-flex align-items-center mb-2"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#rulesCollapse{{ $index }}"
+                  aria-expanded="false"
+                  aria-controls="rulesCollapse{{ $index }}"
+                  onclick="toggleIcon(this)">
+            <i class="bi bi-chevron-down me-1"></i> Show Rules
+          </button>
+
+          <!-- Collapsible Rules Section (Default Closed) -->
+          <div class="collapse" id="rulesCollapse{{ $index }}">
+            @php
+              // Static rule definitions
+              $staticRules = [
+                'min_profit' => 'মিনিমাম প্রফিট: প্রতিদিন +10%',
+                'max_loss' => 'ম্যাক্স লস: প্রতিদিন –10%',
+                'trade_limit' => 'ট্রেড লিমিট: দিনে সর্বোচ্চ 10',
+                'risk_management' => 'রিস্ক ম্যানেজমেন্ট: প্রতি ট্রেডে ব্যালেন্সের 2%',
+                'rule_break' => 'রুল ভাঙলে: সাথে সাথে অ্যাকাউন্ট ক্যানসেল',
+                'profit_share' => 'প্রফিট শেয়ার: 60% ট্রেডার, 40% কোম্পানি',
+              ];
+
+              // Completed rules for this package (from DB)
+              $completedRules = $package->rules->pluck('rule_value', 'rule_key')->toArray();
+            @endphp
+
+            @foreach($staticRules as $key => $label)
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" disabled {{ ($completedRules[$key] ?? 0) ? 'checked' : '' }}>
+                <label class="form-check-label">{{ $label }}</label>
+              </div>
+            @endforeach
+          </div>
+        </div>
+        <hr>
+      @empty
+        <p class="text-muted">No packages purchased yet.</p>
+      @endforelse
+    </div>
+
+  <script>
+    function toggleIcon(button) {
+      const icon = button.querySelector('i');
+      icon.classList.toggle('bi-chevron-down');
+      icon.classList.toggle('bi-chevron-up');
+      button.classList.toggle('active');
+    }
+  </script>
+  
+  </div>
+</div>
+
+<script>
+  function toggleIcon(button) {
+    const icon = button.querySelector('i');
+    icon.classList.toggle('bi-chevron-down');
+    icon.classList.toggle('bi-chevron-up');
+  }
+</script>
+
+<!-- ===== Invest History ===== -->
+<div class="container my-4">
+  <div class="card card-custom p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0">
+        <i class="bi bi-cash-coin me-2"></i>Investment History
+      </h6>
+      <button class="btn btn-sm btn-outline-secondary d-flex align-items-center"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#investmentListCollapse"
+              aria-expanded="false"
+              aria-controls="investmentListCollapse"
+              onclick="toggleIcon(this)">
+        <i class="bi bi-chevron-down"></i>
+      </button>
+    </div>
+
+    <div class="collapse" id="investmentListCollapse">
+      @forelse($user->invests as $index => $investment)
+        <div class="order-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <span><strong>{{ $investment->created_at->format('d-m-Y') }}</strong></span>
+            <span class="text-primary">+ {{ $investment->amount }} $</span>
+            <span class="{{ $investment->status == 1 ? 'text-success' : 'text-warning' }}">
+              {{ $investment->status == 1 ? 'Success' : 'Pending' }}
+            </span>
+            <!-- <button class="btn btn-sm btn-light p-1 ms-2" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#investmentRules{{ $index }}"
+                    aria-expanded="false"
+                    aria-controls="investmentRules{{ $index }}"
+                    onclick="toggleIcon(this)">
+              <i class="bi bi-chevron-down"></i>
+            </button> -->
+          </div>
+
+          <!-- <div class="collapse mt-2" id="investmentRules{{ $index }}">
+            //@php//
+              $staticRules = [
+                'min_profit' => 'মিনিমাম প্রফিট: প্রতিদিন +10%',
+                'max_loss' => 'ম্যাক্স লস: প্রতিদিন –10%',
+                'trade_limit' => 'ট্রেড লিমিট: দিনে সর্বোচ্চ 10',
+                'risk_management' => 'রিস্ক ম্যানেজমেন্ট: প্রতি ট্রেডে ব্যালেন্সের 2%',
+                'rule_break' => 'রুল ভাঙলে: সাথে সাথে অ্যাকাউন্ট ক্যানসেল',
+                'profit_share' => 'প্রফিট শেয়ার: 60% ট্রেডার, 40% কোম্পানি',
+              ];
+
+              $completedRules = $investment->rules->pluck('rule_value', 'rule_key')->toArray();
+            //@endphp
+
+            @foreach($staticRules as $key => $label)
+              <div class="form-check ms-3">
+                <input class="form-check-input" type="checkbox" disabled {{ ($completedRules[$key] ?? 0) ? 'checked' : '' }}>
+                <label class="form-check-label">{{ $label }}</label>
+              </div>
+            @endforeach
+          </div> -->
+        </div>
+        <hr>
+      @empty
+        <p class="text-muted">No investments yet.</p>
+      @endforelse
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleIcon(button) {
+    const icon = button.querySelector('i');
+    icon.classList.toggle('bi-chevron-down');
+    icon.classList.toggle('bi-chevron-up');
+  }
+</script>
+
 <!-- ===== Footer ===== -->
 <footer class="footer">
   <div class="container">

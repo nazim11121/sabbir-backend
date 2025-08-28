@@ -24,60 +24,33 @@
                                     <thead>
                                         <tr>
                                             <th>Sl</th>
-                                            <th>Name</th>
-                                            <th>Order ID</th>
+                                            <th>Customer Name</th>
+                                            <th>Package Name</th>
                                             <th>Amount</th>
-                                            <th>Proof</th>
-                                            <th>Status</th>
+                                            <th>To Do</th>
+                                            <!-- <th>Status</th> -->
                                             <th>Date</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($datas as $key => $value)
                                             <tr>
                                                 <td>{{ ++$key }}</td>
-                                                <td>{{ $value->users->name }} </br> {{ $value->users->email }}</td>
-                                                <!-- <td>{{ $value->binance_id }}</td> -->
-                                                <td>{{ $value->order_id }}</td>
+                                                <td>{{ $value->users->name }}</td>
+                                                <td>{{ $value->package_id }}</td>
                                                 <td>{{ $value->amount }}</td>
                                                 <td>
-                                                    <img src="{{ asset($value->invest_proof) }}" 
-                                                         alt="image" 
-                                                         class="img-thumbnail proof-img" 
-                                                         style="width:80px; cursor:pointer;"
-                                                         data-bs-toggle="modal" 
-                                                         data-bs-target="#imageModal"
-                                                         data-img="{{ asset($value->invest_proof) }}">
-                                                </td>
-                                                <td>
-                                                    @if ($value->payment_status == 1)
-                                                    <span>Success</span>@else<span>Pending</span>
-                                                    @endif
+                                                    <button type="button"
+                                                        class="btn btn-primary view-rules-btn"
+                                                        data-id="{{ $value->id }}"
+                                                        data-user="{{ $value->user_id }}"
+                                                        data-route="{{ route('buy-packages.rules.fetch', $value->id) }}"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#rulesModal">
+                                                        View Rules
+                                                    </button>
                                                 </td>
                                                 <td>{{ $value->created_at->format('d-m-Y') }}</td>
-                                                <td>
-                                                    @can('creed-tags-edit-btn')
-                                                        @if($value->payment_status == 1)
-                                                            <a href="{{ route('invest-accept.status', $value->id) }}"
-                                                                class="btn btn-success btn-sm disabled-link"><i class=""></i> OK</a>
-                                                        @else
-                                                            <a href="{{ route('invest-accept.status', $value->id) }}"
-                                                            class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Accept</a>
-                                                        @endif
-                                                    @endcan
-                                                    <!-- @can('contact-creed-delete-btn')
-                                                        <form action="{{ route('contact-creed.destroy', $value->id) }}"
-                                                            method="POST" style="display: inline-block;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                                onclick="return confirm('Are you sure you want to delete this?')">
-                                                                <i class="fa fa-trash"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                    @endcan -->
-                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -89,28 +62,105 @@
             </div>
         </div>
     </div>
-<!-- Image Preview Modal -->
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+    <!-- Rules Confirmation Modal -->
+    <div class="modal fade" id="rulesModal" tabindex="-1" aria-labelledby="rulesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-body text-center">
-                    <img id="modalImage" src="" class="img-fluid rounded" alt="Preview">
-                </div>
+                <form id="rulesForm" method="POST" action="{{ route('buy-packages.todo-list') }}">
+                    @csrf
+                    <input type="hidden" name="user_id" id="userIdInput">
+                    <input type="hidden" name="buy_id" id="buyIdInput">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rulesModalLabel">Trading Rules Agreement</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" name="rules[min_profit]" id="min_profit">
+                            <label class="form-check-label" for="min_profit">
+                                মিনিমাম প্রফিট: প্রতিদিন +10%
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" name="rules[max_loss]" id="max_loss">
+                            <label class="form-check-label" for="max_loss">
+                                ম্যাক্স লস: প্রতিদিন –10%
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" name="rules[trade_limit]" id="trade_limit">
+                            <label class="form-check-label" for="trade_limit">
+                                ট্রেড লিমিট: দিনে সর্বোচ্চ 10
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" name="rules[risk_management]" id="risk_management">
+                            <label class="form-check-label" for="risk_management">
+                                রিস্ক ম্যানেজমেন্ট: প্রতি ট্রেডে ব্যালেন্সের 2%
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" name="rules[rule_break]" id="rule_break">
+                            <label class="form-check-label" for="rule_break">
+                                রুল ভাঙলে: সাথে সাথে অ্যাকাউন্ট ক্যানসেল
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" name="rules[profit_share]" id="profit_share">
+                            <label class="form-check-label" for="profit_share">
+                                প্রফিট শেয়ার: 60% ট্রেডার, 40% কোম্পানি
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Confirm Rules</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const proofImgs = document.querySelectorAll(".proof-img");
-        const modalImage = document.getElementById("modalImage");
 
-        proofImgs.forEach(img => {
-            img.addEventListener("click", function() {
-                modalImage.src = this.getAttribute("data-img");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const viewButtons = document.querySelectorAll(".view-rules-btn");
+            const buyIdInput = document.getElementById("buyIdInput");
+            const userIdInput = document.getElementById("userIdInput");
+
+            viewButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const buyId = this.getAttribute("data-id");
+                    const userId = this.getAttribute("data-user");
+                    const fetchUrl = this.getAttribute("data-route");
+
+                    buyIdInput.value = buyId;
+                    userIdInput.value = userId;
+
+                    // Uncheck all checkboxes initially
+                    document.querySelectorAll("#rulesModal .form-check-input").forEach(cb => {
+                        cb.checked = false;
+                    });
+
+                    // Fetch saved rules for the selected buy_id
+                    fetch(fetchUrl)
+                        .then(response => response.json())
+                        .then(savedRules => {
+                            savedRules.forEach(ruleKey => {
+                                const checkbox = document.getElementById(ruleKey);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                }
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Failed to load rules:", error);
+                        });
+                });
             });
         });
-    });
-</script>
+    </script>
+
+
 @endsection
 
 @push('scripts')

@@ -4,14 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BuyPackage extends Model
+class TodoList extends Model
 {
     protected $guarded = [];
 
-    public function rules(){
-        return $this->hasMany(TodoList::class, 'buy_id','id');
-    }
-    
     public function users(){
         return $this->belongsTo(User::class, 'user_id','id');
     }

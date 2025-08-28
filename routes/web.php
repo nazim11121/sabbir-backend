@@ -90,7 +90,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/invest-accept/status/{id}', [UserCo::class, 'investConfirmStatus'])->name('invest-accept.status');
 
     Route::get('/buy-packages-list', [UserCo::class, 'buyPackageList'])->name('buy-packages-list');
-    // Route::get('/invest-accept/status/{id}', [UserCo::class, 'investConfirmStatus'])->name('invest-accept.status');
+    Route::post('/buy-packages/todo-list', [UserCo::class, 'buyPackagesTodoList'])->name('buy-packages.todo-list');
+    Route::get('/buy-packages/rules/{buy_id}', [UserCo::class, 'fetchRules'])->name('buy-packages.rules.fetch');
 
     Route::group(['prefix'  => 'assign-role', 'as' => 'assign-role.'], function () {
         Route::controller(AdminAssignRoleCo::class)->group(function () {
