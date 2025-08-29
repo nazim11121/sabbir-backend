@@ -75,32 +75,69 @@
       gap: 10px;
     }
   </style>
+   <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
 </head>
 <body>
 <!-- ===== Navbar (Responsive) ===== -->
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
-  <div class="container d-flex justify-content-between align-items-center">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap flex-lg-nowrap">
+    @php
+      $data = session('referrer');
+      $user = $data ? App\Models\User::find($data->id) : null;
+    @endphp
 
     <!-- Brand Logo -->
-    <a class="navbar-brand" href="{{url('/')}}">
-      <img src="{{asset('images/logo/logo.jpg')}}" alt="Shop" height="40"> <!-- <h4 class="text-decoration-none text-dark"><strong>BD Funded Trader</strong></h4> -->
+    <a class="navbar-brand" href="#">
+      <img src="{{ asset('images/logo/logo.jpg') }}" alt="Shop" height="40">
     </a>
 
-    <!-- Desktop Menu -->
-    <!-- <div class="d-none d-lg-flex gap-4">
-      <a href="#" class="nav-link">Topup</a>
-      <a href="#" class="nav-link">Contact Us</a>
-    </div> -->
-
     <!-- Auth Buttons -->
-    <div class="d-flex align-items-center gap-2">
+    <div class="d-flex align-items-center gap-2 flex-shrink-0">
       <!-- Contact Us (Desktop only) -->
       <a href="#contactUs" class="btn btn-sm d-none d-lg-inline">Contact Us</a>
-      <!-- Login (Always show) -->
-      <a href="{{route('login')}}" class="btn btn-primary btn-sm">Login</a>
+
+      @if($user)
+        <!-- Deposit Button -->
+        <a href="#" class="btn btn-info d-flex align-items-center">
+          <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
+        </a>
+        <div class="dropdown">
+          <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form action="{{ route('logout.user') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                  <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      @else
+        <!-- Login (Always show) -->
+        <a href="{{ route('frontend.login') }}" class="btn btn-primary btn-sm">Login</a>
+      @endif
     </div>
   </div>
 </nav>
+
 <!-- ===== Mobile Navbar (Bottom Fixed) ===== -->
 <nav class="navbar fixed-bottom bg-white border-top d-lg-none">
   <div class="container d-flex justify-content-around text-center">
@@ -109,16 +146,27 @@
       <i class="bi bi-house-door fs-5"></i><br>
       <small>Home</small>
     </a>
+    @if($user)
+      <a href="{{route('deposit')}}" class="text-decoration-none text-dark">
+        <i class="bi bi-coin fs-5"></i><br>
+        <small>Deposit</small>
+      </a>
 
-    <a href="#" class="text-decoration-none text-dark">
-      <i class="bi bi-youtube fs-5"></i><br>
-      <small>Tutorial</small>
-    </a>
+      <a href="#" class="text-decoration-none text-dark">
+        <i class="bi bi-cash fs-5"></i><br>
+        <small>Withdraw</small>
+      </a>
+    @else
+      <a href="#" class="text-decoration-none text-dark">
+        <i class="bi bi-youtube fs-5"></i><br>
+        <small>Tutorial</small>
+      </a>
 
-    <a href="#" class="text-decoration-none text-dark">
-      <i class="bi bi-cash-stack fs-5"></i><br>
-      <small>Funded</small>
-    </a>
+      <a href="#" class="text-decoration-none text-dark">
+        <i class="bi bi-cash-stack fs-5"></i><br>
+        <small>Funded</small>
+      </a>
+    @endif
 
     <a href="#contactUs" class="text-decoration-none text-dark">
       <i class="bi bi-map fs-5"></i><br>

@@ -39,7 +39,7 @@ Route::get('/', function () {
 /*frontend login endpoint*/
 Route::get('/login', function () {
     return view('frontend.login');
-})->name('login');
+})->name('frontend.login');
 Route::get('/register', function () {
     return view('frontend.register');
 })->name('frontend.register');

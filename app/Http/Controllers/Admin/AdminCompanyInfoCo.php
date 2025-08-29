@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TCompanyInfoRequest;
 use Intervention\Image\Facades\Image;
 use App\Models\Admin\TCompanyInfo;
-use App\Models\Admin\TAdminCountry;
 use Illuminate\Http\Request;
 use DB;
 use Auth;
@@ -15,10 +14,9 @@ class AdminCompanyInfoCo extends Controller
 {
     public function index(TCompanyInfo $tCompanyInfo=null){
 
-        $country = TAdminCountry::get();
         $tCompanyInfo = TCompanyInfo::get()->first();
 
-        return view('admin.company_info.index', compact('country', 'tCompanyInfo'));
+        return view('admin.company_info.index', compact('tCompanyInfo'));
         
     }
 

@@ -40,6 +40,19 @@
     @stack('style')
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+   
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
+
 </head>
 
 <body>
@@ -54,7 +67,7 @@
     <div id="main-wrapper">
 
         <div class="nav-header">
-            <a href="{{route('dashboard')}}" class="brand-logo">
+            <a href="{{url('dashboard')}}" class="brand-logo">
               
                 @if(getCompanyInfo())
                     <img class="logo-abbr" src="{{ asset('/' . (getCompanyInfo()->logo ?? 'images/logo.png')) }}" alt="">

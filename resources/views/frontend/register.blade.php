@@ -92,6 +92,18 @@
       gap: 10px;
     }
   </style>
+  @flasher_render
+   <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
 </head>
 <body>
 <!-- ===== Navbar (Responsive) ===== -->
@@ -114,7 +126,7 @@
       <!-- Contact Us (Desktop only) -->
       <a href="#contactUs" class="btn btn-sm d-none d-lg-inline">Contact Us</a>
       <!-- Login (Always show) -->
-      <a href="{{url('/login')}}" class="btn btn-primary btn-sm">Login</a>
+      <a href="{{route('frontend.login')}}" class="btn btn-primary btn-sm">Login</a>
     </div>
   </div>
 </nav>
@@ -183,28 +195,31 @@
       <form method="POST" action="{{route('register.store')}}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
-          <label class="form-label">Name</label>
+          <label class="form-label">Name<span class="text-danger">*</span></label>
           <input type="text" name="name" id="name" class="form-control" placeholder="Name" required>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Phone</label>
+          <label class="form-label">Phone<span class="text-danger">*</span></label>
           <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="Phone" required>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Email</label>
+          <label class="form-label">Email<span class="text-danger">*</span></label>
           <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Password</label>
+          <label class="form-label">Password <span class="text-danger">*</span></label>
           <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Confirm Password</label>
+          <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
           <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm Password" required>
+          <div id="passwordHelp" class="invalid-feedback">
+            Passwords do not match.
+          </div>
         </div>
 
         <div class="mb-3">
@@ -213,8 +228,8 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Upload NID Images</label>
-          <input type="file" name="nid_image[]" id="nid_image" class="form-control" accept="image/*" multiple>
+          <label class="form-label">Upload NID Images<span class="text-danger">*</span></label>
+          <input type="file" name="nid_image[]" id="nid_image" class="form-control" accept="image/*" multiple required>
         </div>
 
         <button type="submit" class="btn btn-primary w-100 fw-bold">Register</button>
@@ -222,7 +237,7 @@
 
       <!-- Footer -->
       <div class="text-center mt-3 login-link fw-bold">
-        Already member? <a href="{{url('/login')}}" class="text-decoration-none">Login</a> Now
+        Already member? <a href="{{route('frontend.login')}}" class="text-decoration-none">Login</a> Now
       </div>
     </div>
   </div>
@@ -332,10 +347,41 @@
       <i class="bi bi-telephone" id="toggle-icon"></i>
     </a>
   </div>
+<pre>{{ print_r(session()->all(), true) }}</pre>
+
+  <!-- ===== Flash Message Modal ===== -->
+@if(session('error'))
+<div class="modal fade" id="flashModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Error</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        {{ session('error') }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var flashModal = new bootstrap.Modal(document.getElementById('flashModal'));
+    flashModal.show();
+});
+</script>
+@endif
+  <!-- ===== Scripts ===== -->
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let flashModal = new bootstrap.Modal(document.getElementById('flashModal'));
+        flashModal.show();
+    });
+</script>
   <!-- Floating Button Toggle Script -->
   <script>
     let chatVisible = false;
@@ -349,5 +395,17 @@
       toggleIcon.className = chatVisible ? 'bi bi-x' : 'bi bi-plus';
     }
   </script>
+  <script>
+  const password = document.getElementById("password");
+  const confirmPassword = document.getElementById("confirm_password");
+
+  confirmPassword.addEventListener("input", function () {
+    if (confirmPassword.value !== password.value) {
+      confirmPassword.classList.add("is-invalid");
+    } else {
+      confirmPassword.classList.remove("is-invalid");
+    }
+  });
+</script>
 </body>
 </html>

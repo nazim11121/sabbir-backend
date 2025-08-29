@@ -74,16 +74,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function businessOwnerInfos()
-    {
-        return $this->hasMany(\App\Models\Api\TBusinessOwnerInfo::class, 'user_id');
-    }
-
-    public function businesses()
-    {
-        return $this->hasManyThrough(\App\Models\Api\TBusiness::class, 'user_id', 'owner_info_id');
-    }
-
     public function buyPackages(){
         return $this->hasMany(BuyPackage::class, 'user_id');
     }
@@ -107,17 +97,10 @@ class User extends Authenticatable
     protected static function boot()
     {
         parent::boot();
-
         static::deleting(function ($user) {
-            if ($user->isForceDeleting()) {
-                $user->businessOwnerInfos()->forceDelete(); // Hard delete related data
-            } else {
-                $user->businessOwnerInfos()->delete(); // Soft delete related data
-            }
-        });
-
-        static::restoring(function ($user) {
-            $user->businessOwnerInfos()->withTrashed()->restore(); // Restore related data
+            $user->buyPackages()->delete();
+            $user->deposits()->delete();
+            $user->invests()->delete();
         });
     }
 

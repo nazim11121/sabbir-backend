@@ -3,20 +3,8 @@
         <ul class="metismenu" id="menu">
             <li class="nav-label first">Main Menu</li>
             @can('dashboard')
-                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-home"></i><span
+                <li><a href="{{ route('dashboard') }}"class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"><i class="icon icon-home"></i><span
                             class="nav-text">Dashboard</span></a>
-                    <ul aria-expanded="false" class="mm-collapse {{ setSidebarActive(['dashboard', 'dashboard2']) }}">
-                        @can('dashboard-one')
-                            <li class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"><a
-                                    class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"
-                                    href="{{ route('dashboard') }}">Dashboard 1</a></li>
-                        @endcan
-                        <!-- @can('dashboard-two')
-                            <li class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"><a
-                                    class="{{ setSidebarActive(['dashboard', 'dashboard2']) }}"
-                                    href="{{ route('dashboard2') }}">Dashboard 2</a></li>
-                        @endcan -->
-                    </ul>
                 </li>
             @endcan
 

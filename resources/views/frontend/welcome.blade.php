@@ -127,6 +127,17 @@
       }
     }
   </style>
+   <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
 </head>
 <body>
 <!-- ===== Navbar (Responsive) ===== -->
@@ -173,7 +184,7 @@
         </div>
       @else
         <!-- Login (Always show) -->
-        <a href="{{ url('/login') }}" class="btn btn-primary btn-sm">Login</a>
+        <a href="{{ route('frontend.login') }}" class="btn btn-primary btn-sm">Login</a>
       @endif
     </div>
   </div>
@@ -638,7 +649,7 @@
             </div>
             <!-- If no user -->
             <?php if(empty($user)): ?>
-              <a href="/login" class="btn btn-warning w-100">Login First</a>
+              <a href="{{route('frontend.login')}}" class="btn btn-warning w-100">Login First</a>
             <?php endif; ?>
           </div>
         </div>
@@ -751,7 +762,7 @@
                   </label>
                 </div>
                 <?php if(empty($user)): ?>
-                  <a href="/login" class="btn btn-warning">Login First</a>
+                  <a href="{{route('frontend.login')}}" class="btn btn-warning">Login First</a>
                 <?php else: ?>
                   <button id="buyButton2" type="submit" class="btn btn-primary" disabled>
                     Accept & Invest

@@ -3,14 +3,14 @@
     <div class="content-body">
         <!-- row -->
         <div class="container-fluid">
-            <!-- <div class="row">
+            <div class="row">
                 <div class="col-lg-3 col-sm-6">
                     <div class="card">
                         <div class="stat-widget-two card-body">
                             <div class="stat-content">
-                                <div class="stat-text">Total General Profile </div>
+                                <div class="stat-text">Total Users </div>
                                 <div class="stat-digit"> <i class="fa fa-user"></i>
-                                    {{ $totalGeneralProfile }}
+                                    111
                                 </div>
                             </div>
                             <div class="progress">
@@ -24,8 +24,8 @@
                     <div class="card">
                         <div class="stat-widget-two card-body">
                             <div class="stat-content">
-                                <div class="stat-text">Complete Business Profile</div>
-                                <div class="stat-digit"> <i class="fa fa-user"></i>{{ $completeBusinessProfile }}</div>
+                                <div class="stat-text">Total Deposit</div>
+                                <div class="stat-digit"> <i class="fa fa-user"></i>11212</div>
                             </div>
                             <div class="progress">
                                 <div class="progress-bar businessProfile w-75" role="progressbar" aria-valuenow="78"
@@ -38,8 +38,8 @@
                     <div class="card">
                         <div class="stat-widget-two card-body">
                             <div class="stat-content">
-                                <div class="stat-text">Incomplete Business Profile</div>
-                                <div class="stat-digit"> <i class="fa fa-user"></i> {{ $incompleteProfile }}</div>
+                                <div class="stat-text">Total Invest</div>
+                                <div class="stat-digit"> <i class="fa fa-user"></i> 123</div>
                             </div>
                             <div class="progress">
                                 <div class="progress-bar incompleteProfile w-50" role="progressbar" aria-valuenow="50"
@@ -52,8 +52,8 @@
                     <div class="card">
                         <div class="stat-widget-two card-body">
                             <div class="stat-content">
-                                <div class="stat-text">Total Visitor</div>
-                                <div class="stat-digit"> <i class="fa fa-user"></i>{{ $totalVisitor }}</div>
+                                <div class="stat-text">Total Packages Sell</div>
+                                <div class="stat-digit"> <i class="fa fa-user"></i>3333</div>
                             </div>
                             <div class="progress">
                                 <div class="progress-bar totalVisitor w-65" role="progressbar" aria-valuenow="65"
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
             <!-- <div class="row">
                 {{-- bar chart --}}
                 <div class="col-xl-7 col-lg-7 col-md-7 my-3">

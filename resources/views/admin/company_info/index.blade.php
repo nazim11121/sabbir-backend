@@ -47,47 +47,8 @@
                                                 </div>
                                                 <div class="col-lg-12 mb-4">
                                                     <div class="form-group">
-                                                        <label class="text-label">Business Identification Number</label>
-                                                        <input type="text" name="business_identification_no" id="business_identification_no" value="{{$tCompanyInfo->business_identification_no ?? ''}}" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12 mb-4">
-                                                    <div class="form-group">
                                                         <label class="text-label">Address<span class="requiredStar">*</span></label>
                                                         <textarea name="address" id="address" value="{{$tCompanyInfo->address ?? ''}}" class="form-control" required>{{$tCompanyInfo->address ?? ''}}</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 mb-4">
-                                                    <div class="form-group">
-                                                        <label class="text-label">Country</label>
-                                                        <select name="country_id" id="country" class="form-control select2">
-                                                            <option>Select Country..</option>
-                                                            @foreach($country as $list)
-                                                                <option value="{{$list->id}}" {{$tCompanyInfo->country??''==$list->id?'selected':''}}>{{$list->name}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 mb-4">
-                                                    <div class="form-group">
-                                                        <label class="text-label">State</label>
-                                                        <select id="state" name="state_id" class="form-control select2">
-                                                            <option value="">Select State</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 mb-4">
-                                                    <div class="form-group">
-                                                        <label class="text-label">City</label>
-                                                        <select id="city" name="city_id" class="form-control select2">
-                                                            <option value="">Select City</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 mb-4">
-                                                    <div class="form-group">
-                                                        <label class="text-label">Zip Code</label>
-                                                        <input type="number" name="zip_code" id="zip_code" value="{{$tCompanyInfo->zip_code ?? ''}}" class="form-control" placeholder="Zip Code">
                                                     </div>
                                                 </div>
                                             </div>
@@ -98,7 +59,7 @@
                                                 <div class="col-lg-12 mb-4">
                                                     <div class="form-group">
                                                         <label class="text-label">Company Name<span class="requiredStar">*</span></label>
-                                                        <input type="text" name="system_name" id="system_name" value="{{$tCompanyInfo->system_name ?? ''}}" class="form-control" placeholder="Creed" required>
+                                                        <input type="text" name="system_name" id="system_name" value="{{$tCompanyInfo->system_name ?? ''}}" class="form-control" placeholder="ABC Company" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 mb-4">

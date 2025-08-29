@@ -1,7 +1,7 @@
 <div class="footer">
     <div class="copyright">
-        <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Dev</a> {{ date('Y') }}</p>
-        <p>Distributed by <a href="https://analyzenbd.com/" target="_blank">Analyzen</a></p>
+        <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">N&N Co.</a> {{ date('Y') }}</p>
+        <!-- <p>Distributed by <a href="https://analyzenbd.com/" target="_blank">N&N Co.</a></p> -->
     </div>
 </div>
 </div>

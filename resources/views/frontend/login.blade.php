@@ -92,6 +92,17 @@
       gap: 10px;
     }
   </style>
+   <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
 </head>
 <body>
 <!-- ===== Navbar (Responsive) ===== -->
@@ -114,7 +125,7 @@
       <!-- Contact Us (Desktop only) -->
       <a href="#contactUs" class="btn btn-sm d-none d-lg-inline">Contact Us</a>
       <!-- Login (Always show) -->
-      <a href="{{url('/login')}}" class="btn btn-primary btn-sm">Login</a>
+      <a href="{{route('frontend.login')}}" class="btn btn-primary btn-sm">Login</a>
     </div>
   </div>
 </nav>
@@ -183,13 +194,13 @@
       <form method="POST" action="{{route('profile.login')}}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+          <label class="form-label">Email<span class="text-danger">*</span></label>
+          <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+          <label class="form-label">Password<span class="text-danger">*</span></label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
         </div>
 
         <button type="submit" class="btn btn-primary w-100 fw-bold">Login</button>

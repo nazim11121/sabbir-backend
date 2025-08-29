@@ -86,6 +86,17 @@
       }
     }
   </style>
+   <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
 </head>
 <body>
 
@@ -212,14 +223,17 @@
     </div>
 
     <div class="collapse" id="depositHistoryCollapse">
-      @foreach($user->deposits->take(10) as $deposit)
+      @forelse($user->deposits->take(10) as $deposit)
         <div class="order-card d-flex justify-content-between">
           <span><strong>{{ $deposit->created_at->format('d-m-Y') }}</strong></span>
+          <span class="text-secondary">{{ $deposit->order_id }}</span>
           <span class="text-primary">+ {{ $deposit->amount }} $</span>
-          <span class="text-success">{{ $deposit->status == 1 ? 'Success' : 'Pending' }}</span>
+          <span class="text-success">{{ $deposit->payment_status == 1 ? 'Success' : 'Pending' }}</span>
         </div>
         <hr>
-      @endforeach
+      @empty
+        <p class="text-muted">No deposit yet.</p>
+      @endforelse
     </div>
   </div>
 </div>
@@ -345,9 +359,10 @@
         <div class="order-card">
           <div class="d-flex justify-content-between align-items-center">
             <span><strong>{{ $investment->created_at->format('d-m-Y') }}</strong></span>
+            <span class="text-secondary">{{ $deposit->order_id }}</span>
             <span class="text-primary">+ {{ $investment->amount }} $</span>
             <span class="{{ $investment->status == 1 ? 'text-success' : 'text-warning' }}">
-              {{ $investment->status == 1 ? 'Success' : 'Pending' }}
+              {{ $investment->payment_status == 1 ? 'Success' : 'Pending' }}
             </span>
             <!-- <button class="btn btn-sm btn-light p-1 ms-2" type="button"
                     data-bs-toggle="collapse"

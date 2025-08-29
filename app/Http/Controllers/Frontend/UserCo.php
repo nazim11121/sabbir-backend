@@ -22,6 +22,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Auth;
+use Flasher\Laravel\Facade\Flasher;
 
 class UserCo extends Controller
 {
@@ -55,7 +56,7 @@ class UserCo extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request): RedirectResponse
+    public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
@@ -72,6 +73,12 @@ class UserCo extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+
+        $checkEmail = User::where('email', $request->email)->first();
+        if($checkEmail){
+            Flasher::addError('Email already exists');
+            return redirect()->route('frontend.register');
+        }
         
         $input = $request->except('nid_image'); 
         // dd($request);
@@ -79,7 +86,7 @@ class UserCo extends Controller
         $input['own_refer_code'] = rand(4,9999);
         $input['level'] = "Level 1";
 
-        $user = User::create($input);
+        $userStore = User::create($input);
 
         if ($request->hasFile('nid_image')) {
 
@@ -90,13 +97,18 @@ class UserCo extends Controller
                 $imagePaths = 'images/users/' . $imageName;
 
                 $data = new UserNidImage();
-                $data->user_id = $user->id;
+                $data->user_id = $userStore->id;
                 $data->nid_image = $imagePaths;
                 $data->save();
             }
         }
+
+        $user = User::with(['buyPackages','deposits','invests'])->where('id', $userStore->id)->first();
+
+        Auth::login($user);
+        session(['referrer' => $user]);
     
-        return redirect()->route('login')->with('success','Registration successfully');
+        return view('frontend.dashboard', compact('user'));
     }
 
     public function manualLogin(Request $request){
@@ -134,7 +146,7 @@ class UserCo extends Controller
                 return view('frontend.dashboard', compact('user'));
                 // return redirect()->route('user-dashboard')->with('success','Login successfully');
             } else {
-                return redirect()->route('login')->with('error','Invalid email or password');
+                return redirect()->route('frontend.login')->with('error','Invalid email or password');
             }
 
     }
@@ -142,11 +154,12 @@ class UserCo extends Controller
     public function userDashboard(){
          
         $data = session('referrer');
-        $user = User::with(['buyPackages','deposits','invests'])->find($data->id);
-        if($user){
+        
+        if($data){
+            $user = User::with(['buyPackages','deposits','invests'])->where('id', $data->id)->first();
             return view('frontend.dashboard', compact('user'));
         }else{
-            return redirect()->route('login')->with('error','Please Login');
+            return redirect()->route('frontend.login')->with('error','Please Login');
         }
     }
 
@@ -172,7 +185,7 @@ class UserCo extends Controller
         if($user){
             return view('frontend.depositForm', compact('user'));
         }else{
-            return redirect()->route('login')->with('error','Please Login');
+            return redirect()->route('frontend.login')->with('error','Please Login');
         }
     }
 
