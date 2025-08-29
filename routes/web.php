@@ -36,6 +36,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('frontend.welcome');
 });
+// sicial login
+Route::get('/api/auth/google', [UserSocialAuthCo::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/api/auth/google/callback', [UserSocialAuthCo::class, 'handleGoogleCallback']);
 /*frontend login endpoint*/
 Route::get('/login', function () {
     return view('frontend.login');

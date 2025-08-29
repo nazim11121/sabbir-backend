@@ -129,19 +129,24 @@ class UserSocialAuthCo extends Controller
     // for webTest
     public function handleGoogleCallback()
     {
-        $googleUser = Socialite::driver('google')->stateless()->user();
+        $googleUser = Socialite::driver('google')->user();
 
-        $user = User::updateOrCreate([
-            'email' => $googleUser->getEmail(),
-        ], [
-            'name' => $googleUser->getName(),
-            'google_id' => $googleUser->getId(),
-            'avatar' => $googleUser->getAvatar(),
-        ]);
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if (!$user) {
+                $user = User::create([
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                    'password' => bcrypt(uniqid()), // random password
+                ]);
+            }
      
         Auth::login($user);
+        session(['referrer' => $user]);
 
-        return redirect('/home');
+        return view('frontend.dashboard', compact('user'));
+        // return redirect('/home');
     }
     // Task: need to update when flatter update
     public function googleDataStore(Request $request){     

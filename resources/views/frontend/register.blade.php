@@ -182,10 +182,10 @@
       <h4 class="text-center fw-bold mb-3">Login</h4>
 
       <!-- Google Login -->
-      <button class="btn google-btn mb-3 fw-bold">
+      <a href="{{ route('google.login') }}" class="btn google-btn mb-3 fw-bold">
         <img src="https://img.icons8.com/color/16/000000/google-logo.png"/>
         Login with Google
-      </button>
+      </a>
 
       <!-- Divider -->
       <div class="text-center my-2 text-muted fw-bold">Or sign up with credentials</div>
@@ -347,7 +347,7 @@
       <i class="bi bi-telephone" id="toggle-icon"></i>
     </a>
   </div>
-<pre>{{ print_r(session()->all(), true) }}</pre>
+<!-- <pre>{{ print_r(session()->all(), true) }}</pre> -->
 
   <!-- ===== Flash Message Modal ===== -->
 @if(session('error'))
