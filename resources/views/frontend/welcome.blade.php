@@ -126,34 +126,6 @@
         font-size: 12px;
       }
     }
-  </style>
-   <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0d6efd">
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/serviceworker.js')
-                .then(function () {
-                    console.log('Service Worker Registered');
-                });
-        }
-    </script>
-    <!-- 🔵 Smaller Install App Card -->
-<div id="installPrompt" class="install-card">
-    <div class="install-card-header">
-        <span>Install App</span>
-        <button id="closePrompt" class="close-btn">&times;</button>
-    </div>
-    <div class="install-card-body">
-        <p>Install our app for a better experience</p>
-        <button id="installBtn" class="install-btn">
-            <span class="icon">&#8681;</span> Install
-        </button>
-    </div>
-</div>
-
-<!-- 🔧 Compact CSS -->
-<style>
     .install-card {
         position: fixed;
         bottom: 15px;
@@ -219,7 +191,33 @@
         font-size: 16px;
         line-height: 1;
     }
-</style>
+  </style>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
+    <!-- <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(function () {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script> -->
+    <!-- Smaller Install App Card -->
+    <div id="installPrompt" class="install-card">
+        <div class="install-card-header">
+            <span>Install App</span>
+            <button id="closePrompt" class="close-btn">&times;</button>
+        </div>
+        <div class="install-card-body">
+            <p>Install our app for a better experience</p>
+            <button id="installBtn" class="install-btn">
+                <span class="icon">&#8681;</span> Install
+            </button>
+        </div>
+    </div>
+
+<!-- 🔧 Compact CSS -->
 
 <!-- 📦 JS: PWA Install Handler -->
 <script>
@@ -870,7 +868,10 @@
                   </label>
                 </div>
                 <?php if(empty($user)): ?>
-                  <a href="{{route('frontend.login')}}" class="btn btn-warning">Login First</a>
+                  <a href="{{route('frontend.login')}}" class="btn btn-warning mb-4">Login First</a>
+                  <button id="buyButton2" type="submit" class="btn btn-primary" style="display:none" disabled>
+                    Accept & Invest
+                  </button>
                 <?php else: ?>
                   <button id="buyButton2" type="submit" class="btn btn-primary" disabled>
                     Accept & Invest
@@ -884,7 +885,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -981,18 +981,14 @@
 
 </script>
 <script>
-buyForm.addEventListener('submit', function (e) {
-  e.preventDefault(); // ফর্ম সাবমিট থামানো হলো (ajax করলে লাগবে না)
+  buyForm.addEventListener('submit', function (e) {
+    e.preventDefault(); 
+    // current modal hide
+    bootstrap.Modal.getInstance(document.getElementById('packageModal')).hide();
 
-  // 🔥 এখানে তুমি চাইলে Ajax দিয়ে backend এ পাঠাতে পারো।
-  // ডেমোর জন্য শুধু success modal দেখাচ্ছি
-
-  // current modal hide
-  bootstrap.Modal.getInstance(document.getElementById('packageModal')).hide();
-
-  // show success modal
-  new bootstrap.Modal(document.getElementById('successModal')).show();
-});
+    // show success modal
+    new bootstrap.Modal(document.getElementById('successModal')).show();
+  });
 </script>
 
 <!-- investment -->
