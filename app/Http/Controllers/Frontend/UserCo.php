@@ -156,7 +156,7 @@ class UserCo extends Controller
         $data = session('referrer');
         
         if($data){
-            $user = User::with(['buyPackages','deposits','invests'])->where('id', $data->id)->first();
+            $user = User::with(['buyPackages','deposits','invests'])->find($data->id);
             return view('frontend.dashboard', compact('user'));
         }else{
             return redirect()->route('frontend.login')->with('error','Please Login');

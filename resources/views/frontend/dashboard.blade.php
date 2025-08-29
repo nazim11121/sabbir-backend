@@ -99,7 +99,10 @@
     </script>
 </head>
 <body>
-
+@php
+  $data = session('referrer');
+  $users = $data ? App\Models\User::find($data->id) : null;
+@endphp
 <!-- ===== Navbar ===== -->
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container d-flex justify-content-between align-items-center">
@@ -141,7 +144,6 @@
     <a href="#" class="text-decoration-none text-dark">
       <i class="bi bi-house-door fs-5"></i><br><small>Home</small>
     </a>
-    @php $users = Auth::user(); @endphp
     @if($users)
       <a href="{{ route('deposit') }}" class="text-decoration-none text-dark">
         <i class="bi bi-coin fs-5"></i><br><small>Deposit</small>

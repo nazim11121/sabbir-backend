@@ -138,6 +138,114 @@
                 });
         }
     </script>
+    <!-- 🔵 Smaller Install App Card -->
+<div id="installPrompt" class="install-card">
+    <div class="install-card-header">
+        <span>Install App</span>
+        <button id="closePrompt" class="close-btn">&times;</button>
+    </div>
+    <div class="install-card-body">
+        <p>Install our app for a better experience</p>
+        <button id="installBtn" class="install-btn">
+            <span class="icon">&#8681;</span> Install
+        </button>
+    </div>
+</div>
+
+<!-- 🔧 Compact CSS -->
+<style>
+    .install-card {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        background-color: #0d6efd;
+        color: white;
+        padding: 15px 11px;
+        width: 240px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        z-index: 9999;
+        display: none;
+    }
+
+    .install-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .close-btn {
+        background: transparent;
+        border: none;
+        font-size: 18px;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .install-card-body {
+        margin-top: 8px;
+    }
+
+    .install-card-body p {
+        margin: 6px 0 10px;
+        font-size: 13px;
+    }
+
+    .install-btn {
+        background-color: white;
+        color: #0d6efd;
+        border: none;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.3s ease;
+    }
+
+    .install-btn:hover {
+        background-color: #e2e6ea;
+    }
+
+    .icon {
+        font-size: 16px;
+        line-height: 1;
+    }
+</style>
+
+<!-- 📦 JS: PWA Install Handler -->
+<script>
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installPrompt').style.display = 'block';
+    });
+
+    document.getElementById('installBtn').addEventListener('click', () => {
+        document.getElementById('installPrompt').style.display = 'none';
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                deferredPrompt = null;
+            });
+        }
+    });
+
+    document.getElementById('closePrompt').addEventListener('click', () => {
+        document.getElementById('installPrompt').style.display = 'none';
+    });
+</script>
+
 </head>
 <body>
 <!-- ===== Navbar (Responsive) ===== -->
