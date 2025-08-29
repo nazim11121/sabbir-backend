@@ -217,31 +217,56 @@
         </div>
     </div>
 
-<!-- 🔧 Compact CSS -->
+    <!-- 🔧 Compact CSS -->
 
-<!-- 📦 JS: PWA Install Handler -->
+    <!-- 📦 JS: PWA Install Handler -->
+    <script>
+  let deferredPrompt = null;
+
+  // Wait until the event is triggered by Chrome
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // Prevent the default install banner
+    deferredPrompt = e;
+
+    // ✅ Show your custom install card
+    const promptCard = document.getElementById('installPrompt');
+    if (promptCard) {
+      promptCard.style.display = 'block';
+    }
+  });
+
+  // ✅ Install button clicked
+  const installBtn = document.getElementById('installBtn');
+  if (installBtn) {
+    installBtn.addEventListener('click', () => {
+      const promptCard = document.getElementById('installPrompt');
+      if (promptCard) promptCard.style.display = 'none';
+
+      if (deferredPrompt) {
+        deferredPrompt.prompt(); // Show browser install prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          console.log('User choice:', choiceResult.outcome);
+          deferredPrompt = null;
+        });
+      }
+    });
+  }
+
+  // ✅ Close button clicked
+  const closeBtn = document.getElementById('closePrompt');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      const promptCard = document.getElementById('installPrompt');
+      if (promptCard) promptCard.style.display = 'none';
+    });
+  }
+</script>
 <script>
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('installPrompt').style.display = 'block';
-    });
-
-    document.getElementById('installBtn').addEventListener('click', () => {
-        document.getElementById('installPrompt').style.display = 'none';
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                deferredPrompt = null;
-            });
-        }
-    });
-
-    document.getElementById('closePrompt').addEventListener('click', () => {
-        document.getElementById('installPrompt').style.display = 'none';
-    });
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/serviceworker.js')
+      .then(() => console.log('✅ Service Worker registered'))
+      .catch(err => console.error('❌ Service Worker registration failed:', err));
+  }
 </script>
 
 </head>
