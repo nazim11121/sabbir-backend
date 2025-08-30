@@ -15,9 +15,28 @@
       font-family: system-ui, -apple-system, sans-serif;
       background: #f9fafb;
     }
-    .navbar-brand img { height: 70px;width: 165px; }
+    .navbar-text-style {
+      font-size: 1.8rem; 
+      font-weight: bold;
+      color: #37d65e; 
+      letter-spacing: 1px; 
+      text-transform: uppercase;
+      font-style: italic;
+      margin-left: -34px; 
+    }
+    .navbar-brand img { height: 76px;width: 175px; }
     .navbar-footer img { height: 70px;width: 140px; }
     .banner img { width: 100%; border-radius: .5rem; }
+    @media (max-width: 576px) {
+      .navbar-text-style {
+        font-size: 0.8rem; 
+        margin-left: -12px; 
+      }
+      .navbar-brand img {
+        height: 44px;
+        width: auto;
+      }
+    }
 
     /* ===== Section Registration Form ===== */
     .card {
@@ -110,15 +129,10 @@
   <div class="container d-flex justify-content-between align-items-center">
 
     <!-- Brand Logo -->
-    <a class="navbar-brand" href="{{url('/')}}">
-      <img src="{{asset('images/logo/logo.jpg')}}" alt="Shop" height="40"> <!-- <h4 class="text-decoration-none text-dark"><strong>BD Funded Trader</strong></h4> -->
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <img src="{{ asset('images/logo/logo.jpg') }}" alt="logo" class="me-2">
+      <strong class="navbar-text-style">FUNDED TRADER</strong>
     </a>
-
-    <!-- Desktop Menu -->
-    <!-- <div class="d-none d-lg-flex gap-4">
-      <a href="#" class="nav-link">Topup</a>
-      <a href="#" class="nav-link">Contact Us</a>
-    </div> -->
 
     <!-- Auth Buttons -->
     <div class="d-flex align-items-center gap-2">
@@ -133,12 +147,12 @@
 <nav class="navbar fixed-bottom bg-white border-top d-lg-none">
   <div class="container d-flex justify-content-around text-center">
 
-    <a href="#" class="text-decoration-none text-dark">
+    <a href="/" class="text-decoration-none text-dark">
       <i class="bi bi-house-door fs-5"></i><br>
       <small>Home</small>
     </a>
 
-    <a href="#" class="text-decoration-none text-dark">
+    <a href="https://www.youtube.com/@Rs_Sabbir_Trader" class="text-decoration-none text-dark">
       <i class="bi bi-youtube fs-5"></i><br>
       <small>Tutorial</small>
     </a>

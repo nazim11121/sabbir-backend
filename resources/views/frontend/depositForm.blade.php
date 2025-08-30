@@ -15,9 +15,29 @@
       font-family: system-ui, -apple-system, sans-serif;
       background: #f9fafb;
     }
-    .navbar-brand img { height: 70px;width: 165px; }
+    .navbar-text-style {
+      font-size: 1.8rem; 
+      font-weight: bold;
+      color: #37d65e; 
+      letter-spacing: 1px; 
+      text-transform: uppercase;
+      font-style: italic;
+      margin-left: -34px; 
+    }
+    .navbar-brand img { height: 76px;width: 175px; }
     .navbar-footer img { height: 70px;width: 140px; }
     .banner img { width: 100%; border-radius: .5rem; }
+
+    @media (max-width: 576px) {
+      .navbar-text-style {
+        font-size: 0.8rem; 
+        margin-left: -12px; 
+      }
+      .navbar-brand img {
+        height: 44px;
+        width: auto;
+      }
+    }
 
     .card-custom {
       border-radius: 1rem;
@@ -74,16 +94,7 @@
       flex-direction: column;
       gap: 10px;
     }
-    @media (max-width: 576px) {
-      .navbar-brand img {
-        height: 44px;
-        width: auto;
-      }
-      .product-card {
-        width: 100px;
-        font-size: 12px;
-      }
-    }
+
   </style>
    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0d6efd">
@@ -107,8 +118,9 @@
     @endphp
 
     <!-- Brand Logo -->
-    <a class="navbar-brand" href="/">
-      <img src="{{ asset('images/logo/logo.jpg') }}" alt="Shop" height="40">
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <img src="{{ asset('images/logo/logo.jpg') }}" alt="logo" class="me-2">
+      <strong class="navbar-text-style">FUNDED TRADER</strong>
     </a>
 
     <!-- Auth Buttons -->
@@ -118,12 +130,12 @@
 
       @if($user)
         <!-- Deposit Button -->
-        <a href="#" class="btn btn-info d-flex align-items-center">
+        <a href="#" class="btn btn-info btn-sm d-flex align-items-center">
           <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
         </a>
         <div class="dropdown">
           <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="30" class="rounded-circle">
           </a>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm">
             <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
@@ -162,12 +174,12 @@
         <small>Deposit</small>
       </a>
 
-      <a href="#" class="text-decoration-none text-dark">
+      <a href="{{route('withdraw')}}" class="text-decoration-none text-dark">
         <i class="bi bi-cash fs-5"></i><br>
         <small>Withdraw</small>
       </a>
     @else
-      <a href="#" class="text-decoration-none text-dark">
+      <a href="https://www.youtube.com/@Rs_Sabbir_Trader" class="text-decoration-none text-dark">
         <i class="bi bi-youtube fs-5"></i><br>
         <small>Tutorial</small>
       </a>
