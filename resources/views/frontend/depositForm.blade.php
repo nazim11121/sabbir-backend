@@ -107,7 +107,7 @@
     @endphp
 
     <!-- Brand Logo -->
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="/">
       <img src="{{ asset('images/logo/logo.jpg') }}" alt="Shop" height="40">
     </a>
 
@@ -152,7 +152,7 @@
 <nav class="navbar fixed-bottom bg-white border-top d-lg-none">
   <div class="container d-flex justify-content-around text-center">
 
-    <a href="#" class="text-decoration-none text-dark">
+    <a href="/" class="text-decoration-none text-dark">
       <i class="bi bi-house-door fs-5"></i><br>
       <small>Home</small>
     </a>

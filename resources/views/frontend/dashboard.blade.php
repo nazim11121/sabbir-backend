@@ -203,8 +203,10 @@
     <h6 class="fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>User Information</h6>
     <p><strong>Email:</strong> {{ $user->email }}</p>
     <p><strong>Phone:</strong> {{ $user->phone_number }}</p>
-    <p><strong>Own Refer Code:</strong> {{ $user->own_refer_code }}</p>
+    <!-- <p><strong>Own Refer Code:</strong> {{ $user->own_refer_code }}</p> -->
     <p><strong>Used Refer Code:</strong> {{ $user->refer_code }}</p>
+    <input type="hidden" id="referral-link" value="{{ route('frontend.register') . '?refer_code=' .$user->own_refer_code }}" readonly>
+    <p><strong>Copy & Share Referral link:</strong> {{ $user->own_refer_code }} <button onclick="copyReferralLink()" class="btn btn-sm btn-success">Copy Link</button></p>
   </div>
 </div>
 
@@ -570,5 +572,36 @@
     toggleIcon.className = visible ? 'bi bi-telephone' : 'bi bi-x';
   }
 </script>
+<script>
+  function copyReferralLink() {
+    // Get the hidden input field containing the referral link
+    var referralLink = document.getElementById("referral-link");
+
+    // Create a temporary input to select and copy the referral link
+    var tempInput = document.createElement("input");
+    tempInput.value = referralLink.value;
+    document.body.appendChild(tempInput);
+    
+    // Select the text field
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // For mobile devices
+    
+    // Copy the text inside the input
+    document.execCommand("copy");
+    
+    // Remove the temporary input element
+    document.body.removeChild(tempInput);
+
+    // Change the button text to "Copied!"
+    var copyButton = document.querySelector("button[onclick='copyReferralLink()']");
+    copyButton.textContent = "Copied!";
+
+    // Revert the button text back to "Copy Link" after 2 seconds
+    setTimeout(function() {
+      copyButton.textContent = "Copy Link";
+    }, 2000);
+  }
+</script>
+
 </body>
 </html>

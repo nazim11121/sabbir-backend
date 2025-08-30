@@ -35,11 +35,8 @@ use App\Http\Controllers\API\Auth\UserSocialAuthCo;
 use App\Http\Controllers\Frontend\UserCo;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
-/*routes start*/
-// Route::get('/', function () {
-//     return view('frontend.welcome');
-// });
 Route::get('/', [UserCo::class, 'index'])->name('welcome');
 // sicial login
 Route::get('/api/auth/google', [UserSocialAuthCo::class, 'redirectToGoogle'])->name('google.login');
@@ -48,8 +45,9 @@ Route::get('/api/auth/google/callback', [UserSocialAuthCo::class, 'handleGoogleC
 Route::get('/login', function () {
     return view('frontend.login');
 })->name('frontend.login');
-Route::get('/register', function () {
-    return view('frontend.register');
+Route::get('/register', function (Request $request) {
+    $referralCode = $request->query('refer_code'); // Get referral code from query parameter
+    return view('frontend.register', compact('referralCode')); // Pass it to the register view
 })->name('frontend.register');
 Route::post('/register/store', [UserCo::class, 'register'])->name('register.store');
 /*users panel login endpoint*/

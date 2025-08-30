@@ -224,7 +224,7 @@
 
         <div class="mb-3">
           <label class="form-label">Refer Code</label>
-          <input type="text" name="refer_code" id="refer_code" class="form-control" placeholder="Optional refer code">
+          <input type="text" name="refer_code" id="refer_code" value="{{ old('refer_code', $referralCode ?? '') }}" class="form-control" placeholder="Optional refer code">
         </div>
 
         <div class="mb-3">

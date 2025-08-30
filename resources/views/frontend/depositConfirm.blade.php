@@ -73,10 +73,10 @@
     <!-- Merchant Info -->
     <div class="d-flex align-items-center mb-4">
       <div class="merchant-logo me-3">
-        <img src="https://pay.nenoxshop.com/uploads/2307202505453854.jpg" alt="Merchant Logo">
+        <img src="{{asset('images/logo/logo.jpg')}}" alt="Merchant Logo">
       </div>
       <div>
-        <div class="merchant-name">nenoxshop</div>
+        <div class="merchant-name">BD FUNDED TRADER</div>
         <small class="text-muted">Secure Payment</small>
       </div>
     </div>
