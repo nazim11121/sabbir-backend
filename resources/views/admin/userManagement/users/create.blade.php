@@ -66,29 +66,8 @@
                                                 <div class="col-sm-4">
                                                     <input type="text" name="address" id="address" class="form-control" placeholder="Address" required>
                                                 </div>
-                                                <div class="col-sm-2">
-                                                    <select id="country" name="country" class="form-control select2" required>
-                                                        <option>Select Country..</option>
-                                                        @foreach($country as $list)
-                                                            <option value="{{$list->id}}">{{$list->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-2">
-                                                    <select id="state" name="state" class="form-control select2">
-                                                        <option value="">Select State</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col mt-2 mt-sm-0">
-                                                    <select id="city" name="city" class="form-control select2">
-                                                        <option value="">Select City</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col mt-2 mt-sm-0">
-                                                    <input type="text" name="zip_code" id="zip_code" class="form-control" placeholder="Zip Code" required>
-                                                </div>
                                             </div>
-                                            @error('zip_code')
+                                            @error('address')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>

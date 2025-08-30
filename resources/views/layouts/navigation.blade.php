@@ -109,6 +109,42 @@
                 </li>
             @endcan
 
+            @can('contact-creed')
+                <li><a href="{{ route('withdraw-request-list') }}" aria-expanded="false">
+                        <i class="fas fa-envelope"></i><span class="nav-text">Withdraw Request</span></a>
+                </li>
+            @endcan
+
+            @can('contact-creed')
+                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="fas fa-user-tie"></i><span
+                            class="nav-text">Frontend Management</span></a>
+                    <ul aria-expanded="false"
+                        class="mm-collapse {{ setSidebarActive(['category.*','package.*']) }}">
+
+                        @can('contact-creed')
+                            <li class="{{ setSidebarActive(['package.*']) }}"><a class="{{ setSidebarActive(['package.*']) }}"
+                                    href="{{ route('package.index') }}">Package List</a></li>
+                        @endcan
+
+                        @can('contact-creed')
+                            <li class="{{ setSidebarActive(['slider.*']) }}"><a class="{{ setSidebarActive(['slider.*']) }}"
+                                    href="{{ route('slider.index') }}">Slider List</a></li>
+                        @endcan
+
+                        @can('contact-creed')
+                            <li class="{{ setSidebarActive(['notice.*']) }}"><a class="{{ setSidebarActive(['notice.*']) }}"
+                                    href="{{ route('notice.index') }}">Notice List</a></li>
+                        @endcan
+
+                        @can('contact-creed')
+                            <li class="{{ setSidebarActive(['category.*']) }}"><a
+                                    class="{{ setSidebarActive(['category.*']) }}"
+                                    href="{{ route('category.index') }}">Category List</a></li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcan
+
             @can('user')
                 <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="fas fa-user-tie"></i><span
                             class="nav-text">User Management</span></a>
@@ -179,9 +215,9 @@
                 </li>
             @endcan -->
             @can('company-info')
-                <li><a href="{{ route('company-info.index') }}" aria-expanded="false">
+                <!-- <li><a href="{{ route('company-info.index') }}" aria-expanded="false">
                         <i class="icon icon-settings"></i><span class="nav-text">Company Info</span></a>
-                </li>
+                </li> -->
             @endcan
         </ul>
     </div>

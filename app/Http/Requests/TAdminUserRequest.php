@@ -24,10 +24,6 @@ class TAdminUserRequest extends FormRequest
         return [
             'name' => 'required|string',
             'address' => 'required',
-            'country' => 'required',
-            'state' => 'nullable',
-            'city' => 'nullable',
-            'zip_code' => 'nullable|numeric',
             'roles' => 'required',
             'status' => 'nullable',
         ];

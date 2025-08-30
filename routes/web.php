@@ -16,6 +16,10 @@ use App\Http\Controllers\Admin\UserManagement\AdminPermissionCo;
 use App\Http\Controllers\Admin\UserManagement\AdminRoleCo;
 use App\Http\Controllers\Admin\UserManagement\AdminUserCo;
 use App\Http\Controllers\Admin\AdminBusinessSubCategoryCo;
+use App\Http\Controllers\Admin\CategoryCo;
+use App\Http\Controllers\Admin\PackageCo;
+use App\Http\Controllers\Admin\SliderCo;
+use App\Http\Controllers\Admin\NoticeCo;
 use App\Http\Controllers\Admin\AdminBusinessCategoryCo;
 use App\Http\Controllers\Admin\AppTermsAndConditionsCo;
 use App\Http\Controllers\Admin\AdminAffiliationCo;
@@ -33,9 +37,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*routes start*/
-Route::get('/', function () {
-    return view('frontend.welcome');
-});
+// Route::get('/', function () {
+//     return view('frontend.welcome');
+// });
+Route::get('/', [UserCo::class, 'index'])->name('welcome');
 // sicial login
 Route::get('/api/auth/google', [UserSocialAuthCo::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/api/auth/google/callback', [UserSocialAuthCo::class, 'handleGoogleCallback']);
@@ -74,6 +79,10 @@ Route::post('/buy-package/funded', [UserCo::class, 'buyFundedPackage'])->name('b
 
 Route::post('/invest-form', [UserCo::class, 'investForm'])->name('frontend.invest');
 
+Route::get('/withdraw-form', [UserCo::class, 'withdrawForm'])->name('withdraw');
+
+Route::post('/withdraw-form/store', [UserCo::class, 'withdrawFormStore'])->name('withdraw-form.store');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     
     /*Dashboard*/ 
@@ -95,6 +104,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/buy-packages-list', [UserCo::class, 'buyPackageList'])->name('buy-packages-list');
     Route::post('/buy-packages/todo-list', [UserCo::class, 'buyPackagesTodoList'])->name('buy-packages.todo-list');
     Route::get('/buy-packages/rules/{buy_id}', [UserCo::class, 'fetchRules'])->name('buy-packages.rules.fetch');
+
+    Route::get('/withdraw-request-list', [UserCo::class, 'withdrawRequestList'])->name('withdraw-request-list');
+    Route::get('/withdraw-request-list/status/{id}', [UserCo::class, 'withdrawConfirmStatus'])->name('withdraw-accept.status');
+
+    Route::resource('/category', CategoryCo::class);
+    Route::resource('/package', PackageCo::class);
+    Route::resource('/slider', SliderCo::class);
+    Route::resource('/notice', NoticeCo::class);
 
     Route::group(['prefix'  => 'assign-role', 'as' => 'assign-role.'], function () {
         Route::controller(AdminAssignRoleCo::class)->group(function () {

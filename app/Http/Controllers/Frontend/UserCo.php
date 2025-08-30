@@ -11,6 +11,11 @@ use App\Models\TDeposit;
 use App\Models\TInvest;
 use App\Models\TodoList;
 use App\Models\BuyPackage;
+use App\Models\Category;
+use App\Models\Package;
+use App\Models\Withdraw;
+use App\Models\Slider;
+use App\Models\Notice;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\TAdminUserRequest;
 use DB;
@@ -32,22 +37,13 @@ class UserCo extends Controller
      */
     public function index()
     {
-        $data = TAdminUser::latest()->get();
+        $packages = Package::where('status', 1)->get();
+        $services = Package::where('category_id', 1)->where('status', 1)->get();
+        $funded   = Package::where('category_id', 2)->where('status', 1)->get();
+        $slider   = Slider::orderBy('hierarchy', 'ASC')->where('status', 1)->get();
+        $notice   = Notice::where('status', 1)->orderBy('id', 'DESC')->first();
   
-        return view('admin.userManagement.users.index',compact('data'));
-    }
-    
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(): View
-    {
-        $roles = Role::pluck('name','name')->all();
-        $country = TAdminCountry::get();
-
-        return view('admin.userManagement.users.create',compact('roles','country'));
+        return view('frontend.welcome',compact(['packages','services','funded','slider','notice']));
     }
     
     /**
@@ -254,7 +250,7 @@ class UserCo extends Controller
         }
 
         $input = $request->all(); 
-        $input['payment_status'] = 1;
+        $input['payment_status'] = 1; 
         $deposit = BuyPackage::create($input);
         $amountConvert = $request->amount;
 
@@ -392,6 +388,51 @@ class UserCo extends Controller
         $rules = TodoList::where('buy_id', $buy_id)->pluck('rule_key')->toArray();
 
         return response()->json($rules); // just return rule_keys like ['min_profit', 'max_loss']
+    }
+
+    public function withdrawForm(){
+
+        $user = session('referrer');
+        if($user){
+            return view('frontend.withdrawForm', compact('user'));
+        }else{
+            return redirect()->route('frontend.login')->with('error','Please Login');
+        }
+    }
+
+    public function withdrawFormStore(Request $request)
+    { 
+        $request->validate([
+            'amount' => 'required|numeric|min:10',
+            'binance_id' => 'required|string|max:255',
+        ]);
+
+        // For example:
+        Withdraw::create([
+            'user_id' => auth()->id(),
+            'amount' => $request->amount,
+            'binance_id' => $request->binance_id,
+            'payment_status' => 0, // Pending status
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function withdrawRequestList(){
+        $datas = Withdraw::orderBy('id', 'DESC')->get();
+        return view('admin.withdraw.index', compact('datas'));
+    }
+
+    public function withdrawConfirmStatus($id){
+        $data = Withdraw::find($id);
+        $data->payment_status = 1;
+        $data->save();
+
+        $user = User::find($data->user_id);
+        $user->total_withdraw_amount =  $user->total_withdraw_amount + $data->amount;
+        $user->save();
+
+        return redirect()->route('withdraw-request-list')->with('success', 'Withdraw Accepted Success');
     }
     
     /**

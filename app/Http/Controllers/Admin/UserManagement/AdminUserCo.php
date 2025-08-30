@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin\UserManagement;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\TAdminUser;
-use App\Models\Admin\TAdminCountry;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\TAdminUserRequest;
 use DB;
@@ -35,9 +34,8 @@ class AdminUserCo extends Controller
     public function create(): View
     {
         $roles = Role::pluck('name','name')->all();
-        $country = TAdminCountry::get();
 
-        return view('admin.userManagement.users.create',compact('roles','country'));
+        return view('admin.userManagement.users.create',compact('roles'));
     }
     
     /**
@@ -81,11 +79,10 @@ class AdminUserCo extends Controller
     public function edit($id): View
     {
         $adminUser = TAdminUser::find($id);
-        $country = TAdminCountry::get();
         $roles = Role::pluck('name','name')->all();
         $userRole = $adminUser->roles->pluck('name','name')->all();
     
-        return view('admin.userManagement.users.edit',compact('adminUser','roles','userRole','country'));
+        return view('admin.userManagement.users.edit',compact('adminUser','roles','userRole'));
     }
     
     /**

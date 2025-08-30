@@ -75,15 +75,19 @@ class User extends Authenticatable
     }
 
     public function buyPackages(){
-        return $this->hasMany(BuyPackage::class, 'user_id');
+        return $this->hasMany(BuyPackage::class, 'user_id')->orderBy('id', 'desc');
     }
 
     public function deposits(){
-        return $this->hasMany(TDeposit::class, 'user_id');
+        return $this->hasMany(TDeposit::class, 'user_id')->orderBy('id', 'desc');
     }
 
     public function invests(){
-        return $this->hasMany(TInvest::class, 'user_id');
+        return $this->hasMany(TInvest::class, 'user_id')->orderBy('id', 'desc');
+    }
+
+    public function withdraws(){
+        return $this->hasMany(Withdraw::class, 'user_id')->orderBy('id', 'desc');
     }
 
     public function getActivitylogOptions(): LogOptions

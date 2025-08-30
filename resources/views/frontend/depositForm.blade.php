@@ -74,6 +74,16 @@
       flex-direction: column;
       gap: 10px;
     }
+    @media (max-width: 576px) {
+      .navbar-brand img {
+        height: 44px;
+        width: auto;
+      }
+      .product-card {
+        width: 100px;
+        font-size: 12px;
+      }
+    }
   </style>
    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0d6efd">
@@ -162,7 +172,7 @@
         <small>Tutorial</small>
       </a>
 
-      <a href="#" class="text-decoration-none text-dark">
+      <a href="#funded" class="text-decoration-none text-dark">
         <i class="bi bi-cash-stack fs-5"></i><br>
         <small>Funded</small>
       </a>

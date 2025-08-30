@@ -10,7 +10,7 @@
                             <div class="stat-content">
                                 <div class="stat-text">Total Users </div>
                                 <div class="stat-digit"> <i class="fa fa-user"></i>
-                                    111
+                                    {{ $totalUsers ?? '0' }}
                                 </div>
                             </div>
                             <div class="progress">
@@ -25,7 +25,7 @@
                         <div class="stat-widget-two card-body">
                             <div class="stat-content">
                                 <div class="stat-text">Total Deposit</div>
-                                <div class="stat-digit"> <i class="fa fa-user"></i>11212</div>
+                                <div class="stat-digit"> <i class="fa fa-money"></i>{{ $totalDeposit ?? '0' }} $</div>
                             </div>
                             <div class="progress">
                                 <div class="progress-bar businessProfile w-75" role="progressbar" aria-valuenow="78"
@@ -39,7 +39,7 @@
                         <div class="stat-widget-two card-body">
                             <div class="stat-content">
                                 <div class="stat-text">Total Invest</div>
-                                <div class="stat-digit"> <i class="fa fa-user"></i> 123</div>
+                                <div class="stat-digit"> <i class="fa fa-money"></i> {{ $totalInvest ?? '0' }} $</div>
                             </div>
                             <div class="progress">
                                 <div class="progress-bar incompleteProfile w-50" role="progressbar" aria-valuenow="50"
@@ -52,8 +52,8 @@
                     <div class="card">
                         <div class="stat-widget-two card-body">
                             <div class="stat-content">
-                                <div class="stat-text">Total Packages Sell</div>
-                                <div class="stat-digit"> <i class="fa fa-user"></i>3333</div>
+                                <div class="stat-text">Total WIthdraw</div>
+                                <div class="stat-digit"> <i class="fa fa-money"></i>{{ $totalWithdraw ?? '0' }} $</div>
                             </div>
                             <div class="progress">
                                 <div class="progress-bar totalVisitor w-65" role="progressbar" aria-valuenow="65"
@@ -112,73 +112,5 @@
 @endsection
 
 @push('script')
-    <script>
-        var ctx = document.getElementById('myPieChart').getContext('2d');
-        var myPieChart = new Chart(ctx, {
-            type: 'pie', // Pie chart type
-            data: {
-                labels: @json($labels), // Pass labels from the controller
-                datasets: [{
-                    label: 'Data Distribution',
-                    data: @json($values), // Pass values from the controller
-                    backgroundColor: ['#7ED321', '#593bdb', '#50E3C2', '#FFAA16'],
-                    borderColor: ['#7ED321', '#593bdb', '#50E3C2', 'FFAA16'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return tooltipItem.label + ': ' + tooltipItem.raw;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
 
-
-    <script>
-        var ctx = document.getElementById('myBarChart').getContext('2d');
-        var myBarChart = new Chart(ctx, {
-            type: 'bar', // Change type to 'bar' for bar chart
-            data: {
-                labels: @json($labels), // Pass labels from the controller
-                datasets: [{
-                    label: 'Bar charts',
-                    data: @json($values), // Pass values from the controller
-                    backgroundColor: ['#7ED321', '#593bdb', '#50E3C2', '#FFAA16'],
-                    borderColor: ['#7ED321', '#593bdb', '#50E3C2', 'FFAA16'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true, // Ensure Y axis starts from 0
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return tooltipItem.label + ': ' + tooltipItem.raw;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
 @endpush

@@ -52,7 +52,7 @@
     }
     .product-card img {
       width: 100%;
-      max-height: 340px;
+      max-height: 348px;
       object-fit: cover;
       border-radius: .5rem .5rem 0 0;
     }
@@ -335,17 +335,17 @@
         <small>Deposit</small>
       </a>
 
-      <a href="#" class="text-decoration-none text-dark">
+      <a href="{{route('withdraw')}}" class="text-decoration-none text-dark">
         <i class="bi bi-cash fs-5"></i><br>
         <small>Withdraw</small>
       </a>
     @else
-      <a href="#" class="text-decoration-none text-dark">
+      <a href="https://chat.whatsapp.com/DaePkiIEnx9FZgaQO0Er1a?mode=ac_t" class="text-decoration-none text-dark">
         <i class="bi bi-youtube fs-5"></i><br>
         <small>Tutorial</small>
       </a>
 
-      <a href="#" class="text-decoration-none text-dark">
+      <a href="#funded" class="text-decoration-none text-dark">
         <i class="bi bi-cash-stack fs-5"></i><br>
         <small>Funded</small>
       </a>
@@ -378,21 +378,18 @@
 </div>
 
 <!-- ===== Notice ===== -->
+@if($notice)
 <div class="container mt-3">
   <div class="p-3 rounded" style="background: #2191c1;">
     <h2 class="text-white mb-2" style="font-size: 1.2rem;">Notice:</h2>
     <p class="text-white mb-0 small" style="font-size: .64rem;">
-      <!-- এখন টপ-আপ AI দিয়ে (২৪ ঘন্টা) মাত্র ২০ সেকেন্ডের ভিতরে অর্ডার দেওয়া হয়" যেকোনো প্রয়োজনে WhatsApp: 01628948415 - - - - বিঃদ্রঃ মা-বাবা বা ফ্যামিলির কারো ফোন থেকে টাকা চুরি করে কেউ টপআপ করবেন না! -->
-       এখানে শুধুমাত্র দক্ষ ট্রেডারদের ফান্ডিং ব্যালেন্স প্রদান করা হবে।
-
-      যে কোনো প্রয়োজনে যোগাযোগ করুন WhatsApp: 01*********
-
-      বিঃদ্রঃ প্রথমে ডেমো ব্যালেন্সে নিজের দক্ষতা প্রমাণ করতে হবে। দক্ষতা প্রমাণ করতে পারলেই ফান্ডিং ব্যালেন্স প্রদান করা হবে।
+      {{ $notice->remarks ?? '' }}
     </p>
   </div>
 </div>
+@endif
 
-  <!-- ===== Banner ===== -->
+  <!-- ===== Slider/Banner ===== -->
   <div id="bannerCarousel" class="carousel slide container mt-3" data-bs-ride="carousel">
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
@@ -401,18 +398,26 @@
       <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="3"></button>
     </div>
     <div class="carousel-inner rounded">
-      <div class="carousel-item active">
-        <img src="{{asset('images/sliders/s1.jpg')}}" class="d-block w-100" alt="Banner 1">
-      </div>
-      <div class="carousel-item">
-        <img src="images/sliders/s2.jpg" class="d-block w-100" alt="Banner 2">
-      </div>
-      <div class="carousel-item">
-        <img src="images/sliders/s3.jpg" class="d-block w-100" alt="Banner 3">
-      </div>
-      <div class="carousel-item">
-        <img src="images/sliders/s4.jpg" class="d-block w-100" alt="Banner 4">
-      </div>
+      @if($slider && count($slider) > 0)
+        @foreach($slider as $key => $sliders)
+          <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+            <img src="{{ asset('/' . $sliders->image) }}" class="d-block w-100" alt="Banner {{ $key + 1 }}">
+          </div>
+        @endforeach
+      @else
+        <!-- <div class="carousel-item active">
+          <img src="{{asset('images/sliders/s1.jpg')}}" class="d-block w-100" alt="Banner 1">
+        </div>
+        <div class="carousel-item">
+          <img src="images/sliders/s2.jpg" class="d-block w-100" alt="Banner 2">
+        </div>
+        <div class="carousel-item">
+          <img src="images/sliders/s3.jpg" class="d-block w-100" alt="Banner 3">
+        </div>
+        <div class="carousel-item">
+          <img src="images/sliders/s4.jpg" class="d-block w-100" alt="Banner 4">
+        </div> -->
+      @endif
     </div>
   </div>
 
@@ -420,117 +425,155 @@
   <h2 class="section-title">Our Services</h2>
   <div class="container mb-4">
     <div class="row justify-content-center">
-      <div class="col-4 col-md-4">
-        <div class="product-card investmentOpenModalBtn" 
-           data-id="Trusted Company Investment" 
-           data-name="Trusted Company Investment" 
-           data-category="Our Services"
-           data-img="{{asset('images/service/investment.jpg')}}">
-          <img src="images/service/investment.jpg" alt="Offer">
-          <div class="p-2">Trusted Company Investment</div>
+      <!--  -->
+      @if($services && count($services) > 0)
+        @foreach($services as $service)
+          <div class="col-4 col-md-4">
+            <div class="product-card OpenModalBtn_{{ strtolower(str_replace(' ', '', $service->id)) }}" 
+              data-id="{{ $service->name }}" 
+              data-name="{{ $service->name }}" 
+              data-category="Our Services"
+              data-price="{{ $service->price }}" 
+              data-img="{{ asset('/' . $service->image) }}">
+              <img src="{{ asset('/' . $service->image) }}" alt="Offer">
+              <div class="p-2">{{ $service->name }}</div>
+              @if($service->price)
+                <h6>FEE {{ $service->price }}$</h6>
+              @endif
+            </div>
+          </div>
+        @endforeach
+      @else
+        <div class="col-4 col-md-4">
+          <div class="product-card OpenModalBtn_2" 
+            data-id="Trusted Company Investment" 
+            data-name="Trusted Company Investment" 
+            data-category="Our Services"
+            data-img="{{asset('images/service/investment.jpg')}}">
+            <img src="images/service/investment.jpg" alt="Offer">
+            <div class="p-2">Trusted Company Investment</div>
+          </div>
         </div>
-      </div>
-      <div class="col-4 col-md-4">
-        <div class="product-card loanOpenModalBtn" 
-           data-id="Get Company Loan and Start Trading" 
-           data-name="Get Company Loan and Start Trading" 
-           data-category="Our Services"
-           data-price="" 
-           data-img="{{asset('images/service/loan.jpg')}}">
-          <img src="images/service/loan.jpg" alt="Offer">
-          <div class="p-2">Get Company Loan and Start Trading</div>
+        <div class="col-4 col-md-4">
+          <div class="product-card loanOpenModalBtn" 
+            data-id="Get Company Loan and Start Trading" 
+            data-name="Get Company Loan and Start Trading" 
+            data-category="Our Services"
+            data-price="" 
+            data-img="{{asset('images/service/loan.jpg')}}">
+            <img src="images/service/loan.jpg" alt="Offer">
+            <div class="p-2">Get Company Loan and Start Trading</div>
+          </div>
         </div>
-      </div>
-      <div class="col-4 col-md-4">
-        <div class="product-card tournamentOpenModalBtn" 
-           data-id="500$ Tournament" 
-           data-name="500$ Tournament" 
-           data-category="Our Services"
-           data-price="20" 
-           data-img="{{asset('images/service/tournament.jpg')}}">
-          <img src="images/service/tournament.jpg" alt="Offer">
-          <div class="p-2">500$ Tournament</div>
-          <h6>FEE 20$</h6>
+        <div class="col-4 col-md-4">
+          <div class="product-card tournamentOpenModalBtn" 
+            data-id="500$ Tournament" 
+            data-name="500$ Tournament" 
+            data-category="Our Services"
+            data-price="20" 
+            data-img="{{asset('images/service/tournament.jpg')}}">
+            <img src="images/service/tournament.jpg" alt="Offer">
+            <div class="p-2">500$ Tournament</div>
+            <h6>FEE 20$</h6>
+          </div>
         </div>
-      </div>
+      @endif
+      <!--  -->
     </div>
   </div>
   <!-- ===== Funded Packages ===== -->
   <h2 class="section-title">Funded Packages</h2>
-  <div class="container mb-5">
+  <div class="container mb-5" id="funded">
     <div class="row g-3">
-      <div class="col-4 col-md-4">
-        <div class="product-card openModalBtn" 
-           data-id="100$ fundad account" 
-           data-name="100$ fundad account" 
-           data-category="Funded Packages"
-           data-price="15" 
-           data-img="{{asset('images/funded/f1.jpg')}}">
-          <img src="{{asset('images/funded/f1.jpg')}}" alt="Topup">
-          <div class="p-2">100$ fundad account</div>
-          <h6>FEE 15$</h6>
+      @if($funded && count($funded) > 0)
+        @foreach($funded as $fundeds)
+          <div class="col-4 col-md-4">
+            <div class="product-card openModalBtn" 
+              data-id="{{ $fundeds->id }}" 
+              data-name="{{ $fundeds->name }}" 
+              data-category="Funded Packages"
+              data-price="{{ $fundeds->price }}" 
+              data-img="{{ asset('/' . $fundeds->image) }}">
+              <img src="{{ asset('/' . $fundeds->image) }}" alt="Topup">
+              <div class="p-2">{{ $fundeds->name }}</div>
+              <h6>FEE {{ $fundeds->price }}$</h6>
+            </div>
+          </div>
+        @endforeach
+      @else
+        <div class="col-4 col-md-4">
+          <div class="product-card openModalBtn" 
+            data-id="100$ fundad account" 
+            data-name="100$ fundad account" 
+            data-category="Funded Packages"
+            data-price="15" 
+            data-img="{{asset('images/funded/f1.jpg')}}">
+            <img src="{{asset('images/funded/f1.jpg')}}" alt="Topup">
+            <div class="p-2">100$ fundad account</div>
+            <h6>FEE 15$</h6>
+          </div>
         </div>
-      </div>
-      <div class="col-4 col-md-4">
-        <div class="product-card openModalBtn" 
-           data-id="200$ fundad account" 
-           data-name="200$ fundad account" 
-           data-category="Funded Packages"
-           data-price="30" 
-           data-img="{{asset('images/funded/f2.jpg')}}">
-          <img src="images/funded/f2.jpg" alt="Combo">
-          <div class="p-2">200$ fundad account</div>
-          <h6>FEE 30$</h6>
+        <div class="col-4 col-md-4">
+          <div class="product-card openModalBtn" 
+            data-id="200$ fundad account" 
+            data-name="200$ fundad account" 
+            data-category="Funded Packages"
+            data-price="30" 
+            data-img="{{asset('images/funded/f2.jpg')}}">
+            <img src="images/funded/f2.jpg" alt="Combo">
+            <div class="p-2">200$ fundad account</div>
+            <h6>FEE 30$</h6>
+          </div>
         </div>
-      </div>
-      <div class="col-4 col-md-4">
-        <div class="product-card openModalBtn" 
-           data-id="300$ fundad account" 
-           data-name="300$ fundad account" 
-           data-category="Funded Packages"
-           data-price="40" 
-           data-img="{{asset('images/funded/f3.jpg')}}">
-          <img src="images/funded/f3.jpg" alt="PUBG">
-          <div class="p-2">300$ fundad account</div>
-          <h6>FEE 40$</h6>
+        <div class="col-4 col-md-4">
+          <div class="product-card openModalBtn" 
+            data-id="300$ fundad account" 
+            data-name="300$ fundad account" 
+            data-category="Funded Packages"
+            data-price="40" 
+            data-img="{{asset('images/funded/f3.jpg')}}">
+            <img src="images/funded/f3.jpg" alt="PUBG">
+            <div class="p-2">300$ fundad account</div>
+            <h6>FEE 40$</h6>
+          </div>
         </div>
-      </div>
-      <div class="col-4 col-md-4">
-        <div class="product-card openModalBtn" 
-           data-id="400$ fundad account" 
-           data-name="400$ fundad account" 
-           data-category="Funded Packages"
-           data-price="50" 
-           data-img="{{asset('images/funded/f4.jpg')}}">
-          <img src="images/funded/f4.jpg" alt="PUBG">
-          <div class="p-2">400$ fundad account</div>
-          <h6>FEE 50$</h6>
+        <div class="col-4 col-md-4">
+          <div class="product-card openModalBtn" 
+            data-id="400$ fundad account" 
+            data-name="400$ fundad account" 
+            data-category="Funded Packages"
+            data-price="50" 
+            data-img="{{asset('images/funded/f4.jpg')}}">
+            <img src="images/funded/f4.jpg" alt="PUBG">
+            <div class="p-2">400$ fundad account</div>
+            <h6>FEE 50$</h6>
+          </div>
         </div>
-      </div>
-      <div class="col-4 col-md-4">
-        <div class="product-card openModalBtn" 
-           data-id="500$ fundad account" 
-           data-name="500$ fundad account" 
-           data-category="Funded Packages"
-           data-price="60" 
-           data-img="{{asset('images/funded/f5.jpg')}}">
-          <img src="images/funded/f5.jpg" alt="PUBG">
-          <div class="p-2">500$ fundad account</div>
-          <h6>FEE 60$</h6>
+        <div class="col-4 col-md-4">
+          <div class="product-card openModalBtn" 
+            data-id="500$ fundad account" 
+            data-name="500$ fundad account" 
+            data-category="Funded Packages"
+            data-price="60" 
+            data-img="{{asset('images/funded/f5.jpg')}}">
+            <img src="images/funded/f5.jpg" alt="PUBG">
+            <div class="p-2">500$ fundad account</div>
+            <h6>FEE 60$</h6>
+          </div>
         </div>
-      </div>
-      <div class="col-4 col-md-4">
-        <div class="product-card openModalBtn" 
-           data-id="1000$ fundad account" 
-           data-name="1000$ fundad account" 
-           data-category="Funded Packages"
-           data-price="120" 
-           data-img="{{asset('images/funded/f6.jpg')}}">
-          <img src="images/funded/f6.jpg" alt="PUBG">
-          <div class="p-2">1000$ fundad account</div>
-          <h6>FEE 120$</h6>
+        <div class="col-4 col-md-4">
+          <div class="product-card openModalBtn" 
+            data-id="1000$ fundad account" 
+            data-name="1000$ fundad account" 
+            data-category="Funded Packages"
+            data-price="120" 
+            data-img="{{asset('images/funded/f6.jpg')}}">
+            <img src="images/funded/f6.jpg" alt="PUBG">
+            <div class="p-2">1000$ fundad account</div>
+            <h6>FEE 120$</h6>
+          </div>
         </div>
-      </div>
+      @endif
     </div>
   </div>
 
@@ -628,7 +671,7 @@
             <!-- Facebook -->
             <div class="col-6">
               <div class="card shadow-sm p-2">
-                <a href="https://facebook.com" target="_blank" class="text-decoration-none text-dark">
+                <a href="#" target="_blank" class="text-decoration-none text-dark">
                   <i class="bi bi-facebook fs-4 d-block"></i>
                   Facebook
                 </a>
@@ -637,7 +680,7 @@
             <!-- YouTube -->
             <div class="col-6">
               <div class="card shadow-sm p-2">
-                <a href="https://youtube.com" target="_blank" class="text-decoration-none text-dark">
+                <a href="https://www.youtube.com/@Rs_Sabbir_Trader" target="_blank" class="text-decoration-none text-dark">
                   <i class="bi bi-youtube fs-4 d-block"></i>
                   YouTube
                 </a>
@@ -646,7 +689,7 @@
             <!-- Telegram -->
             <div class="col-6">
               <div class="card shadow-sm p-2">
-                <a href="https://t.me/" target="_blank" class="text-decoration-none text-dark">
+                <a href="https://t.me/BD_funded_trader" target="_blank" class="text-decoration-none text-dark">
                   <i class="bi bi-telegram fs-4 d-block"></i>
                   Telegram
                 </a>
@@ -655,7 +698,7 @@
             <!-- WhatsApp -->
             <div class="col-6">
               <div class="card shadow-sm p-2">
-                <a href="https://wa.me/" target="_blank" class="text-decoration-none text-dark">
+                <a href="https://chat.whatsapp.com/DaePkiIEnx9FZgaQO0Er1a?mode=ac_t" target="_blank" class="text-decoration-none text-dark">
                   <i class="bi bi-whatsapp fs-4 d-block"></i>
                   WhatsApp
                 </a>
@@ -700,7 +743,7 @@
       <!-- <a href="https://wa.me/8801XXXXXXXXX" class="btn-floating bg-success">
         <i class="bi bi-whatsapp"></i>
       </a> -->
-      <a href="https://t.me/YourTelegramID" class="btn-floating bg-primary">
+      <a href="https://t.me/BD_funded_trader" class="btn-floating bg-primary">
         <i class="bi bi-telegram"></i>
       </a>
     </div>
@@ -747,10 +790,10 @@
     <div class="modal-content">
       <!-- Modal Header -->
       <div class="modal-header">
-        <img id="modalPackageImg" src="https://via.placeholder.com/60" alt="Package" class="me-3 rounded" style="width: 60px">
+        <img id="modalPackageImg" src="images/placeholder.png" alt="Package" class="me-3 rounded" style="width: 60px">
         <div>
           <h5 class="modal-title" id="modalPackageName">Package Name</h5>
-          <p class="text-muted mb-0">Price: <strong class="text-success" id="modalPackagePrice">$ 0</strong></p>
+          <p class="text-muted mb-0">Price: <strong class="text-success" id="modalPackagePrice">0 $</strong></p>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -821,7 +864,7 @@
     <div class="modal-content">
       <!-- Modal Header -->
       <div class="modal-header">
-        <img id="modalPackageImg2" src="https://via.placeholder.com/60" alt="Package" class="me-3 rounded" style="width: 60px">
+        <img id="modalPackageImg2" src="{{asset('images/placeholder.png')}}" alt="Package" class="me-3 rounded" style="width: 60px">
         <div>
           <h5 class="modal-title" id="modalPackageName2">Package Name</h5>
         </div>
@@ -856,6 +899,7 @@
               <div class="border rounded p-3 mb-3 bg-white text-center">
                 <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
                 <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? '0'}}</p>
+                <p class="fs-5 fw-bold text-pramary">Binance ID: 1234321234</p>
               </div>
 
               <!-- Amount -->
@@ -918,8 +962,8 @@
   document.getElementById('packageModal').addEventListener('hidden.bs.modal', function () {
     // Clear modal content
     modalName.textContent = '';
-    modalPrice.textContent = '$ 0';
-    modalImg.src = 'https://via.placeholder.com/60';
+    modalPrice.textContent = '0 $';
+    modalImg.src = '/images/placeholder.png';
     modalId.value = '';
     modalAmount.value = '';
     checkbox.checked = false;
@@ -957,7 +1001,7 @@
 
       // fill modal
       modalName.textContent = name;
-      modalPrice.textContent = "$ " + price;
+      modalPrice.textContent = price + "$ ";
       modalImg.src = img;
       modalId.value = id;
       modalAmount.value = price;
@@ -995,8 +1039,8 @@
   // Clear on close
   document.getElementById('packageModal').addEventListener('hidden.bs.modal', function () {
     modalName.textContent = 'Package Name';
-    modalPrice.textContent = '$ 0';
-    modalImg.src = 'https://via.placeholder.com/60';
+    modalPrice.textContent = '0 $';
+    modalImg.src = 'images/placeholder.png';
     modalId.value = '';
     modalAmount.value = '';
     checkbox.checked = false;
@@ -1005,7 +1049,7 @@
   });
 
 </script>
-<script>
+<!-- <script>
   buyForm.addEventListener('submit', function (e) {
     e.preventDefault(); 
     // current modal hide
@@ -1014,7 +1058,7 @@
     // show success modal
     new bootstrap.Modal(document.getElementById('successModal')).show();
   });
-</script>
+</script> -->
 
 <!-- investment -->
 <script>
@@ -1033,7 +1077,7 @@
   // const depositButtonHtml2 = `<a href="/deposit-form" class="btn btn-warning w-100 mt-2" id="dynamicDepositBtn">Deposit Your Account</a>`;
 
   //Invetment 
-  document.querySelectorAll('.investmentOpenModalBtn').forEach(btn => {
+  document.querySelectorAll('.OpenModalBtn_2').forEach(btn => {
     btn.addEventListener('click', function () {
       let card = this.closest('.product-card');
       let id2 = card.getAttribute('data-id');
@@ -1069,7 +1113,7 @@
   // Clear on close
   document.getElementById('investmentPackageModal').addEventListener('hidden.bs.modal', function () {
     modalName2.textContent = 'Package Name';
-    modalImg2.src = 'https://via.placeholder.com/60';
+    modalImg2.src = 'images/placeholder.png';
     modalId2.value = '';
     checkbox2.checked = false;
     buyButton2.disabled = true;
