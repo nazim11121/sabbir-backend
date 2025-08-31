@@ -229,14 +229,13 @@
           <label for="binance_id" class="form-label fw-bold">Binance ID</label>
           <input type="number" class="form-control" id="binance_id" name="binance_id" placeholder="Your Binance ID" required>
         </div>
-
-        <button type="submit" class="btn btn-warning w-100 fw-bold">
+        <button id="withdrawBtn" type="submit" class="btn btn-warning w-100 fw-bold">
           <i class="bi bi-send-check me-1"></i> Submit Withdrawal
         </button>
+        <input type="hidden" id="userBalance" value="{{ intval($user->total_deposit_amount ?? 0) }}">
       </form>
     </div>
   </div>
-
 
   <!-- How to add money -->
   <div class="card card-custom p-4">
@@ -349,6 +348,40 @@
       });
     });
 </script>
+<!-- Deposit Required Modal -->
+<div class="modal fade" id="depositModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger fw-bold">Insufficient Balance</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-3">Your balance is too low to withdraw this amount.</p>
+        <a href="{{ route('deposit') }}" class="btn btn-primary fw-bold">
+          Deposit Now
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const amountInput = document.getElementById("amount");
+  const withdrawBtn = document.getElementById("withdrawBtn");
+  const userBalance = parseFloat(document.getElementById("userBalance").value || 0);
+
+  withdrawBtn.addEventListener("click", function (e) {
+    const amount = parseFloat(amountInput.value);
+
+    if (isNaN(amount) || amount > userBalance) {
+      e.preventDefault(); // stop form submit
+      const modal = new bootstrap.Modal(document.getElementById("depositModal"));
+      modal.show();
+    }
+  });
+</script>
+
 
 </body>
 </html>
