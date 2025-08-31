@@ -67,6 +67,7 @@ Route::get('/account-deletion', function () {
 });
 Route::get('/profile', [UserCo::class, 'userDashboard'])->name('frontend-dashboard');
 Route::post('/logout/user', [UserCo::class, 'logoutUser'])->name('logout.user');
+Route::post('/profile/update-photo', [UserCo::class, 'updatePhoto'])->name('profile.updatePhoto');
 
 Route::get('/deposit-form', [UserCo::class, 'depositForm'])->name('deposit');
 

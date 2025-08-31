@@ -442,6 +442,30 @@ class UserCo extends Controller
 
         return redirect()->route('withdraw-request-list')->with('success', 'Withdraw Accepted Success');
     }
+
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpg,jpeg,png,webp',
+        ]);
+
+        $user = User::find($request->user_id);
+
+        // Store photo
+        if ($request->hasFile('photo')) {
+            $image      = $request->file('photo');
+            $imageName  = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/profile_photos'), $imageName);
+            $path = 'images/profile_photos/' . $imageName;
+        }
+
+        // Update user
+        $user->profile_photo = $path;
+        $user->save();
+
+        return back()->with('success', 'Profile photo updated!');
+    }
+
     
     /**
      * Display the specified resource.

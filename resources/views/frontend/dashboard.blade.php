@@ -165,14 +165,47 @@
   </div>
 </nav>
 <!-- ===== Profile Header ===== -->
-<div class="container text-center mt-5">
+<!-- <div class="container text-center mt-5">
   <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="profile-img mb-3">
   <h5 class="fw-bold"> {{ $user->name }}</h5>
   <p class="text-muted">
     Available Balance: <span class="fw-bold">{{ $user->total_deposit_amount ?? 0 }} $</span> 
     <button class="btn btn-sm btn-light border ms-1"><i class="bi bi-arrow-clockwise"></i></button>
   </p>
+</div> -->
+<div class="container text-center mt-5">
+  <!-- Profile Image -->
+  <div class="position-relative d-inline-block">
+    <img 
+      src="{{ $user->profile_photo ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
+      alt="Profile" 
+      class="profile-img mb-3 rounded-circle border"
+      id="profileImage"
+      style="width:120px; height:120px; object-fit:cover;"
+    >
+
+    <!-- Edit Button -->
+    <button class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle" 
+            id="changePhotoBtn">
+      <i class="bi bi-camera"></i>
+    </button>
+  </div>
+
+  <h5 class="fw-bold mt-3">{{ $user->name }}</h5>
+  <p class="text-muted">
+    Available Balance: 
+    <span class="fw-bold">{{ $user->total_deposit_amount ?? 0 }} $</span> 
+    <button class="btn btn-sm btn-light border ms-1"><i class="bi bi-arrow-clockwise"></i></button>
+  </p>
 </div>
+
+<!-- Hidden Upload Form -->
+<form id="photoForm" action="{{route('profile.updatePhoto')}}" method="POST" enctype="multipart/form-data" class="d-none">
+  @csrf
+  <input type="hidden" name="user_id" value="{{$user->id ?? ''}}">
+  <input type="file" name="photo" id="photoInput" accept="image/*">
+</form>
+
 @php
   $referredUsers = \App\Models\User::where('refer_code', $user->own_refer_code)->pluck('id');
   $referredStats = \App\Models\BuyPackage::whereIn('user_id', $referredUsers)
@@ -607,6 +640,21 @@
       copyButton.textContent = "Copy Link";
     }, 2000);
   }
+</script>
+<script>
+  const changeBtn = document.getElementById("changePhotoBtn");
+  const photoInput = document.getElementById("photoInput");
+  const photoForm = document.getElementById("photoForm");
+
+  changeBtn.addEventListener("click", () => {
+    photoInput.click();
+  });
+
+  photoInput.addEventListener("change", () => {
+    if (photoInput.files.length > 0) {
+      photoForm.submit();
+    }
+  });
 </script>
 
 </body>
