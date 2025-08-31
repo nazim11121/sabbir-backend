@@ -267,8 +267,6 @@ class UserCo extends Controller
             'user_id' => 'required',
             'package_id' => 'required',
             'amount' => 'required',
-            'order_id' => 'nullable',
-            'invest_proof' => 'required|image',
         ]);
 
         if ($validator->fails()) {
@@ -285,20 +283,14 @@ class UserCo extends Controller
             return redirect()->route('deposit'); 
         }
         
-        $input = $request->except('invest_proof'); 
-        // Handle file upload
-        if ($request->hasFile('invest_proof')) {
-            $image      = $request->file('invest_proof');
-            $imageName  = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/investProof'), $imageName);
-
-            $input['invest_proof'] = 'images/investProof/' . $imageName;
-        }
-
-        $input['payment_status'] = 0;
-
+        $input = $request->all(); 
+        $input['payment_status'] = 1;
         // Save to DB
         $deposit = TInvest::create($input);
+
+        $user->total_deposit_amount = $user->total_deposit_amount - $request->amount;
+        $user->total_invest_amount = $user->total_invest_amount + $request->amount;
+        $user->save();
 
         // Flash a success message
         // session()->flash('success', 'Deposit on processing wait for confirmation message.');
@@ -310,16 +302,20 @@ class UserCo extends Controller
         return view('admin.deposit.index', compact('datas'));
     }
 
-    public function depositConfirmStatus($id){
+    public function depositConfirmStatus($id,$id2){
         $data = TDeposit::find($id);
-        $data->payment_status = 1;
-        $data->save();
+        if($id2==2){
+            $data->payment_status = 2;
+            $data->save();
+        }elseif($id2==1) {
+            $data->payment_status = 1;
+            $data->save();
+            $user = User::find($data->user_id);
+            $user->total_deposit_amount =  $user->total_deposit_amount + $data->amount;
+            $user->save();
+        }
 
-        $user = User::find($data->user_id);
-        $user->total_deposit_amount =  $user->total_deposit_amount + $data->amount;
-        $user->save();
-
-        return redirect()->route('deposit-list')->with('success', 'Deposit Accepted Success');
+        return redirect()->route('deposit-list')->with('success', 'Deposit Status update Success');
     }
 
     public function investList(){
@@ -381,6 +377,18 @@ class UserCo extends Controller
         }
 
         return back()->with('success', 'Rules updated successfully.');
+    }
+
+    public function buypackageConfirmStatus($id,$id2){
+        $data = BuyPackage::find($id);
+        if($id2==2){
+            $data->payment_status = 2;
+        }elseif($id2==1) {
+            $data->payment_status = 1;
+        }
+        $data->save();
+
+        return redirect()->route('buy-packages-list')->with('success', 'Status Update Success');
     }
 
     public function fetchRules($buy_id)

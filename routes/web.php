@@ -94,7 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/permission-under-role', AdminPermissionUnderRoleCo::class);
 
     Route::get('/deposit-list', [UserCo::class, 'depositList'])->name('deposit-list');
-    Route::get('/deposit-accept/status/{id}', [UserCo::class, 'depositConfirmStatus'])->name('deposit-accept.status');
+    Route::get('/deposit-accept/status/{id}/{id2}', [UserCo::class, 'depositConfirmStatus'])->name('deposit-accept.status');
 
     Route::get('/invest-list', [UserCo::class, 'investList'])->name('invest-list');
     Route::get('/invest-accept/status/{id}', [UserCo::class, 'investConfirmStatus'])->name('invest-accept.status');
@@ -102,6 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/buy-packages-list', [UserCo::class, 'buyPackageList'])->name('buy-packages-list');
     Route::post('/buy-packages/todo-list', [UserCo::class, 'buyPackagesTodoList'])->name('buy-packages.todo-list');
     Route::get('/buy-packages/rules/{buy_id}', [UserCo::class, 'fetchRules'])->name('buy-packages.rules.fetch');
+    Route::get('/buypackage-accept/status/{id}/{id2}', [UserCo::class, 'buypackageConfirmStatus'])->name('buypackage-accept.status');
 
     Route::get('/withdraw-request-list', [UserCo::class, 'withdrawRequestList'])->name('withdraw-request-list');
     Route::get('/withdraw-request-list/status/{id}', [UserCo::class, 'withdrawConfirmStatus'])->name('withdraw-accept.status');

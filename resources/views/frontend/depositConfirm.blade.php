@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Money - Payment</title>
+  <title>BD FUNDED TRADER</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -73,7 +73,7 @@
     <!-- Merchant Info -->
     <div class="d-flex align-items-center mb-4">
       <div class="merchant-logo me-3">
-        <img src="{{asset('images/logo/logo.jpg')}}" alt="Merchant Logo">
+        <img src="{{asset('images/logo/app.jpg')}}" alt="Merchant Logo">
       </div>
       <div>
         <div class="merchant-name">BD FUNDED TRADER</div>
@@ -83,7 +83,7 @@
 
     <!-- Binance ID -->
     <div class="text-center fw-bold mt-4 mb-3 text-white bg-primary rounded p-2">
-      Binance ID : <span id="binanceText">12345567787</span>
+      Binance ID : <span id="binanceText">👉892208461</span>
     </div>
 
     <!-- Payment Form -->
@@ -92,14 +92,14 @@
 
       <!-- Hidden Inputs -->
       <input type="hidden" name="user_id" id="user_id" value="{{$data->user_id}}">
-      <input type="hidden" name="binance_id" id="binance_id" value="972857500">
+      <input type="hidden" name="binance_id" id="binance_id" value="892208461">
       <input type="hidden" name="amount" id="amount" value="{{$data->amount}}">
 
       <!-- QR / Provider -->
       <div class="row g-3 text-center">
         <div class="col-12">
           <div class="provider-card">
-            <img src="{{asset('images/qr.jpg')}}" class="provider-logo" alt="QR Code">
+            <img src="{{asset('images/qr.png')}}" class="provider-logo" alt="QR Code">
           </div>
         </div>
       </div>

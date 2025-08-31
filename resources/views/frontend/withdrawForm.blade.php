@@ -15,25 +15,12 @@
       font-family: system-ui, -apple-system, sans-serif;
       background: #f9fafb;
     }
-    .navbar-text-style {
-      font-size: 1.8rem; 
-      font-weight: bold;
-      color: #37d65e; 
-      letter-spacing: 1px; 
-      text-transform: uppercase;
-      font-style: italic;
-      margin-left: -34px; 
-    }
     .navbar-brand img { height: 76px;width: 175px; }
     .navbar-footer img { height: 70px;width: 140px; }
     .banner img { width: 100%; border-radius: .5rem; }
     @media (max-width: 576px) {
-      .navbar-text-style {
-        font-size: 0.8rem; 
-        margin-left: -12px; 
-      }
       .navbar-brand img {
-        height: 44px;
+        height: 42px;
         width: auto;
       }
     }
@@ -45,7 +32,7 @@
 
     /* ===== Footer ===== */
     .footer {
-      background: #f1f5f9;
+      background: #081149;
       padding: 2rem 0;
     }
     .footer h6 { font-weight: 600; margin-bottom: .5rem; }
@@ -118,7 +105,6 @@
     <!-- Brand Logo -->
     <a class="navbar-brand d-flex align-items-center" href="/">
       <img src="{{ asset('images/logo/logo.jpg') }}" alt="logo" class="me-2">
-      <strong class="navbar-text-style">FUNDED TRADER</strong>
     </a>
 
     <!-- Auth Buttons -->
@@ -133,12 +119,14 @@
         </a>
         <div class="dropdown">
           <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="30" class="rounded-circle">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
           </a>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm">
             <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <form action="{{ route('logout.user') }}" method="POST">
@@ -262,102 +250,47 @@
 </div>
 
   <!-- ===== Footer ===== -->
-  <footer class="footer">
+  <footer class="text-white pt-4 pb-3 footer" id="contactUs">
     <div class="container">
-      <div class="row g-4">
-        <div class="col-md-6">
-          <h6>
-            <a class="navbar-footer mx-auto mx-lg-0 text-decoration-none text-dark" href="#">
-              <img src="{{asset('images/logo/logo.jpg')}}" alt="Shop"> <!-- <h4><strong>BD Funded Trader</strong></h4> -->
-            </a>
-          </h6>
-          <p class="small mb-1"></p>
-          <p class="small mb-1"></p>
-          <p class="small text-muted">
-            ফান্ডিং অ্যাকাউন্ট সম্পর্কে আরও বিস্তারিত জানতে চাইলে আমাদের Telegram এ নক দিন। তবে মনে রাখবেন আবেদনকারীর বয়স অবশ্যই ন্যূনতম 16+ হতে হবে।
-            আপনার ট্রেডিং একিউরেসি অন্তত 60%–70% হতে হবে।
-            বাংলাদেশে ১০০% ট্রাস্টেড প্ল্যাটফর্ম – লোন, ফান্ডিং, ইনভেস্টমেন্ট ও টুর্নামেন্টের সব সুবিধা একসাথে।
-          </p>
-        </div>
-        <!-- ===== Social Media Cards (Mobile Only) ===== -->
-        <div class="container d-block d-md-none my-3">
-          <div class="row g-2 text-center">
-            <!-- Facebook -->
-            <div class="col-6">
-              <div class="card shadow-sm p-2">
-                <a href="https://facebook.com" target="_blank" class="text-decoration-none text-dark">
-                  <i class="bi bi-facebook fs-4 d-block"></i>
-                  Facebook
-                </a>
-              </div>
-            </div>
-            <!-- YouTube -->
-            <div class="col-6">
-              <div class="card shadow-sm p-2">
-                <a href="https://youtube.com" target="_blank" class="text-decoration-none text-dark">
-                  <i class="bi bi-youtube fs-4 d-block"></i>
-                  YouTube
-                </a>
-              </div>
-            </div>
-            <!-- Telegram -->
-            <div class="col-6">
-              <div class="card shadow-sm p-2">
-                <a href="https://t.me/" target="_blank" class="text-decoration-none text-dark">
-                  <i class="bi bi-telegram fs-4 d-block"></i>
-                  Telegram
-                </a>
-              </div>
-            </div>
-            <!-- WhatsApp -->
-            <div class="col-6">
-              <div class="card shadow-sm p-2">
-                <a href="https://wa.me/" target="_blank" class="text-decoration-none text-dark">
-                  <i class="bi bi-whatsapp fs-4 d-block"></i>
-                  WhatsApp
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="row text-start text-md-start align-items-center">
 
-        <div class="col-md-6" id="contactUs">
-          <h6>Contact Us</h6>
-          <div class="p-3 mb-2 bg-white rounded shadow-sm d-flex align-items-center">
-            <i class="bi bi-telegram text-primary fs-4 me-3"></i>
-            <div>
-              <strong>Telegram Helpline</strong><br>
-              <span class="small text-muted">সকাল ৯টা থেকে রাত ১১টা</span>
-            </div>
+        <!-- Stay Connected -->
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="fw-bold">STAY CONNECTED</h5>
+          <p class="small" style="font-size: 11px;color: rgb(173, 173, 173);font-weight: 500;">
+            কোন সমস্যায় পড়লে টেলিগ্রামে যোগাযোগ করবেন।<br>
+            তাহলেই দ্রুত সমাধান পেয়ে যাবেন।
+          </p>
+          <div class="d-flex justify-content-start justify-content-md-start gap-3">
+            <a href="https://www.youtube.com/@Rs_Sabbir_Trader" class="btn btn-outline-light rounded-3"><i class="bi bi-youtube"></i></a>            
+            <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-telegram"></i></a>
+            <a href="https://www.tiktok.com/@rs_sabbir_trader99" class="btn btn-outline-light rounded-3"><i class="bi bi-tiktok"></i></a>
+            <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-facebook"></i></a>
           </div>
-          <!-- <div class="p-3 mb-2 bg-white rounded shadow-sm d-flex align-items-center">
-            <i class="bi bi-facebook text-primary fs-4 me-3"></i>
+        </div>
+        <div class="col-md-4 text-start text-md-start"></div>
+        <!-- Support Center -->
+        <div class="col-md-4 text-start text-md-start">
+          <h5 class="fw-bold mb-3">SUPPORT CENTER</h5>
+          <div class="border rounded d-flex align-items-start p-2 mb-3">
+            <a href="https://t.me/BD_funded_trader"><i class="bi bi-telegram fs-1 text-info me-2"></i></a>
             <div>
-              <strong>Facebook Helpline</strong><br>
-              <span class="small text-muted">সকাল ৯টা থেকে রাত ১১টা</span>
-            </div>
-          </div> -->
-          <div class="p-3 bg-white rounded shadow-sm d-flex align-items-center">
-            <i class="bi bi-whatsapp text-success fs-4 me-3"></i>
-            <div>
-              <strong>Whatsapp Helpline</strong><br>
-              <span class="small text-muted">সকাল ৯টা থেকে রাত ১১টা</span>
+              <strong style="font-size: 13px;font-weight: 500;">Help line [9AM-12PM]</strong><br>
+              <small style="font-size: 13px;color: rgb(173, 173, 173);font-weight: 500;">টেলিগ্রামে সাপোর্ট</small>
             </div>
           </div>
         </div>
       </div>
-      <hr>
-      <div class="text-center small">© 2025 All rights reserved | Developed by N&N Co.</div>
+      <!-- Copyright -->
+      <div class="text-center mt-4 border-top pt-3 small">
+        © 2025 | All Rights Reserved | Developed by <strong>N&N Co.</strong>
+      </div>
     </div>
   </footer>
-
   <!-- ===== Floating Buttons ===== -->
   <div class="floating-buttons">
     <div id="chat-buttons">
-      <!-- <a href="https://wa.me/8801XXXXXXXXX" class="btn-floating bg-success">
-        <i class="bi bi-whatsapp"></i>
-      </a> -->
-      <a href="https://t.me/YourTelegramID" class="btn-floating bg-primary">
+      <a href="https://t.me/bd_funded_support" class="btn-floating bg-primary">
         <i class="bi bi-telegram"></i>
       </a>
     </div>

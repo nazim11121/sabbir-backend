@@ -90,6 +90,38 @@ class User extends Authenticatable
         return $this->hasMany(Withdraw::class, 'user_id')->orderBy('id', 'desc');
     }
 
+    public function getTotalDepositAttribute()
+    {
+        return $this->deposits()->where('payment_status', 1)->sum('amount');
+    }
+
+    public function getTotalInvestAttribute()
+    {
+        return $this->invests()->where('payment_status', 1)->sum('amount');
+    }
+
+    public function getTotalWithdrawAttribute()
+    {
+        return $this->withdraws()->where('payment_status', 1)->sum('amount');
+    }
+
+    public function referrals()
+    {
+        // All users who used this user's own_refer_code
+        return $this->hasMany(User::class, 'refer_code', 'own_refer_code');
+    }
+
+    public function referrer()
+    {
+        // The user who owns the refer_code this user used
+        return $this->belongsTo(User::class, 'refer_code', 'own_refer_code');
+    }
+
+    public function getTotalReferralCountAttribute()
+    {
+        return $this->referrals()->count();
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

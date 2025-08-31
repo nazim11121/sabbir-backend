@@ -30,6 +30,7 @@
                                             <th>To Do</th>
                                             <!-- <th>Status</th> -->
                                             <th>Date</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -41,7 +42,7 @@
                                                 <td>{{ $value->amount }}</td>
                                                 <td>
                                                     <button type="button"
-                                                        class="btn btn-primary view-rules-btn"
+                                                        class="btn btn-primary btn-sm view-rules-btn"
                                                         data-id="{{ $value->id }}"
                                                         data-user="{{ $value->user_id }}"
                                                         data-route="{{ route('buy-packages.rules.fetch', $value->id) }}"
@@ -51,6 +52,29 @@
                                                     </button>
                                                 </td>
                                                 <td>{{ $value->created_at->format('d-m-Y') }}</td>
+                                                <td>
+                                                    @can('creed-tags-edit-btn')
+                                                        @if($value->payment_status == 1)
+                                                            <a href="{{ route('buypackage-accept.status', [$value->id,$id2=1]) }}"
+                                                                class="btn btn-success btn-sm disabled-link"><i class=""></i> Passed</a>
+                                                        @elseif($value->payment_status == 0)
+                                                            <a href="{{ route('buypackage-accept.status', [$value->id,$id2=1]) }}"
+                                                            class="btn btn-primary btn-sm"><i class=""></i> Pass</a>
+                                                        @endif
+                                                    @endcan
+                                                    @can('creed-tags-edit-btn')
+                                                        @if($value->payment_status == 2)
+                                                            <a href="{{ route('buypackage-accept.status', [$value->id,$id2=2]) }}"
+                                                                class="btn btn-danger btn-sm disabled-link"><i class=""></i> Failed</a>
+                                                        @elseif($value->payment_status == 1)
+                                                            <a href="{{ route('buypackage-accept.status', [$value->id,$id2=2]) }}"
+                                                                class="btn btn-danger btn-sm disabled-link" style="display:none"><i class=""></i> Fail</a>
+                                                        @else
+                                                            <a href="{{ route('buypackage-accept.status', [$value->id,$id2=2]) }}"
+                                                            class="btn btn-danger btn-sm"><i class=""></i> Fail</a>
+                                                        @endif
+                                                    @endcan
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>

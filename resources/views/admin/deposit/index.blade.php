@@ -31,7 +31,7 @@
                                             <th>Proof</th>
                                             <th>Status</th>
                                             <th>Date</th>
-                                            <th>Action</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -60,11 +60,23 @@
                                                 <td>
                                                     @can('creed-tags-edit-btn')
                                                         @if($value->payment_status == 1)
-                                                            <a href="{{ route('deposit-accept.status', $value->id) }}"
-                                                                class="btn btn-success btn-sm disabled-link"><i class=""></i> OK</a>
+                                                            <a href="{{ route('deposit-accept.status', [$value->id,$id2=1]) }}"
+                                                                class="btn btn-success btn-sm disabled-link"><i class=""></i> Accepted</a>
+                                                        @elseif($value->payment_status == 0)
+                                                            <a href="{{ route('deposit-accept.status', [$value->id,$id2=1]) }}"
+                                                            class="btn btn-primary btn-sm"><i class=""></i> Accept</a>
+                                                        @endif
+                                                    @endcan
+                                                    @can('creed-tags-edit-btn')
+                                                        @if($value->payment_status == 2)
+                                                            <a href="{{ route('deposit-accept.status', [$value->id,$id2=2]) }}"
+                                                                class="btn btn-danger btn-sm disabled-link mt-2"><i class=""></i> Failed</a>
+                                                        @elseif($value->payment_status == 1)
+                                                            <a href="{{ route('deposit-accept.status', [$value->id,$id2=2]) }}"
+                                                                class="btn btn-danger btn-sm disabled-link mt-2" style="display:none"><i class=""></i> Fail</a>
                                                         @else
-                                                            <a href="{{ route('deposit-accept.status', $value->id) }}"
-                                                            class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Accept</a>
+                                                            <a href="{{ route('deposit-accept.status', [$value->id,$id2=2]) }}"
+                                                            class="btn btn-danger btn-sm mt-2"><i class=""></i> Fail</a>
                                                         @endif
                                                     @endcan
                                                     <!-- @can('contact-creed-delete-btn')

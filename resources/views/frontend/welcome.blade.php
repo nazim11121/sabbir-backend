@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BD FUNDED TRADER</title>
-  <link rel="icon" href="https://bdfundedtrader.com/images/logo/logo.jpg" type="image/x-icon">
+  <link rel="icon" href="{{asset('images/favicon.png')}}" type="image/x-icon">
 
   <!-- Open Graph (used by Facebook, WhatsApp, LinkedIn, etc.) -->
   <meta property="og:title" content="BD Funded Trader" />
@@ -29,25 +29,12 @@
       background: #f9fafb;
       font-weight: 600;
     }
-    .navbar-text-style {
-      font-size: 1.8rem; 
-      font-weight: bold;
-      color: #37d65e; 
-      letter-spacing: 1px; 
-      text-transform: uppercase;
-      font-style: italic;
-      margin-left: -34px; 
-    }
     .navbar-brand img { height: 76px;width: 175px; }
     .navbar-footer img { height: 70px;width: 140px; }
     .banner img { width: 100%; border-radius: .5rem; }
     @media (max-width: 576px) {
-      .navbar-text-style {
-        font-size: 0.8rem; 
-        margin-left: -12px; 
-      }
       .navbar-brand img {
-        height: 44px;
+        height: 42px;
         width: auto;
       }
       .product-card {
@@ -253,53 +240,53 @@
 
     <!-- 📦 JS: PWA Install Handler -->
     <script>
-  let deferredPrompt = null;
+      let deferredPrompt = null;
 
-  // Wait until the event is triggered by Chrome
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // Prevent the default install banner
-    deferredPrompt = e;
+      // Wait until the event is triggered by Chrome
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); // Prevent the default install banner
+        deferredPrompt = e;
 
-    // ✅ Show your custom install card
-    const promptCard = document.getElementById('installPrompt');
-    if (promptCard) {
-      promptCard.style.display = 'block';
-    }
-  });
+        // Show your custom install card
+        const promptCard = document.getElementById('installPrompt');
+        if (promptCard) {
+          promptCard.style.display = 'block';
+        }
+      });
 
-  // ✅ Install button clicked
-  const installBtn = document.getElementById('installBtn');
-  if (installBtn) {
-    installBtn.addEventListener('click', () => {
-      const promptCard = document.getElementById('installPrompt');
-      if (promptCard) promptCard.style.display = 'none';
+      // Install button clicked
+      const installBtn = document.getElementById('installBtn');
+      if (installBtn) {
+        installBtn.addEventListener('click', () => {
+          const promptCard = document.getElementById('installPrompt');
+          if (promptCard) promptCard.style.display = 'none';
 
-      if (deferredPrompt) {
-        deferredPrompt.prompt(); // Show browser install prompt
-        deferredPrompt.userChoice.then((choiceResult) => {
-          console.log('User choice:', choiceResult.outcome);
-          deferredPrompt = null;
+          if (deferredPrompt) {
+            deferredPrompt.prompt(); // Show browser install prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+              console.log('User choice:', choiceResult.outcome);
+              deferredPrompt = null;
+            });
+          }
         });
       }
-    });
-  }
 
-  // Close button clicked
-  const closeBtn = document.getElementById('closePrompt');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      const promptCard = document.getElementById('installPrompt');
-      if (promptCard) promptCard.style.display = 'none';
-    });
-  }
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/serviceworker.js')
-      .then(() => console.log('✅ Service Worker registered'))
-      .catch(err => console.error('❌ Service Worker registration failed:', err));
-  }
-</script>
+      // Close button clicked
+      const closeBtn = document.getElementById('closePrompt');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          const promptCard = document.getElementById('installPrompt');
+          if (promptCard) promptCard.style.display = 'none';
+        });
+      }
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/serviceworker.js')
+          .then(() => console.log('✅ Service Worker registered'))
+          .catch(err => console.error('❌ Service Worker registration failed:', err));
+      }
+    </script>
 
 </head>
 <body>
@@ -314,7 +301,6 @@
     <!-- Brand Logo -->
     <a class="navbar-brand d-flex align-items-center" href="#">
       <img src="{{ asset('images/logo/logo.jpg') }}" alt="logo" class="me-2">
-      <strong class="navbar-text-style">FUNDED TRADER</strong>
     </a>
 
     <!-- Auth Buttons -->
@@ -329,12 +315,14 @@
         </a>
         <div class="dropdown">
           <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="30" class="rounded-circle">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
           </a>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm">
             <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <form action="{{ route('logout.user') }}" method="POST">
@@ -676,7 +664,7 @@
   </div> -->
 
   <!-- ===== Footer ===== -->
-  <footer class="text-white pt-4 pb-3 footer">
+  <footer class="text-white pt-4 pb-3 footer" id="contactUs">
     <div class="container">
       <div class="row text-start text-md-start align-items-center">
 
@@ -688,10 +676,10 @@
             তাহলেই দ্রুত সমাধান পেয়ে যাবেন।
           </p>
           <div class="d-flex justify-content-start justify-content-md-start gap-3">
+            <a href="https://www.youtube.com/@Rs_Sabbir_Trader" class="btn btn-outline-light rounded-3"><i class="bi bi-youtube"></i></a>            
+            <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-telegram"></i></a>
+            <a href="https://www.tiktok.com/@rs_sabbir_trader99" class="btn btn-outline-light rounded-3"><i class="bi bi-tiktok"></i></a>
             <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="btn btn-outline-light rounded-3"><i class="bi bi-instagram"></i></a>
-            <a href="https://www.youtube.com/@Rs_Sabbir_Trader" class="btn btn-outline-light rounded-3"><i class="bi bi-youtube"></i></a>
-            <a href="#" class="btn btn-outline-light rounded-3"><i class="bi bi-envelope"></i></a>
           </div>
         </div>
         <div class="col-md-4 text-start text-md-start"></div>
@@ -758,81 +746,78 @@
       </div>
     </div>
   </div>
-  <!-- Conditional Rules Model -->
-   <!-- Modal -->
-<!-- Funded Package Modal -->
-<div class="modal fade" id="packageModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <img id="modalPackageImg" src="images/placeholder.png" alt="Package" class="me-3 rounded" style="width: 60px">
-        <div>
-          <h5 class="modal-title" id="modalPackageName">Package Name</h5>
-          <p class="text-muted mb-0">Price: <strong class="text-success" id="modalPackagePrice">0 $</strong></p>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <!-- Modal Body -->
-      <div class="modal-body">
-        <div class="row">
-          <!-- Left: Rules -->
-          <div class="col-md-7">
-            <h6 class="mb-3">Funding Balance নেওয়ার শর্তাবলী</h6>
-            <ul class="list-group small">
-              <li class="list-group-item">মিনিমাম প্রফিট: প্রতিদিন +10%</li>
-              <li class="list-group-item">ম্যাক্স লস: প্রতিদিন –10%</li>
-              <li class="list-group-item">ট্রেড লিমিট: দিনে সর্বোচ্চ 10</li>
-              <li class="list-group-item">রিস্ক ম্যানেজমেন্ট: প্রতি ট্রেডে ব্যালেন্সের 2%</li>
-              <li class="list-group-item">রুল ভাঙলে: সাথে সাথে অ্যাকাউন্ট ক্যানসেল</li>
-              <li class="list-group-item">প্রফিট শেয়ার: 60% ট্রেডার, 40% কোম্পানি</li>
-            </ul>
-            <p class="mt-2 small text-muted">
-              Note: আপনারা যদি সব শর্ত মেনে চলতে পারেন তবে সহজেই আমাদের ফান্ডিং ব্যালেন্স সুবিধা নিতে পারবেন।
-            </p>
+  <!-- Funded Package Modal -->
+  <div class="modal fade" id="packageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <img id="modalPackageImg" src="images/placeholder.png" alt="Package" class="me-3 rounded" style="width: 60px">
+          <div>
+            <h5 class="modal-title" id="modalPackageName">Package Name</h5>
+            <p class="text-muted mb-0">Price: <strong class="text-success" id="modalPackagePrice">0 $</strong></p>
           </div>
-          <!-- Right: Balance -->
-          <div class="col-md-5 mt-5">
-            <div class="border rounded p-3 mb-3 bg-white text-center">
-              <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
-              <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? ''}}</p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <div class="row">
+            <!-- Left: Rules -->
+            <div class="col-md-7">
+              <h6 class="mb-3">Funding Balance নেওয়ার শর্তাবলী</h6>
+              <ul class="list-group small">
+                <li class="list-group-item">মিনিমাম প্রফিট: প্রতিদিন +10%</li>
+                <li class="list-group-item">ম্যাক্স লস: প্রতিদিন –10%</li>
+                <li class="list-group-item">ট্রেড লিমিট: দিনে সর্বোচ্চ 10</li>
+                <li class="list-group-item">রিস্ক ম্যানেজমেন্ট: প্রতি ট্রেডে ব্যালেন্সের 2%</li>
+                <li class="list-group-item">রুল ভাঙলে: সাথে সাথে অ্যাকাউন্ট ক্যানসেল</li>
+                <li class="list-group-item">প্রফিট শেয়ার: 60% ট্রেডার, 40% কোম্পানি</li>
+              </ul>
+              <p class="mt-2 small text-muted">
+                Note: আপনারা যদি সব শর্ত মেনে চলতে পারেন তবে সহজেই আমাদের ফান্ডিং ব্যালেন্স সুবিধা নিতে পারবেন।
+              </p>
             </div>
-            <!-- If no user -->
-            <?php if(empty($user)): ?>
-              <a href="{{route('frontend.login')}}" class="btn btn-warning w-100">Login First</a>
-            <?php endif; ?>
+            <!-- Right: Balance -->
+            <div class="col-md-5 mt-5">
+              <div class="border rounded p-3 mb-3 bg-white text-center">
+                <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
+                <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? ''}}</p>
+              </div>
+              <!-- If no user -->
+              <?php if(empty($user)): ?>
+                <a href="{{route('frontend.login')}}" class="btn btn-warning w-100">Login First</a>
+              <?php endif; ?>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- Modal Footer -->
-      <div class="modal-footer justify-content-between">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="acceptRules">
-          <label class="form-check-label small" for="acceptRules"> আমি সকল নিয়ম মেনে নিলাম।</label>
+        <!-- Modal Footer -->
+        <div class="modal-footer justify-content-between">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="acceptRules">
+            <label class="form-check-label small" for="acceptRules"> আমি সকল নিয়ম মেনে নিলাম।</label>
+          </div>
+          <!-- Hidden Form -->
+          <form id="buyForm" action="{{route('buy-package.funded')}}" method="POST">
+            @csrf
+            <input type="hidden" name="user_id" value="<?php echo $user->id ?? ''; ?>">
+            <input type="hidden" name="package_id" id="modalPackageId" value="">
+            <input type="hidden" name="amount" id="modalPackageAmount" value="">
+            <button id="buyButton" type="submit" class="btn btn-primary" disabled>Accept & Buy</button>
+          </form>
         </div>
-        <!-- Hidden Form -->
-        <form id="buyForm" action="{{route('buy-package.funded')}}" method="POST">
-          @csrf
-          <input type="hidden" name="user_id" value="<?php echo $user->id ?? ''; ?>">
-          <input type="hidden" name="package_id" id="modalPackageId" value="">
-          <input type="hidden" name="amount" id="modalPackageAmount" value="">
-          <button id="buyButton" type="submit" class="btn btn-primary" disabled>Accept & Buy</button>
-        </form>
       </div>
     </div>
   </div>
-</div>
-
-<!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content text-center p-4">
-      <h4 class="text-success">🎉 Purchase Successful!</h4>
-      <p>Your package has been activated successfully.</p>
-      <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <h4 class="text-success">🎉 Purchase Successful!</h4>
+        <p>Your package has been activated successfully.</p>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+      </div>
     </div>
   </div>
-</div>
 
 <!-- Investment Package Modal -->
 <div class="modal fade" id="investmentPackageModal" tabindex="-1" aria-hidden="true">
@@ -872,40 +857,21 @@
               <input type="hidden" name="package_id" id="modalPackageId2" value="">
 
               <!-- Balance Info -->
-              <div class="border rounded p-3 mb-3 bg-white text-center">
+              <div class="border rounded p-3 mb-3 mt-3 bg-white text-center">
                 <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
                 <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? '0'}}</p>
-                <p class="fs-5 fw-bold text-pramary">Binance ID: 1234321234</p>
               </div>
 
               <!-- Amount -->
-              <div class="mb-3">
+              <div class="mb-5">
                 <label for="modalPackageAmount2" class="form-label fw-bold">Invest Amount ($)</label>
                 <input type="number" name="amount" id="modalPackageAmount2" 
                        class="form-control" placeholder="Enter amount" 
                        min="100" max="10000000" required>
                 <div class="form-text">Minimum Amount must be 100$.</div>
               </div>
-              <!-- <input type="hidden" name="binance_id" value=""> -->
-
-              <!-- Order ID -->
-              <div class="mb-3">
-                <label for="orderId" class="form-label fw-bold">Order ID</label>
-                <input type="number" name="order_id" id="orderId" class="form-control" 
-                       placeholder="Enter Transaction / Order ID" required>
-              </div>
-
-              <!-- Proof Upload -->
-              <div class="mb-3">
-                <label for="investProof" class="form-label fw-bold">Investment Proof</label>
-                <input type="file" name="invest_proof" id="investProof" 
-                       class="form-control" accept="image/*" required>
-                <div class="form-text">Upload payment proof (screenshot or receipt).</div>
-                <img id="previewProof" src="" alt="" class="img-thumbnail mt-2 d-none" style="max-height:150px;">
-              </div>
-
               <!-- Checkbox + Submit -->
-              <div class="row d-flex justify-content-between align-items-center">
+              <div class="row d-flex justify-content-between align-items-center mt-4">
                 <div class="form-check float-left">
                   <input class="form-check-input" type="checkbox" id="acceptRules2">
                   <label class="form-check-label small" for="acceptRules2">
@@ -1042,17 +1008,18 @@
   const buyButton2 = document.getElementById('buyButton2');
   const buyForm2 = document.getElementById('buyForm2');
   const userLoggedIn2 = <?php echo empty($user) ? 'false' : 'true'; ?>;
+  const userBalance2 = <?php echo $user->total_deposit_amount ?? 0; ?>;
 
   const modalName2 = document.getElementById('modalPackageName2');
   const modalImg2 = document.getElementById('modalPackageImg2');
   const modalId2 = document.getElementById('modalPackageId2');
+  const modalAmount2 = document.getElementById('modalPackageAmount2');
 
-  // const balanceBox2 = document.querySelector('#investmentPackageModal .modal-body .col-md-5 .border');
+  const balanceBox2 = document.querySelector('#investmentPackageModal .modal-body .col-md-5 .border');
 
-  // Deposit button HTML (string)
-  // const depositButtonHtml2 = `<a href="/deposit-form" class="btn btn-warning w-100 mt-2" id="dynamicDepositBtn">Deposit Your Account</a>`;
+  const depositButtonHtml2 = `<a href="/deposit-form" class="btn btn-warning w-100 mt-2" id="dynamicDepositBtn2">Deposit Your Account</a>`;
 
-  //Invetment 
+  // Modal open
   document.querySelectorAll('.OpenModalBtn_2').forEach(btn => {
     btn.addEventListener('click', function () {
       let card = this.closest('.product-card');
@@ -1066,37 +1033,50 @@
       modalId2.value = id2;
 
       // clean old button
-      // balanceBox2.querySelector('#dynamicDepositBtn')?.remove();
+      balanceBox2.querySelector('#dynamicDepositBtn2')?.remove();
 
       if (!userLoggedIn2) {
-       
         buyButton2.style.display = "disabled";
       } else {
         buyButton2.style.display = "inline-block";
+
+        if (userBalance2 < 100) {
+          buyButton2.disabled = true;
+          balanceBox2.insertAdjacentHTML('afterend', depositButtonHtml2);
+        } else {
+          buyButton2.disabled = !checkbox2.checked;
+        }
       }
 
       new bootstrap.Modal(document.getElementById('investmentPackageModal')).show();
     });
   });
 
-  // Checkbox
-  checkbox2.addEventListener('change', () => {
-    if (userLoggedIn2) {
-      buyButton2.disabled = !checkbox2.checked;
+  // Checkbox validation
+  checkbox2.addEventListener('change', validateForm);
+  // Amount input validation
+  modalAmount2.addEventListener('input', validateForm);
+
+  function validateForm() {
+    const amount = parseFloat(modalAmount2.value) || 0;
+
+    if (userLoggedIn2 && checkbox2.checked && amount >= 100 && amount <= userBalance2) {
+      buyButton2.disabled = false;
+    } else {
+      buyButton2.disabled = true;
     }
-  });
+  }
 
   // Clear on close
   document.getElementById('investmentPackageModal').addEventListener('hidden.bs.modal', function () {
     modalName2.textContent = 'Package Name';
     modalImg2.src = 'images/placeholder.png';
     modalId2.value = '';
+    modalAmount2.value = '';
     checkbox2.checked = false;
     buyButton2.disabled = true;
   });
-
 </script>
-
 
 </script>
   <!-- Floating Button Toggle Script -->

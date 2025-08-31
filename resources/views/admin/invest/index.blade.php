@@ -25,48 +25,19 @@
                                         <tr>
                                             <th>Sl</th>
                                             <th>Name</th>
-                                            <!-- <th>Binance ID</th> -->
-                                            <th>Order ID</th>
+                                            <th>Email</th>
                                             <th>Amount</th>
-                                            <th>Proof</th>
-                                            <th>Status</th>
                                             <th>Date</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($datas as $key => $value)
                                             <tr>
                                                 <td>{{ ++$key }}</td>
-                                                <td>{{ $value->users->name }} </br> {{ $value->users->email }}</td>
-                                                <!-- <td>{{ $value->binance_id }}</td> -->
-                                                <td>{{ $value->order_id }}</td>
+                                                <td>{{ $value->users->name }}</td>
+                                                <td>{{ $value->users->email }}</td>
                                                 <td>{{ $value->amount }}</td>
-                                                <td>
-                                                    <img src="{{ asset($value->invest_proof) }}" 
-                                                         alt="image" 
-                                                         class="img-thumbnail proof-img" 
-                                                         style="width:80px; cursor:pointer;"
-                                                         data-bs-toggle="modal" 
-                                                         data-bs-target="#imageModal"
-                                                         data-img="{{ asset($value->invest_proof) }}">
-                                                </td>
-                                                <td>
-                                                    @if ($value->payment_status == 1)
-                                                    <span>Success</span>@else<span>Pending</span>
-                                                    @endif
-                                                </td>
                                                 <td>{{ $value->created_at->format('d-m-Y') }}</td>
-                                                <td>
-                                                    @can('creed-tags-edit-btn')
-                                                        @if($value->payment_status == 1)
-                                                            <a href="{{ route('invest-accept.status', $value->id) }}"
-                                                                class="btn btn-success btn-sm disabled-link"><i class=""></i> OK</a>
-                                                        @else
-                                                            <a href="{{ route('invest-accept.status', $value->id) }}"
-                                                            class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Accept</a>
-                                                        @endif
-                                                    @endcan
                                                     <!-- @can('contact-creed-delete-btn')
                                                         <form action="{{ route('contact-creed.destroy', $value->id) }}"
                                                             method="POST" style="display: inline-block;">
