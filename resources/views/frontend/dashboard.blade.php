@@ -176,8 +176,8 @@
 <div class="container text-center mt-5">
   <!-- Profile Image -->
   <div class="position-relative d-inline-block">
-    <img 
-      src="{{ $user->profile_photo ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
+ <img 
+      src="{{asset('/')}}{{ $user->profile_photo ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
       alt="Profile" 
       class="profile-img mb-3 rounded-circle border"
       id="profileImage"

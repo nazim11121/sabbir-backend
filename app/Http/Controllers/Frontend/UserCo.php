@@ -463,7 +463,7 @@ class UserCo extends Controller
         $user->profile_photo = $path;
         $user->save();
 
-        return back()->with('success', 'Profile photo updated!');
+        return redirect()->route('frontend-dashboard')->with('success', 'Profile photo updated!');
     }
 
     
