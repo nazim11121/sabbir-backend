@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 31, 2025 at 08:23 PM
+-- Generation Time: Sep 01, 2025 at 08:05 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.3.6
 
@@ -83,18 +83,7 @@ CREATE TABLE IF NOT EXISTS `buy_packages` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Stores the last update time of the record',
   PRIMARY KEY (`id`),
   KEY `buy_packages_user_id_index` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `buy_packages`
---
-
-INSERT INTO `buy_packages` (`id`, `user_id`, `package_id`, `amount`, `payment_status`, `remarks`, `status`, `created_at`, `updated_at`) VALUES
-(13, 19, '200$ fundad account', 30.00, 0, NULL, 1, '2025-08-26 11:46:08', '2025-08-31 16:47:41'),
-(14, 19, '100$ fundad account', 15.00, 2, NULL, 1, '2025-08-30 00:25:56', '2025-08-31 10:44:50'),
-(15, 19, '6', 30.00, 1, NULL, 1, '2025-08-30 00:29:09', '2025-08-31 10:45:01'),
-(16, 19, '5', 15.00, 1, NULL, 1, '2025-08-31 12:53:40', '2025-08-31 12:53:40'),
-(17, 25, '5', 15.00, 1, NULL, 1, '2025-08-31 13:24:11', '2025-08-31 13:24:11');
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -150,6 +139,28 @@ CREATE TABLE IF NOT EXISTS `categories` (
 INSERT INTO `categories` (`id`, `name`, `remarks`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
 (1, 'Our Services', NULL, 1, 1, '2025-08-29 22:22:55', '2025-08-29 22:22:55'),
 (2, 'Funded Packages', NULL, 1, 1, '2025-08-29 22:23:13', '2025-08-29 22:23:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `commissions`
+--
+
+DROP TABLE IF EXISTS `commissions`;
+CREATE TABLE IF NOT EXISTS `commissions` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `commission_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `percentage` bigint UNSIGNED DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT 'Commission amount',
+  `remarks` mediumtext COLLATE utf8mb4_unicode_ci,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1=Active, 0=Inactive',
+  `created_by` bigint UNSIGNED DEFAULT NULL COMMENT 'Stores the ID of the user who created the record',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Stores the creation time of the record',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Stores the last update time of the record',
+  PRIMARY KEY (`id`),
+  KEY `commissions_created_by_foreign` (`created_by`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -222,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -287,7 +298,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (58, '2025_08_30_034634_create_categories_table', 9),
 (59, '2025_08_30_035934_create_packages_table', 9),
 (61, '2025_08_30_071730_create_sliders_table', 10),
-(62, '2025_08_30_071837_create_notices_table', 10);
+(62, '2025_08_30_071837_create_notices_table', 10),
+(63, '2025_09_01_154706_create_commissions_table', 11);
 
 -- --------------------------------------------------------
 
@@ -527,13 +539,14 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=152 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `personal_access_tokens`
 --
 
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(152, 'App\\Models\\User', 19, 'API Token', 'aefb3edc47a1a703840df9f545afed622abcfb97955daddf5898713bac665bbf', '[\"*\"]', NULL, NULL, '2025-09-01 11:10:06', '2025-09-01 11:10:06', '2025-09-01 17:10:06'),
 (151, 'App\\Models\\User', 25, 'API Token', '91ee7726015189141deddb480d559bfb0d6522e4fbeaa18a500566d18118764e', '[\"*\"]', NULL, NULL, '2025-08-31 14:21:45', '2025-08-31 14:21:45', '2025-08-31 20:21:45'),
 (150, 'App\\Models\\User', 19, 'API Token', 'f3ebea016464cda5cec5ee2a393eb002c5e38833db5b0f9f9e97543fcb72e5a3', '[\"*\"]', NULL, NULL, '2025-08-31 13:37:41', '2025-08-31 13:37:41', '2025-08-31 19:37:41'),
 (149, 'App\\Models\\User', 19, 'API Token', '521fdaf74a7331cd67bfef77117a96e87b84c5172129adab474ff76ee0204893', '[\"*\"]', NULL, NULL, '2025-08-31 13:37:21', '2025-08-31 13:37:21', '2025-08-31 19:37:21'),
@@ -1118,35 +1131,7 @@ CREATE TABLE IF NOT EXISTS `t_deposits` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Stores the last update time of the record',
   PRIMARY KEY (`id`),
   KEY `t_deposits_user_id_index` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `t_deposits`
---
-
-INSERT INTO `t_deposits` (`id`, `user_id`, `binance_id`, `amount`, `deposit_proof`, `order_id`, `payment_status`, `remarks`, `status`, `created_at`, `updated_at`) VALUES
-(4, 19, '564324567', 10.00, 'images/depositProof/1756049075_68ab2eb3ed525.png', '2147483647', 1, NULL, 1, '2025-08-24 09:24:35', '2025-08-29 17:13:19'),
-(5, 19, '564324567', 20.00, 'images/depositProof/1756049707_68ab312b9382f.png', NULL, 1, NULL, 1, '2025-08-24 09:35:07', '2025-08-29 17:10:37'),
-(6, 19, '564324567', 20.00, 'images/depositProof/1756093743_68abdd2f673e7.png', '234567', 0, NULL, 1, '2025-08-24 21:49:03', '2025-08-29 17:10:44'),
-(7, 19, '564324567', 10.00, 'images/depositProof/1756094212_68abdf044a29b.png', '33333333', 0, NULL, 1, '2025-08-24 21:56:52', '2025-08-29 17:10:41'),
-(8, 19, '564324567', 10.00, 'images/depositProof/1756094435_68abdfe3b2fd2.png', NULL, 0, NULL, 1, '2025-08-24 22:00:35', '2025-08-29 17:10:51'),
-(9, 19, '564324567', 20.00, 'images/depositProof/1756094925_68abe1cdccaa5.png', NULL, 0, NULL, 1, '2025-08-24 22:08:45', '2025-08-29 17:10:54'),
-(10, 19, '564324567', 10.00, 'images/depositProof/1756095153_68abe2b14d463.png', NULL, 0, NULL, 1, '2025-08-24 22:12:33', '2025-08-29 17:10:58'),
-(11, 19, '564324567', 10.00, 'images/depositProof/1756095513_68abe419ed1a9.png', NULL, 0, NULL, 1, '2025-08-24 22:18:33', '2025-08-29 17:11:02'),
-(12, 19, '564324567', 14.00, 'images/depositProof/1756095598_68abe46e7ff31.png', NULL, 0, NULL, 1, '2025-08-24 22:19:58', '2025-08-29 17:11:47'),
-(13, 19, '564324567', 22.00, 'images/depositProof/1756095769_68abe5194314c.png', NULL, 0, NULL, 1, '2025-08-24 22:22:49', '2025-08-29 17:11:40'),
-(14, 19, '564324567', 10.00, 'images/depositProof/1756095879_68abe58776a3f.png', NULL, 0, NULL, 1, '2025-08-24 22:24:39', '2025-08-29 17:11:37'),
-(15, 19, '564324567', 10.00, 'images/depositProof/1756095913_68abe5a9d06e5.png', NULL, 0, NULL, 1, '2025-08-24 22:25:13', '2025-08-29 17:11:33'),
-(16, 19, '564324567', 20.00, 'images/depositProof/1756096056_68abe638924d2.png', NULL, 0, NULL, 1, '2025-08-24 22:27:36', '2025-08-29 17:11:29'),
-(17, 19, '564324567', 20.00, 'images/depositProof/1756096092_68abe65ca4b7b.png', NULL, 0, NULL, 1, '2025-08-24 22:28:12', '2025-08-29 17:11:25'),
-(18, 19, '564324567', 30.00, 'images/depositProof/1756096134_68abe686071ee.png', '22', 0, NULL, 1, '2025-08-24 22:28:54', '2025-08-29 17:11:22'),
-(19, 19, '564324567', 20.00, 'images/depositProof/1756096256_68abe7009aff7.png', NULL, 0, NULL, 1, '2025-08-24 22:30:56', '2025-08-29 17:11:18'),
-(20, 19, '564324567', 10.00, 'images/depositProof/1756096614_68abe8663a0d8.png', '9223372036854775807', 1, NULL, 1, '2025-08-24 22:36:54', '2025-08-29 17:18:30'),
-(21, 20, '564324567', 100.00, 'images/depositProof/1756444266_68b1366a9f9e8.png', '123453', 1, NULL, 1, '2025-08-28 23:11:06', '2025-08-31 10:28:23'),
-(22, 19, '972857500', 10.00, 'images/depositProof/1756535402_68b29a6a889bb.jpg', '123456754676543', 2, NULL, 1, '2025-08-30 00:30:02', '2025-08-31 10:28:06'),
-(23, 19, '892208461', 10.00, 'images/depositProof/1756666761_68b49b89b0810.png', '134567854678', 1, NULL, 1, '2025-08-31 12:59:21', '2025-08-31 12:59:44'),
-(24, 25, '892208461', 20.00, 'images/depositProof/1756668144_68b4a0f0d19fc.png', '12121212121212121212', 1, NULL, 1, '2025-08-31 13:22:24', '2025-08-31 13:23:30'),
-(25, 19, '892208461', 10.00, 'images/depositProof/1756670157_68b4a8cd213cc.png', '113456779997865432', 1, NULL, 1, '2025-08-31 13:55:57', '2025-08-31 13:56:29');
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1196,17 +1181,7 @@ CREATE TABLE IF NOT EXISTS `t_invests` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Stores the last update time of the record',
   PRIMARY KEY (`id`),
   KEY `t_invests_user_id_index` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `t_invests`
---
-
-INSERT INTO `t_invests` (`id`, `user_id`, `category_id`, `package_id`, `amount`, `order_id`, `invest_proof`, `payment_status`, `binance_id`, `remarks`, `status`, `created_at`, `updated_at`) VALUES
-(1, 19, NULL, 'Trusted Company Investment', 100.00, '13099', 'images/investProof/1756232737_68adfc21261f2.png', 1, NULL, NULL, 1, '2025-08-26 12:25:37', '2025-08-27 10:17:07'),
-(2, 19, NULL, 'Trusted Company Investment', 100.00, '1234', 'images/investProof/1756487119_68b1ddcff248c.jpg', 0, NULL, NULL, 1, '2025-08-29 11:05:19', '2025-08-29 11:05:19'),
-(3, 19, NULL, 'Trusted Company Investment', 100.00, '12345678987654312456', 'images/investProof/1756533324_68b2924cef0d2.jpg', 0, NULL, NULL, 1, '2025-08-29 23:55:24', '2025-08-29 23:55:24'),
-(4, 19, NULL, 'Trusted Company Investment', 100.00, NULL, NULL, 1, NULL, NULL, 1, '2025-08-31 13:13:38', '2025-08-31 13:13:38');
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1271,6 +1246,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `total_deposit_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `total_invest_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `total_withdraw_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `total_commission_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `address` mediumtext COLLATE utf8mb4_unicode_ci,
   `country` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `state` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1294,18 +1270,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `users_status_index` (`status`),
   KEY `users_created_at_index` (`created_at`),
   KEY `users_updated_at_index` (`updated_at`)
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `first_name`, `last_name`, `email`, `profile_photo`, `country_code`, `phone_number`, `email_verified_at`, `password`, `remember_token`, `google_id`, `avatar`, `refer_code`, `own_refer_code`, `level`, `total_deposit_amount`, `total_invest_amount`, `total_withdraw_amount`, `address`, `country`, `state`, `city`, `zip_code`, `account_type`, `otp`, `otp_expires_at`, `otp_status`, `save_business_list`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(24, 'pub', NULL, NULL, 'abc2@gmail.com', NULL, NULL, '01767676543', NULL, '$2y$12$xvEPlG2RCgw8fg2eLY2BsOKr7al36Nj9KQRdN9qVMWhNlmRchBo6W', NULL, NULL, NULL, NULL, '5735', 'Level 1', 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, 'G', NULL, NULL, 0, NULL, 0, '2025-08-29 03:06:10', '2025-08-29 03:06:10', NULL),
-(21, 'cjhch', NULL, NULL, 'abc@gmail.com', NULL, NULL, '01767676543', NULL, '$2y$12$gpG43qWUyjiEoFVFlBm8NOXjIDUmdLJSctWoaHuUQV/iy5jc2W8Ga', NULL, NULL, NULL, NULL, '3026', 'Level 1', 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, 'G', NULL, NULL, 0, NULL, 0, '2025-08-28 23:33:32', '2025-08-28 23:33:32', NULL),
-(19, 'Nazim', NULL, NULL, 'nazim12@gmail.com', 'images/profile_photos/1756671685_68b4aec5d9b05.jpg', NULL, '01767676543', NULL, '$2y$12$jYhgEXa1Z0nUvqDK.igs0utaCPLnGVmnn0kJWmAG3gpD6nmGBMIUu', NULL, NULL, NULL, '123456', '827', 'Level 1', 10.00, 200.00, 10.00, NULL, NULL, NULL, NULL, NULL, 'G', NULL, NULL, 0, NULL, 0, '2025-08-23 07:30:26', '2025-08-31 14:21:25', NULL),
-(20, 'new', NULL, NULL, 'new@gmail.com', NULL, NULL, '01767676543', NULL, '$2y$12$nLbnOMVZWy/xrhMiJ33j2uqiYYGY/qmixYCXu1angxg6DA4WZJ1Ga', NULL, NULL, NULL, '827', '742', 'Level 1', 100.00, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, 'G', NULL, NULL, 0, NULL, 0, '2025-08-28 23:06:41', '2025-08-31 19:36:44', NULL),
-(25, 'bb', NULL, NULL, 'bb@gmail.com', NULL, NULL, '01767676543', NULL, '$2y$12$R5x3FTgnwYe2egbxT/5RjePHkNWuxLF3.YLKk9xQas5viVt7zMJ46', NULL, NULL, NULL, '827', '6405', 'Level 1', 5.00, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, 'G', NULL, NULL, 0, NULL, 0, '2025-08-31 13:14:24', '2025-08-31 13:24:11', NULL);
+INSERT INTO `users` (`id`, `name`, `first_name`, `last_name`, `email`, `profile_photo`, `country_code`, `phone_number`, `email_verified_at`, `password`, `remember_token`, `google_id`, `avatar`, `refer_code`, `own_refer_code`, `level`, `total_deposit_amount`, `total_invest_amount`, `total_withdraw_amount`, `total_commission_amount`, `address`, `country`, `state`, `city`, `zip_code`, `account_type`, `otp`, `otp_expires_at`, `otp_status`, `save_business_list`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'Test1', NULL, NULL, 'nazim@gmail.com', NULL, NULL, '01767676543', NULL, '$2y$12$FCiya7.6CK9oa5XjUzf8de.HmU5K2Z2qIGADqupHPwU/ec/5k3JOy', NULL, NULL, NULL, NULL, '3089', 'Level 1', 0.00, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, 'G', NULL, NULL, 0, NULL, 0, '2025-09-01 14:04:50', '2025-09-01 14:04:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -1323,18 +1295,14 @@ CREATE TABLE IF NOT EXISTS `user_nid_images` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Stores the last update time of the record',
   PRIMARY KEY (`id`),
   KEY `user_nid_images_user_id_index` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `user_nid_images`
 --
 
 INSERT INTO `user_nid_images` (`id`, `user_id`, `nid_image`, `status`, `created_at`, `updated_at`) VALUES
-(5, 21, 'images/users/17564456120_screencapture-nenoxshop-topup-61-freefire-idcode-indonesia-2025-08-25-21_58_39.png', 1, '2025-08-28 23:33:32', '2025-08-28 23:33:32'),
-(3, 19, 'images/users/17559558260_Screenshot 2025-08-22 182708.png', 1, '2025-08-23 07:30:26', '2025-08-23 07:30:26'),
-(4, 19, 'images/users/17559558261_1749191004.jpg', 1, '2025-08-23 07:30:26', '2025-08-23 07:30:26'),
-(8, 24, 'images/users/17564583700_Screenshot 2025-08-24 011313.png', 1, '2025-08-29 03:06:10', '2025-08-29 03:06:10'),
-(9, 25, 'images/users/17566676640_icon-192x192.png', 1, '2025-08-31 13:14:24', '2025-08-31 13:14:24');
+(1, 1, 'images/users/17567570900_app.jpg', 1, '2025-09-01 14:04:50', '2025-09-01 14:04:50');
 
 -- --------------------------------------------------------
 
@@ -1354,16 +1322,7 @@ CREATE TABLE IF NOT EXISTS `withdraws` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Stores the creation time of the record',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Stores the last update time of the record',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `withdraws`
---
-
-INSERT INTO `withdraws` (`id`, `user_id`, `amount`, `binance_id`, `payment_status`, `remarks`, `status`, `created_at`, `updated_at`) VALUES
-(8, 1, 10.00, '13456789098765432', 0, NULL, 1, '2025-08-31 13:57:21', '2025-08-31 13:57:21'),
-(7, 19, 10.00, '1345678', 0, NULL, 1, '2025-08-31 13:49:03', '2025-08-31 13:49:03'),
-(6, 19, 10.00, '123456123', 1, NULL, 1, '2025-08-29 08:50:02', '2025-08-29 17:08:59');
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Constraints for dumped tables
