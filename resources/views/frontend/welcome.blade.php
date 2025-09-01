@@ -461,6 +461,12 @@
               @if($service->price)
                 <h6 class="fee-badge">FEE {{ $service->price }}$</h6>
               @endif
+              @if($service->id == 2)
+                <h6 class="fee-badge">INVESTMENT</h6>
+              @endif
+              @if($service->id == 3)
+                <h6 class="fee-badge">LOAN</h6>
+              @endif
             </div>
           </div>
         @endforeach
@@ -609,6 +615,7 @@
           <div class="product-card text-center">
             <img src="images/social/youtube.jpg" alt="YouTube" class="img-fluid">
             <div class="p-2">YouTube Channel</div>
+            <h6 class="fee-badge">CLICK</h6>
           </div>
         </a>
       </div>
@@ -619,6 +626,7 @@
           <div class="product-card text-center">
             <img src="images/social/telegram.jpg" alt="Telegram" class="img-fluid">
             <div class="p-2">Telegram Group</div>
+            <h6 class="fee-badge">CLICK</h6>
           </div>
         </a>
       </div>
@@ -629,10 +637,10 @@
           <div class="product-card text-center">
             <img src="images/social/tiktok.jpg" alt="tiktok" class="img-fluid">
             <div class="p-2">Tiktok</div>
+            <h6 class="fee-badge">CLICK</h6>
           </div>
         </a>
       </div>
-
     </div>
   </div>
 
@@ -670,16 +678,16 @@
 
         <!-- Stay Connected -->
         <div class="col-md-4 mb-4 mb-md-0">
-          <h5 class="fw-bold">STAY CONNECTED</h5>
+          <h5 class="fw-bold">BD FUNDED TRADER</h5>
           <p class="small" style="font-size: 11px;color: rgb(173, 173, 173);font-weight: 500;">
             কোন সমস্যায় পড়লে টেলিগ্রামে যোগাযোগ করবেন।<br>
             তাহলেই দ্রুত সমাধান পেয়ে যাবেন।
           </p>
           <div class="d-flex justify-content-start justify-content-md-start gap-3">
             <a href="https://www.youtube.com/@Rs_Sabbir_Trader" class="btn btn-outline-light rounded-3"><i class="bi bi-youtube"></i></a>            
-            <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-telegram"></i></a>
+            <a href="https://t.me/bd_funded_support" class="btn btn-outline-light rounded-3"><i class="bi bi-telegram"></i></a>
             <a href="https://www.tiktok.com/@rs_sabbir_trader99" class="btn btn-outline-light rounded-3"><i class="bi bi-tiktok"></i></a>
-            <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-facebook"></i></a>
+            <a href="https://t.me/bd_funded_support" class="btn btn-outline-light rounded-3"><i class="bi bi-facebook"></i></a>
           </div>
         </div>
         <div class="col-md-4 text-start text-md-start"></div>
@@ -687,7 +695,7 @@
         <div class="col-md-4 text-start text-md-start">
           <h5 class="fw-bold mb-3">SUPPORT CENTER</h5>
           <div class="border rounded d-flex align-items-start p-2 mb-3">
-            <a href="https://t.me/BD_funded_trader"><i class="bi bi-telegram fs-1 text-info me-2"></i></a>
+            <a href="https://t.me/bd_funded_support"><i class="bi bi-telegram fs-1 text-info me-2"></i></a>
             <div>
               <strong style="font-size: 13px;font-weight: 500;">Help line [9AM-12PM]</strong><br>
               <small style="font-size: 13px;color: rgb(173, 173, 173);font-weight: 500;">টেলিগ্রামে সাপোর্ট</small>

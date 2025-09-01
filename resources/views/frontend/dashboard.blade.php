@@ -174,15 +174,20 @@
   </p>
 </div> -->
 <div class="container text-center mt-5">
-  <!-- Profile Image -->
+  <!-- Profile Image with Notification Badge -->
   <div class="position-relative d-inline-block">
- <img 
-      src="{{asset('/')}}{{ $user->profile_photo ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
-      alt="Profile" 
-      class="profile-img mb-3 rounded-circle border"
-      id="profileImage"
-      style="width:120px; height:120px; object-fit:cover;"
-    >
+    <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#notificationModal">
+      <span class="position-absolute start-10 badge rounded-pill bg-danger">
+        {{ count($user->unread_notifications) ?? 0 }}
+      </span>
+      <img 
+        src="{{ asset('/') }}{{ $user->profile_photo ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
+        alt="Profile" 
+        class="profile-img mb-3 rounded-circle border"
+        id="profileImage"
+        style="width:120px; height:120px; object-fit:cover;"
+      >
+    </button>
 
     <!-- Edit Button -->
     <button class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle" 
@@ -198,7 +203,31 @@
     <button class="btn btn-sm btn-light border ms-1"><i class="bi bi-arrow-clockwise"></i></button>
   </p>
 </div>
-
+<!-- Notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @if(count($user->unread_notifications) > 0)
+          <ul class="list-group">
+            @foreach($user->unread_notifications as $notify)
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ $notify->commission_type ?? 'N/A' }}</span>
+                <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
+              </li>
+            @endforeach
+          </ul>
+        @else
+          <p class="text-muted text-center">No new notifications</p>
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Hidden Upload Form -->
 <form id="photoForm" action="{{route('profile.updatePhoto')}}" method="POST" enctype="multipart/form-data" class="d-none">
   @csrf
@@ -284,7 +313,14 @@
             </span>
 
             <span class="text-end flex-shrink-0" style="width: 90px; color: {{ $deposit->payment_status == 1 ? '#198754' : '#ffc107' }}">
-              {{ $deposit->payment_status == 1 ? 'Success' : 'Pending' }}
+              @if($deposit->payment_status == 1)
+                Success
+              @elseif($deposit->payment_status == 2)
+                <span class="text-danger">Failed</span>
+              @else
+                Pending
+              @endif
+              <!-- {{ $deposit->payment_status == 1 ? 'Success' : 'Pending' }} -->
             </span>
           </div>
         </div>
@@ -329,7 +365,14 @@
             <small>{{ $package->created_at->format('d-m-Y') }}</small>
           </div>
           <div class="text-muted mb-2">
-            Status: {{ $package->status == 1 ? 'Active' : 'Inactive' }}
+            Status: @if($deposit->payment_status == 1)
+                      Success
+                    @elseif($deposit->payment_status == 2)
+                      <span class="text-danger">Failed</span>
+                    @else
+                      Pending
+                    @endif
+            <!-- {{ $package->payment_status == 1 ? 'Active' : 'Inactive' }} -->
           </div>
 
           <!-- Toggle Button for Rules -->
@@ -432,9 +475,16 @@
             </span>
 
             <!-- Status -->
-            <span class="text-end flex-shrink-0" style="width: 90px; color: {{ $investment->payment_status == 1 ? '#198754' : '#ffc107' }}">
-              {{ $investment->payment_status == 1 ? 'Success' : 'Pending' }}
-            </span>
+            <!-- <span class="text-end flex-shrink-0" style="width: 90px; color: {{ $investment->payment_status == 1 ? '#198754' : '#ffc107' }}"> -->
+              <!-- {{ $investment->payment_status == 1 ? 'Success' : 'Pending' }} -->
+                @if($deposit->payment_status == 1)
+                  <span class="text-end flex-shrink-0 text-success">Success</span>
+                @elseif($deposit->payment_status == 2)
+                  <span class="text-end flex-shrink-0 text-danger">Failed</span>
+                @else
+                   <span class="text-end flex-shrink-0" style="width: 90px; color: #ffc107">Pending</span>
+                @endif
+            <!-- </span> -->
 
             <!-- Optional Toggle Button (commented out) -->
             <!--
@@ -543,16 +593,16 @@
 
         <!-- Stay Connected -->
         <div class="col-md-4 mb-4 mb-md-0">
-          <h5 class="fw-bold">STAY CONNECTED</h5>
+          <h5 class="fw-bold">BD FUNDED TRADER</h5>
           <p class="small" style="font-size: 11px;color: rgb(173, 173, 173);font-weight: 500;">
             কোন সমস্যায় পড়লে টেলিগ্রামে যোগাযোগ করবেন।<br>
             তাহলেই দ্রুত সমাধান পেয়ে যাবেন।
           </p>
           <div class="d-flex justify-content-start justify-content-md-start gap-3">
             <a href="https://www.youtube.com/@Rs_Sabbir_Trader" class="btn btn-outline-light rounded-3"><i class="bi bi-youtube"></i></a>            
-            <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-telegram"></i></a>
+            <a href="https://t.me/bd_funded_support" class="btn btn-outline-light rounded-3"><i class="bi bi-telegram"></i></a>
             <a href="https://www.tiktok.com/@rs_sabbir_trader99" class="btn btn-outline-light rounded-3"><i class="bi bi-tiktok"></i></a>
-            <a href="https://t.me/BD_funded_trader" class="btn btn-outline-light rounded-3"><i class="bi bi-facebook"></i></a>
+            <a href="https://t.me/bd_funded_support" class="btn btn-outline-light rounded-3"><i class="bi bi-facebook"></i></a>
           </div>
         </div>
         <div class="col-md-4 text-start text-md-start"></div>
@@ -560,7 +610,7 @@
         <div class="col-md-4 text-start text-md-start">
           <h5 class="fw-bold mb-3">SUPPORT CENTER</h5>
           <div class="border rounded d-flex align-items-start p-2 mb-3">
-            <a href="https://t.me/BD_funded_trader"><i class="bi bi-telegram fs-1 text-info me-2"></i></a>
+            <a href="https://t.me/bd_funded_support"><i class="bi bi-telegram fs-1 text-info me-2"></i></a>
             <div>
               <strong style="font-size: 13px;font-weight: 500;">Help line [9AM-12PM]</strong><br>
               <small style="font-size: 13px;color: rgb(173, 173, 173);font-weight: 500;">টেলিগ্রামে সাপোর্ট</small>

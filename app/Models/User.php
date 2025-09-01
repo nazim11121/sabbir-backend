@@ -90,6 +90,10 @@ class User extends Authenticatable
         return $this->hasMany(Withdraw::class, 'user_id')->orderBy('id', 'desc');
     }
 
+    public function commissions(){
+        return $this->hasMany(Commission::class, 'user_id')->orderBy('id', 'desc');
+    }
+
     public function getTotalDepositAttribute()
     {
         return $this->deposits()->where('payment_status', 1)->sum('amount');
@@ -128,6 +132,10 @@ class User extends Authenticatable
         ->logOnly(['name', 'first_name', 'last_name', 'email', 'phone_number', 'password', 'google_id', 'account_type',
         'otp', 'otp_expires_at', 'otp_sttaus', 'owner_id'])
         ->logOnlyDirty();
+    }
+
+    public function unread_notifications(){
+        return $this->hasMany(Commission::class, 'user_id')->where('status', 1)->orderBy('id', 'desc');
     }
 
     protected static function boot()

@@ -16,6 +16,7 @@ use App\Models\Package;
 use App\Models\Withdraw;
 use App\Models\Slider;
 use App\Models\Notice;
+use App\Models\Commission;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\TAdminUserRequest;
 use DB;
@@ -466,7 +467,83 @@ class UserCo extends Controller
         return redirect()->route('frontend-dashboard')->with('success', 'Profile photo updated!');
     }
 
-    
+    public function commissionList(){
+        $datas = Commission::with('user')->orderBy('id', 'DESC')->get();
+        return view('admin.commission.index', compact('datas'));
+    }
+
+    public function commissionCreate()
+    {
+        $users = User::get();
+        return view('admin.commission.create', compact('users'));
+    }
+
+    public function commissionStore(Request $request)
+    { 
+        $request->validate([
+            'user_id' => 'required',
+            'commission_type' => 'nullable|string|max:100',
+            'percentage' => 'nullable|numeric|min:1|max:100',
+            'amount' => 'nullable|numeric|min:10',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+
+        Commission::create([
+            'user_id' => $request->user_id, 
+            'commission_type' => $request->commission_type, 
+            'percentage' => $request->percentage, 
+            'amount' => $request->amount,
+            'remarks' => $request->remarks,
+            'created_by' => auth()->id(),
+        ]);
+
+        $user = User::find($request->user_id);
+        $user = $user->total_commission_amount + $request->amount;
+        $user->total_deposit_amount = $user->total_deposit_amount + $request->amount;
+        $user->save();
+
+        return redirect()->route('commission.list')->with('success', 'Commission submitted successfully.');
+    }
+
+    public function commissionEdit($id)
+    {
+        $datas = Commission::find($id);
+        $users = User::get();
+        return view('admin.commission.edit', compact('datas','users'));
+    }
+
+    public function commissionUpdate(Request $request)
+    { 
+        $request->validate([
+            'user_id' => 'required',
+            'commission_type' => 'nullable|string|max:100',
+            'percentage' => 'nullable|numeric|min:1|max:100',
+            'amount' => 'nullable|numeric|min:10',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+
+        Commission::updateOrCreate(
+            [
+                'user_id' => $request->user_id, 
+                'commission_type' => $request->commission_type,
+            ],
+            [
+                'percentage' => $request->percentage,
+                'amount'     => $request->amount,
+                'remarks'    => $request->remarks,
+                'created_by' => auth()->id(),
+            ]
+        );
+
+        return redirect()->route('commission.list')->with('success', 'Commission updated successfully.');
+    }
+
+    public function commissionDelete($id)
+    {
+        Commission::find($id)->delete();
+        return redirect()->back()->with('warning', 'Commission deleted successfully.');
+    }
+
     /**
      * Display the specified resource.
      *

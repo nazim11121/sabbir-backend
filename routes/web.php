@@ -108,6 +108,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/withdraw-request-list', [UserCo::class, 'withdrawRequestList'])->name('withdraw-request-list');
     Route::get('/withdraw-request-list/status/{id}', [UserCo::class, 'withdrawConfirmStatus'])->name('withdraw-accept.status');
 
+    Route::get('/commission-list', [UserCo::class, 'commissionList'])->name('commission.list');
+    Route::get('/commission/create', [UserCo::class, 'commissionCreate'])->name('commission.create');
+    Route::post('/commission/store', [UserCo::class, 'commissionStore'])->name('commission.store');
+    Route::get('/commission/edit/{id}', [UserCo::class, 'commissionEdit'])->name('commission.edit');
+    Route::match(['put','patch'],'/commission/update/{id}', [UserCo::class, 'commissionUpdate'])->name('commission.update');
+    Route::get('/commission/delete/{id}', [UserCo::class, 'commissionDelete'])->name('commission.delete');
+
     Route::resource('/category', CategoryCo::class);
     Route::resource('/package', PackageCo::class);
     Route::resource('/slider', SliderCo::class);
