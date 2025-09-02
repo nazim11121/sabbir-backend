@@ -647,20 +647,30 @@
   <!-- ===== REVIWES ===== -->
   <div class="container mb-5">
     <h2 class="section-title">REVIWES</h2>
-    <div class="order-card d-flex justify-content-between">
-      <span><strong>Md Ashik Hosan</strong> – 50$ Diamond</span>
-      <span class="text-success">Level5</span>
-    </div>
-    <div class="order-card d-flex justify-content-between">
-      <span><strong>RAKIB</strong> – 15$ Crown</span>
-      <span class="text-success">Level3</span>
-    </div>
-    <div class="order-card d-flex justify-content-between">
-      <span><strong>Md Eakosh</strong> – 10$ Bronze</span>
-      <span class="text-success">Level2</span>
-    </div>
+    @if($reviews && count($reviews))
+      @foreach ($reviews as $review)
+        <div class="order-card d-flex justify-content-between">
+          <span><img src="{{ asset('/') }}{{ $review->user->profile_photo ?? 'images/default.png' }}" alt="User" width="40" class="rounded-circle"> <strong>{{ $review->user->name ?? '' }}</strong></span>
+          <!-- <span class="text-success">{{ $review->user->level ?? '' }}</span> -->
+          <!-- <span>{{ $review->remarks }}</span> -->
+           <span>{!! nl2br(e(wordwrap($review->remarks, 50, "\n", true))) !!}</span>
+        </div>
+      @endforeach
+    @else
+      <div class="order-card d-flex justify-content-between">
+        <span><strong>Md Ashik Hosan</strong> – 50$ Diamond</span>
+        <span class="text-success">Level5</span>
+      </div>
+      <div class="order-card d-flex justify-content-between">
+        <span><strong>RAKIB</strong> – 15$ Crown</span>
+        <span class="text-success">Level3</span>
+      </div>
+      <div class="order-card d-flex justify-content-between">
+        <span><strong>Md Eakosh</strong> – 10$ Bronze</span>
+        <span class="text-success">Level2</span>
+      </div>
+    @endif
   </div>
-
   <!-- ===== App Download & Telegram ===== -->
   <!-- <div class="container mb-5 d-flex flex-column flex-md-row gap-3 justify-content-center">
     <a href="#" class="app-btn">
@@ -670,7 +680,6 @@
       <img src="https://nenoxshop.com/_nuxt/support_img.BVYtQjC0.png" style="width:200px;" alt="Telegram Support">
     </a>
   </div> -->
-
   <!-- ===== Footer ===== -->
   <footer class="text-white pt-4 pb-3 footer" id="contactUs">
     <div class="container">
@@ -732,7 +741,7 @@
             
             <!-- Left Side Image -->
             <div class="col-md-6">
-              <img src="images/popup/popoup1.jpg" class="img-fluid w-100 h-100" alt="Promo Banner" style="object-fit: cover;">
+              <img src="images/popup/popup.jpg" class="img-fluid w-100 h-100" alt="Promo Banner" style="object-fit: cover;">
             </div>
 
             <!-- Right Side Text -->

@@ -115,7 +115,7 @@
       </a>
       <div class="dropdown">
         <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
+          <img src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" alt="User" width="40" class="rounded-circle">
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
           <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
@@ -181,7 +181,7 @@
         {{ count($user->unread_notifications) ?? 0 }}
       </span>
       <img 
-        src="{{ asset('/') }}{{ $user->profile_photo ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
+        src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" 
         alt="Profile" 
         class="profile-img mb-3 rounded-circle border"
         id="profileImage"
@@ -370,7 +370,7 @@
                     @elseif($deposit->payment_status == 2)
                       <span class="text-danger">Failed</span>
                     @else
-                      Pending
+                      Ongoing
                     @endif
             <!-- {{ $package->payment_status == 1 ? 'Active' : 'Inactive' }} -->
           </div>
@@ -477,51 +477,35 @@
             <!-- Status -->
             <!-- <span class="text-end flex-shrink-0" style="width: 90px; color: {{ $investment->payment_status == 1 ? '#198754' : '#ffc107' }}"> -->
               <!-- {{ $investment->payment_status == 1 ? 'Success' : 'Pending' }} -->
-                @if($deposit->payment_status == 1)
+                @if($investment->payment_status == 1)
                   <span class="text-end flex-shrink-0 text-success">Success</span>
-                @elseif($deposit->payment_status == 2)
-                  <span class="text-end flex-shrink-0 text-danger">Failed</span>
+                @elseif($investment->payment_status == 2)
+                  <span class="text-end flex-shrink-0 text-danger">Canceled</span>
                 @else
                    <span class="text-end flex-shrink-0" style="width: 90px; color: #ffc107">Pending</span>
                 @endif
-            <!-- </span> -->
-
-            <!-- Optional Toggle Button (commented out) -->
-            <!--
-            <button class="btn btn-sm btn-light p-1 ms-2" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#investmentRules{{ $index }}"
-                    aria-expanded="false"
-                    aria-controls="investmentRules{{ $index }}"
-                    onclick="toggleIcon(this)">
-              <i class="bi bi-chevron-down"></i>
-            </button>
-            -->
+                @php
+                  $isCancelable = $investment->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
+                  $investmentStatus = $investment->payment_status == 2;
+                @endphp
+                <form action="{{route('invest.cancel')}}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this investment?');">
+                  @csrf
+                  <input type="hidden" name="user_id" value="{{$user->id}}">
+                  <input type="hidden" name="invest_id" value="{{$investment->id}}">
+                  <button type="submit" 
+                          class="btn btn-sm btn-danger" 
+                          @if(empty($isCancelable))
+                            disabled
+                          @elseif($investmentStatus)
+                            disabled
+                          @else
+                            ''
+                          @endif
+                          >
+                      Cancel
+                  </button>
+                </form>
           </div>
-
-          <!-- Optional Rules Section (commented out) -->
-          <!--
-          <div class="collapse mt-2" id="investmentRules{{ $index }}">
-           //@php//
-              $staticRules = [
-                'min_profit' => 'মিনিমাম প্রফিট: প্রতিদিন +10%',
-                'max_loss' => 'ম্যাক্স লস: প্রতিদিন –10%',
-                'trade_limit' => 'ট্রেড লিমিট: দিনে সর্বোচ্চ 10',
-                'risk_management' => 'রিস্ক ম্যানেজমেন্ট: প্রতি ট্রেডে ব্যালেন্সের 2%',
-                'rule_break' => 'রুল ভাঙলে: সাথে সাথে অ্যাকাউন্ট ক্যানসেল',
-                'profit_share' => 'প্রফিট শেয়ার: 60% ট্রেডার, 40% কোম্পানি',
-              ];
-              $completedRules = $investment->rules->pluck('rule_value', 'rule_key')->toArray();
-           // @endphp
-
-            @foreach($staticRules as $key => $label)
-              <div class="form-check ms-3">
-                <input class="form-check-input" type="checkbox" disabled {{ ($completedRules[$key] ?? 0) ? 'checked' : '' }}>
-                <label class="form-check-label">{{ $label }}</label>
-              </div>
-            @endforeach
-          </div>
-          -->
         </div>
         <hr>
       @empty
@@ -572,10 +556,13 @@
             <span class="text-danger text-end flex-shrink-0" style="width: 90px;">
               - {{ $withdraw->amount }} $
             </span>
-
-            <span class="text-end flex-shrink-0" style="width: 90px; color: {{ $withdraw->payment_status == 1 ? '#198754' : '#ffc107' }}">
-              {{ $withdraw->payment_status == 1 ? 'Success' : 'Pending' }}
-            </span>
+            @if($withdraw->payment_status == 1)
+              <span class="text-end flex-shrink-0 text-success">Success</span>
+            @elseif($withdraw->payment_status == 2)
+              <span class="text-end flex-shrink-0 text-danger">Failed</span>
+            @else
+              <span class="text-end flex-shrink-0" style="width: 90px; color: #ffc107">Pending</span>
+            @endif
           </div>
         </div>
         <hr>

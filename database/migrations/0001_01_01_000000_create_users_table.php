@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('country_short_code', 11)->nullable();
             $table->string('country_code', 7)->nullable();
-            $table->string('phone_number', 15)->nullable();
+            $table->string('phone_number', 15)->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 255)->nullable()->comment('Stores the user\'s hashed password with minimum 8length');
             $table->rememberToken();

@@ -38,7 +38,7 @@
                                         @foreach ($datas as $key => $value)
                                             <tr>
                                                 <td>{{ ++$key }}</td>
-                                                <td>{{ $value->users->name }} </br> {{ $value->users->email }}</td>
+                                                <td>{{ $value->users->name ?? ''}} </br> {{ $value->users->email ?? ''}}</td>
                                                 <td>{{ $value->binance_id }}</td>
                                                 <!-- <td>{{ $value->order_id }}</td> -->
                                                 <td>{{ $value->amount }}</td>
@@ -60,11 +60,23 @@
                                                 <td>
                                                     @can('creed-tags-edit-btn')
                                                         @if($value->payment_status == 1)
-                                                            <a href="{{ route('withdraw-accept.status', $value->id) }}"
+                                                            <a href="{{ route('withdraw-accept.status', [$value->id,$id2=1]) }}"
                                                                 class="btn btn-success btn-sm disabled-link"><i class=""></i> Paid</a>
+                                                        @elseif($value->payment_status == 0)
+                                                            <a href="{{ route('withdraw-accept.status', [$value->id,$id2=1]) }}"
+                                                            class="btn btn-primary btn-sm"><i class=""></i> Accept</a>
+                                                        @endif
+                                                    @endcan
+                                                    @can('creed-tags-edit-btn')
+                                                        @if($value->payment_status == 2)
+                                                            <a href="{{ route('withdraw-accept.status', [$value->id,$id2=2]) }}"
+                                                                class="btn btn-danger btn-sm disabled-link"><i class=""></i> Failed</a>
+                                                        @elseif($value->payment_status == 1)
+                                                            <a href="{{ route('withdraw-accept.status', [$value->id,$id2=2]) }}"
+                                                                class="btn btn-danger btn-sm disabled-link" style="display:none"><i class=""></i> Fail</a>
                                                         @else
-                                                            <a href="{{ route('withdraw-accept.status', $value->id) }}"
-                                                            class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Accept</a>
+                                                            <a href="{{ route('withdraw-accept.status', [$value->id,$id2=2]) }}"
+                                                            class="btn btn-danger btn-sm"><i class=""></i> Fail</a>
                                                         @endif
                                                     @endcan
                                                     <!-- @can('contact-creed-delete-btn')

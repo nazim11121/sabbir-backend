@@ -187,31 +187,22 @@
       </a>
 
       <!-- Divider -->
-      <div class="text-center my-2 text-muted fw-bold">Or sign up with credentials</div>
+      <div class="text-center my-2 text-muted fw-bold">Or write email for forgot password</div>
       <hr>
 
       <!-- Form -->
-      <form method="POST" action="{{route('profile.login')}}" enctype="multipart/form-data">
+      <form method="POST" action="{{route('frontend.forgot-password-mail')}}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
           <label class="form-label">Email<span class="text-danger">*</span></label>
           <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
         </div>
-
-        <div class="mb-3">
-          <label class="form-label">Password<span class="text-danger">*</span></label>
-          <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-        </div>
-
         <button type="submit" class="btn btn-primary w-100 fw-bold">Login</button>
       </form>
 
       <!-- Footer -->
       <div class="text-center mt-3 login-link fw-bold">
         New user to BD Funded Trader? <a href="{{route('frontend.register')}}" class="text-decoration-none">Register</a> Now
-      </div>
-      <div class="text-center mt-2 login-link fw-bold">
-        <a href="{{route('frontend.forgot-password')}}" class="text-decoration-none">Forgot Password?</a>
       </div>
     </div>
   </div>

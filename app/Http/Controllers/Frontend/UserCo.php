@@ -17,6 +17,7 @@ use App\Models\Withdraw;
 use App\Models\Slider;
 use App\Models\Notice;
 use App\Models\Commission;
+use App\Models\Review;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\TAdminUserRequest;
 use DB;
@@ -43,8 +44,9 @@ class UserCo extends Controller
         $funded   = Package::where('category_id', 2)->where('status', 1)->get();
         $slider   = Slider::orderBy('hierarchy', 'ASC')->where('status', 1)->get();
         $notice   = Notice::where('status', 1)->orderBy('id', 'DESC')->first();
-  
-        return view('frontend.welcome',compact(['packages','services','funded','slider','notice']));
+        $reviews  = Review::with('user')->where('status', 1)->get();
+
+        return view('frontend.welcome',compact(['packages','services','funded','slider','notice','reviews']));
     }
     
     /**
@@ -259,6 +261,8 @@ class UserCo extends Controller
         $user->total_deposit_amount = $user->total_deposit_amount - $amountConvert;
         $user->save();
 
+        // mail
+
         return redirect()->back();
     }
 
@@ -412,13 +416,14 @@ class UserCo extends Controller
     public function withdrawFormStore(Request $request)
     { 
         $request->validate([
+            'user_id' => 'required',
             'amount' => 'required|numeric|min:10',
             'binance_id' => 'required|string|max:255',
         ]);
 
         // For example:
         Withdraw::create([
-            'user_id' => auth()->id(),
+            'user_id' => $request->user_id,
             'amount' => $request->amount,
             'binance_id' => $request->binance_id,
             'payment_status' => 0, // Pending status
@@ -432,16 +437,20 @@ class UserCo extends Controller
         return view('admin.withdraw.index', compact('datas'));
     }
 
-    public function withdrawConfirmStatus($id){
+    public function withdrawConfirmStatus($id, $id2){
         $data = Withdraw::find($id);
-        $data->payment_status = 1;
-        $data->save();
-
-        $user = User::find($data->user_id);
-        $user->total_withdraw_amount =  $user->total_withdraw_amount + $data->amount;
-        $user->save();
-
-        return redirect()->route('withdraw-request-list')->with('success', 'Withdraw Accepted Success');
+        if($id2==2){
+            $data->payment_status = 2;
+            $data->save();
+        }elseif($id2==1) {
+            $data->payment_status = 1;
+            $data->save();
+            $user = User::find($data->user_id);
+            $user->total_withdraw_amount =  $user->total_withdraw_amount + $data->amount;
+            $user->total_deposit_amount =  $user->total_deposit_amount - $data->amount;
+            $user->save();
+        }
+        return redirect()->route('withdraw-request-list')->with('success', 'Status Update Success');
     }
 
     public function updatePhoto(Request $request)
@@ -542,6 +551,105 @@ class UserCo extends Controller
     {
         Commission::find($id)->delete();
         return redirect()->back()->with('warning', 'Commission deleted successfully.');
+    }
+
+    public function reviewList(){
+        $datas = Review::with('user')->orderBy('id', 'DESC')->get();
+        return view('admin.review.index', compact('datas'));
+    }
+
+    public function reviewCreate()
+    {
+        $users = User::get();
+        return view('admin.review.create', compact('users'));
+    }
+
+    public function reviewStore(Request $request)
+    { 
+        $request->validate([
+            'user_id' => 'required',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+
+        if($request->status){
+            $status = $request->status;
+        }else{
+            $status = 0;
+        }
+
+        Review::create([
+            'user_id' => $request->user_id, 
+            'remarks' => $request->remarks,
+            'status'  => $status,
+            'created_by' => auth()->id(),
+        ]);
+
+        return redirect()->route('review.list')->with('success', 'Review submitted successfully.');
+    }
+
+    public function reviewEdit($id)
+    {
+        $datas = Review::find($id);
+        $users = User::get();
+        return view('admin.review.edit', compact('datas','users'));
+    }
+
+    public function reviewUpdate(Request $request)
+    { 
+        $request->validate([
+            'user_id' => 'required',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+
+        if($request->status){
+            $status = $request->status;
+        }else{
+            $status = 0;
+        }
+
+        Review::updateOrCreate(
+            [
+                'user_id' => $request->user_id, 
+            ],
+            [
+                'remarks'    => $request->remarks,
+                'status' => $status,
+                'created_by' => auth()->id(),
+            ]
+        );
+
+        return redirect()->route('review.list')->with('success', 'Review updated successfully.');
+    }
+
+    public function reviewDelete($id)
+    {
+        Review::find($id)->delete();
+        return redirect()->back()->with('warning', 'Review deleted successfully.');
+    }
+
+    public function investCancel(Request $request){
+
+        $request->validate([
+            'user_id' => 'required',
+            'invest_id' => 'required',
+        ]);
+
+        $user = User::find($request->user_id);
+        $invest = TInvest::find($request->invest_id);
+        $isCancelable = $invest->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
+
+        if($isCancelable){
+            $user->total_invest_amount = $user->total_invest_amount - $invest->amount;
+            $user->total_deposit_amount = $user->total_deposit_amount + $invest->amount;
+            $user->save();
+
+            $invest->payment_status = 2;
+            $invest->save();
+
+            return redirect()->route('frontend-dashboard')->with('success','Investment cancelled and amount refunded to available balance.');
+        }else{
+            return redirect()->route('frontend-dashboard')->with('error','Investment can only be cancelled after 7 days.');
+        }
     }
 
     /**

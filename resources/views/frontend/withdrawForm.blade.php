@@ -219,6 +219,7 @@
 
       <form id="binanceWithdrawForm">
         @csrf
+        <input type="hidden" id="user_id" name="user_id" value="{{ $user->id }}">
         <div class="mb-3 text-start">
           <label for="amount" class="form-label fw-bold">Amount (USD)</label>
           <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" required min="10">
@@ -367,6 +368,7 @@
 </div>
 
 <script>
+  const userID = document.getElementById("user_id");
   const amountInput = document.getElementById("amount");
   const withdrawBtn = document.getElementById("withdrawBtn");
   const userBalance = parseFloat(document.getElementById("userBalance").value || 0);
