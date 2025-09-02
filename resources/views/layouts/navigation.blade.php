@@ -122,6 +122,12 @@
             @endcan
 
             @can('contact-creed')
+                <li class="{{ setSidebarActive(['review.*']) }}"><a href="{{ route('review.list') }}" aria-expanded="false">
+                        <i class="fas fa-envelope"></i><span class="nav-text">Review List</span></a>
+                </li>
+            @endcan
+
+            @can('contact-creed')
                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="fas fa-user-tie"></i><span
                             class="nav-text">Frontend Management</span></a>
                     <ul aria-expanded="false"

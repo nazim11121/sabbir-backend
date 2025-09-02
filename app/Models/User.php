@@ -94,6 +94,10 @@ class User extends Authenticatable
         return $this->hasMany(Commission::class, 'user_id')->orderBy('id', 'desc');
     }
 
+    public function reviews(){
+        return $this->hasMany(Review::class, 'user_id')->orderBy('id', 'desc');
+    }
+
     public function getTotalDepositAttribute()
     {
         return $this->deposits()->where('payment_status', 1)->sum('amount');

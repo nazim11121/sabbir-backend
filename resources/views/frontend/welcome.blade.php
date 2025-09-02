@@ -647,19 +647,28 @@
   <!-- ===== REVIWES ===== -->
   <div class="container mb-5">
     <h2 class="section-title">REVIWES</h2>
-    <div class="order-card d-flex justify-content-between">
-      <span><strong>Md Ashik Hosan</strong> – 50$ Diamond</span>
-      <span class="text-success">Level5</span>
+    @if($reviews && count($reviews))
+      @foreach ($reviews as $review)
+        <div class="order-card d-flex justify-content-between">
+          <span><strong>{{ $review->user->name }}</strong> – {{ $review->remarks }}</span>
+          <span class="text-success">{{ $review->user->level }}</span>
+        </div>
+      @endforeach
+    @else
+      <div class="order-card d-flex justify-content-between">
+        <span><strong>Md Ashik Hosan</strong> – 50$ Diamond</span>
+        <span class="text-success">Level5</span>
+      </div>
+      <div class="order-card d-flex justify-content-between">
+        <span><strong>RAKIB</strong> – 15$ Crown</span>
+        <span class="text-success">Level3</span>
+      </div>
+      <div class="order-card d-flex justify-content-between">
+        <span><strong>Md Eakosh</strong> – 10$ Bronze</span>
+        <span class="text-success">Level2</span>
+      </div>
     </div>
-    <div class="order-card d-flex justify-content-between">
-      <span><strong>RAKIB</strong> – 15$ Crown</span>
-      <span class="text-success">Level3</span>
-    </div>
-    <div class="order-card d-flex justify-content-between">
-      <span><strong>Md Eakosh</strong> – 10$ Bronze</span>
-      <span class="text-success">Level2</span>
-    </div>
-  </div>
+  @endif
 
   <!-- ===== App Download & Telegram ===== -->
   <!-- <div class="container mb-5 d-flex flex-column flex-md-row gap-3 justify-content-center">
