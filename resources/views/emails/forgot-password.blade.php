@@ -13,7 +13,7 @@
     <p>If you did not request this, please ignore this message.</p>
     <p>For your security, this link will expire in 5 minutes.</p>
     <br>
-    <p>Best regards, <br>{{ config('app.name') }}</p> Support Team
+    <p>Best regards, <br>{{ config('app.name') }} Support Team</p>
 </body>
 </html>
 

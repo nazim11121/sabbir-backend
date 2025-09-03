@@ -32,6 +32,9 @@ use Auth;
 use Flasher\Laravel\Facade\Flasher;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgotPasswordMail;
+use App\Mail\PurchasePackageMail;
+use App\Mail\SuccessPackageMail;
+use App\Mail\FailedPackageMail;
 use Illuminate\Support\Facades\Password;
 
 class UserCo extends Controller
@@ -264,12 +267,8 @@ class UserCo extends Controller
         $user->total_deposit_amount = $user->total_deposit_amount - $amountConvert;
         $user->save();
 
-        $otp = '';
-        // Send the user's email
-        Mail::send('emails.purchased-package', ['otp' => $otp], function ($message) use ($user) {
-            $message->to($user->email)
-                    ->subject('Purchase package notify');
-        });
+        // Send mail via queue
+        Mail::to($user->email)->queue(new PurchasePackageMail($user));
 
         return redirect()->back();
     }
@@ -394,10 +393,15 @@ class UserCo extends Controller
 
     public function buypackageConfirmStatus($id,$id2){
         $data = BuyPackage::find($id);
+        $user = User::find($data->user_id);
         if($id2==2){
             $data->payment_status = 2;
+            // Send mail via queue
+            Mail::to($user->email)->queue(new FailedPackageMail($user));
         }elseif($id2==1) {
             $data->payment_status = 1;
+            // Send mail via queue
+            Mail::to($user->email)->queue(new SuccessPackageMail($user));
         }
         $data->save();
 

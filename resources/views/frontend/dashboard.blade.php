@@ -365,12 +365,14 @@
             <small>{{ $package->created_at->format('d-m-Y') }}</small>
           </div>
           <div class="text-muted mb-2">
-            Status: @if($deposit->payment_status == 1)
-                      Success
-                    @elseif($deposit->payment_status == 2)
-                      <span class="text-danger">Failed</span>
+            Status: @if($package->payment_status == 1)
+                      <span class="text-end text-success flex-shrink-0">Success</span>
+                      
+                    @elseif($package->payment_status == 2)
+                      <span class="text-end flex-shrink-0 text-danger">Failed</span>
                     @else
-                      Ongoing
+                      <span class="text-end flex-shrink-0" style="width: 90px; color: #ffc107">Processing</span>
+                      
                     @endif
             <!-- {{ $package->payment_status == 1 ? 'Active' : 'Inactive' }} -->
           </div>
