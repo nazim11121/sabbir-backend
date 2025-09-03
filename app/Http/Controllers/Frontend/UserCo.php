@@ -261,7 +261,12 @@ class UserCo extends Controller
         $user->total_deposit_amount = $user->total_deposit_amount - $amountConvert;
         $user->save();
 
-        // mail
+        $otp = '';
+        // Send the user's email
+        Mail::send('emails.purchased-package', ['otp' => $otp], function ($message) use ($user) {
+            $message->to($user->email)
+                    ->subject('Purchase package notify');
+        });
 
         return redirect()->back();
     }
