@@ -30,6 +30,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Auth;
 use Flasher\Laravel\Facade\Flasher;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ForgotPasswordMail;
+use Illuminate\Support\Facades\Password;
 
 class UserCo extends Controller
 {
@@ -656,6 +659,70 @@ class UserCo extends Controller
             return redirect()->route('frontend-dashboard')->with('error','Investment can only be cancelled after 7 days.');
         }
     }
+
+    public function forgotPasswordMail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Email not found in our records.'], 404);
+        }
+
+        // Generate secure token
+        $token = Password::getRepository()->create($user);
+
+        // Send mail via queue
+        Mail::to($user->email)->queue(new ForgotPasswordMail($user, $token));
+
+        return response()->json([
+            'success' => true,
+            'token' => $token,
+            'message' => 'Reset link sent to your email.'
+        ]);
+    }
+
+    public function showResetForm(Request $request)
+    {
+        $email = $request->query('email');
+        $token = $request->query('token');
+
+        return view('frontend.resetPassword', compact('email', 'token'));
+    }
+
+
+    public function resetPassword(Request $request)
+    { 
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8', // make sure confirm_password exists
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Password reset successful!',
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid token or email.',
+            ], 400);
+        }
+    }
+
 
     /**
      * Display the specified resource.

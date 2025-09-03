@@ -88,7 +88,15 @@ Route::get('/user/forgot-password', function () {
     return view('frontend.forgotEmail');
 })->name('frontend.forgot-password');
 Route::post('/user/forgot-password-mail', [UserCo::class, 'forgotPasswordMail'])->name('frontend.forgot-password-mail');
-
+// Route::get('/user/reset-password', function () {
+//     return view('frontend.resetPassword');
+// })->name('frontend.reset-password');
+// Route::post('/user/reset-password-submit', [UserCo::class, 'resetPassword'])->name('user.reset-password-submit');
+// Show reset password form
+Route::get('/user/reset-password', [UserCo::class, 'showResetForm'])->name('frontend.reset-password');
+// Handle new password
+Route::post('/user/reset-password', [UserCo::class, 'resetPassword'])->name('user.reset-password-submit');
+/*end*/
 Route::middleware(['auth', 'verified'])->group(function () {
     
     /*Dashboard*/ 

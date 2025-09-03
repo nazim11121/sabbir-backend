@@ -178,54 +178,32 @@
 <div class="container d-flex justify-content-center align-items-center min-vh-100 my-3">
   <div class="col-md-6 col-lg-5">
     <div class="card p-4">
-      <h4 class="text-center fw-bold mb-3">Forgot Password</h4>
-
-      <!-- Google Login -->
-      <a href="{{ route('google.login') }}" class="btn google-btn mb-3 fw-bold">
-        <img src="https://img.icons8.com/color/16/000000/google-logo.png"/>
-        Login with Google
-      </a>
-
-      <!-- Divider -->
-      <div class="text-center my-2 text-muted fw-bold">Or write your email for forgot password</div>
-      <hr>
+      <h4 class="text-center fw-bold mb-3">Reset Password</h4>
 
       <!-- Form -->
       <form method="POST" action="#" id="binanceWithdrawForm" enctype="multipart/form-data">
         @csrf
-        <div class="mb-3">
-          <label class="form-label">Email<span class="text-danger">*</span></label>
-          <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
+        <input type="hidden" name="token" value="{{ $token }}">
+        <input type="hidden" name="email" value="{{ $email }}">
+            <div class="mb-3">
+      <label class="form-label">Password<span class="text-danger">*</span></label>
+      <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Confirm Password<span class="text-danger">*</span></label>
+      <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm Password" required>
+      <div id="passwordError" class="text-danger mt-1" style="display:none; font-size: 0.9rem;">
+        Confirm Passwords must match and be at least 8 characters!
+      </div>
+    </div>
+
+    <button type="submit" id="submitBtn" class="btn btn-primary w-100 fw-bold" disabled>Submit</button>
+
+          </form>
         </div>
-        <button type="submit" class="btn btn-primary w-100 fw-bold">Submit</button>
-      </form>
-
-      <!-- Footer -->
-      <div class="text-center mt-3 login-link fw-bold">
-        New user to BD Funded Trader? <a href="{{route('frontend.register')}}" class="text-decoration-none">Register</a> Now
       </div>
     </div>
-  </div>
-</div>
-<!-- Submit Success Modal -->
-<!-- <div class="modal fade" id="submitModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Form Submitted</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        আপনার ফর্ম সাবমিট হয়েছে ✅  
-        (এখন সার্ভারে request যাবে)
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 
   <!-- ===== Footer ===== -->
   <footer class="text-white pt-4 pb-3 footer" id="contactUs">
@@ -293,21 +271,28 @@
       toggleIcon.className = chatVisible ? 'bi bi-x' : 'bi bi-plus';
     }
   </script>
-  <!-- <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.querySelector("form");
-  form.addEventListener("submit", function (e) {
-    e.preventDefault(); // default form submit stop করবে
-    var submitModal = new bootstrap.Modal(document.getElementById('submitModal'));
-    submitModal.show();
+  <script>
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirm_password");
+const errorDiv = document.getElementById("passwordError");
+const submitBtn = document.getElementById("submitBtn");
 
-    // চাইলে delay দিয়ে form submit করতে পারো
-    setTimeout(() => {
-      form.submit();
-    }, 1500);
-  });
-});
-</script> -->
+function checkPasswords() {
+  const passVal = password.value;
+  const confirmVal = confirmPassword.value;
+
+  if (passVal.length >= 8 && passVal === confirmVal) {
+    errorDiv.style.display = "none";
+    submitBtn.disabled = false; // enable submit
+  } else {
+    errorDiv.style.display = "block";
+    submitBtn.disabled = true; // disable submit
+  }
+}
+
+password.addEventListener("input", checkPasswords);
+confirmPassword.addEventListener("input", checkPasswords);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script>
     document.getElementById('binanceWithdrawForm').addEventListener('submit', function (e) {
@@ -316,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const form = e.target;
       const formData = new FormData(form);
 
-      fetch("{{ route('frontend.forgot-password-mail') }}", {
+      fetch("{{ route('user.reset-password-submit') }}", {
         method: "POST",
         headers: {
           "X-CSRF-TOKEN": "{{ csrf_token() }}"
@@ -327,10 +312,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!response.ok) throw new Error("Failed to submit");
         return response.json();
       })
-      .then(data => { 
+      .then(data => {
         Swal.fire({
           title: 'Success!',
-          text: 'Mail Sent Success. Please check your mail and reset your password.',
+          text: 'Password reset success. Please login with your new password.',
           icon: 'success',
           confirmButtonText: 'OK'
         }).then(() => {
@@ -342,6 +327,5 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 </script>
-
 </body>
 </html>
