@@ -462,10 +462,13 @@
                 <h6 class="fee-badge">FEE {{ $service->price }}$</h6>
               @endif
               @if($service->id == 2)
-                <h6 class="fee-badge">INVESTMENT</h6>
+                <h6 class="fee-badge">Flexible</h6>
               @endif
               @if($service->id == 3)
                 <h6 class="fee-badge">LOAN</h6>
+              @endif
+              @if($service->id == 4)
+                <h6 class="fee-badge">Locked</h6>
               @endif
             </div>
           </div>
@@ -836,7 +839,7 @@
     </div>
   </div>
 
-<!-- Investment Package Modal -->
+<!-- Flexible Investment Package Modal -->
 <div class="modal fade" id="investmentPackageModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -854,15 +857,15 @@
         <div class="row">
           <!-- Left: Rules -->
           <div class="col-md-7">
-            <h6 class="mb-3">Investment এর শর্তাবলী</h6>
+            <h6 class="mb-3">ফ্লেক্সিবল ইনভেস্টমেন্ট এর শর্তাবলী</h6>
             <ul class="list-group small">
-              <li class="list-group-item">আপনার ইনভেস্টমেন্ট থেকে নিয়মিত আয় করুন – প্রতি সপ্তাহে 10% লাভ, মূলধন নিরাপদ</li>
-              <li class="list-group-item">আপনি চাইলে আমাদের কোম্পানিতে ইনভেস্ট করে নিয়মিত কমিশন পেতে পারেন।</li>
-              <li class="list-group-item">আপনার ইনভেস্টমেন্টের উপর 10% প্রতি সপ্তাহে লাভ।</li>
-              <li class="list-group-item">মিনিমাম ইনভেস্টমেন্ট: $100</li>
-              <li class="list-group-item">বড় ইনভেস্ট, বড় লাভ – আপনার ক্যাপিটালকে আয়েশের সুযোগ দিন!</li>
-              <li class="list-group-item">ক্যাপিটাল নিরাপত্তা: ইনভেস্টমেন্টের মূলধন সেফ থাকবে, শুধু কমিশন দেওয়া হবে</li>
-              <li class="list-group-item">মুলধন উত্তোলনের নিয়ম: মুলধন উত্তোলনের জন্য অ্যাপ্লিকেশন দিতে হবে। ৭ দিনের মধ্যে উত্তোলন সম্পন্ন হবে।</li>
+              <li class="list-group-item">সময়কাল: ২৪ ঘণ্টা (২৪ ঘণ্টা পর যেকোনো সময় উত্তোলন করা যাবে)</li>
+              <li class="list-group-item">সাপ্তাহিক কমিশন: ৭%</li>
+              <li class="list-group-item">ন্যূনতম বিনিয়োগ: 100$</li>
+              <li class="list-group-item">শুধুমাত্র ২৪ ঘণ্টা পূর্ণ হওয়ার পর কমিশন উত্তোলন করা যাবে।</li>
+              <li class="list-group-item">সাপ্তাহিক কমিশন প্রতি সপ্তাহের শেষে আপনার অ্যাকাউন্টে যোগ হবে।</li>
+              <li class="list-group-item">বড় ইনভেস্ট, বড় লাভ – আপনার ক্যাপিটালকে আয়ের সুযোগ দিন!</li>
+              <li class="list-group-item">ক্যাপিটাল নিরাপত্তা: ইনভেস্টমেন্টের মূলধন সেফ থাকবে, শুধু কমিশন দেওয়া হবে।</li>
             </ul>
           </div>
 
@@ -902,6 +905,85 @@
                   </button>
                 <?php else: ?>
                   <button id="buyButton2" type="submit" class="btn btn-primary" disabled>
+                    Accept & Invest
+                  </button>
+                <?php endif; ?>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Locked Investment Package Modal -->
+<div class="modal fade" id="investmentPackageModal2" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <img id="modalPackageImg3" src="{{asset('images/placeholder.png')}}" alt="Package" class="me-3 rounded" style="width: 60px">
+        <div>
+          <h5 class="modal-title" id="modalPackageName3">Package Name</h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- Left: Rules -->
+          <div class="col-md-7">
+            <h6 class="mb-3">লকড ইনভেস্টমেন্ট এর শর্তাবলী</h6>
+            <ul class="list-group small">
+              <li class="list-group-item">সময়কাল: ন্যূনতম ৩০ দিন (লকড পিরিয়ড)</li>
+              <li class="list-group-item">সাপ্তাহিক কমিশন: ১০%</li>
+              <li class="list-group-item">উত্তোলন: ৩০ দিন পূর্ণ হওয়ার পর</li>
+              <li class="list-group-item">ন্যূনতম বিনিয়োগ: 100$</li>
+              <li class="list-group-item">৩০ দিনের আগে কোনো অবস্থাতেই মূলধন উত্তোলন করা যাবে না</li>
+              <li class="list-group-item">সাপ্তাহিক কমিশন প্রতি সপ্তাহের শেষে আপনার অ্যাকাউন্টে যোগ হবে।</li>
+              <li class="list-group-item">বড় ইনভেস্ট, বড় লাভ – আপনার ক্যাপিটালকে আয়ের সুযোগ দিন!</li>
+              <li class="list-group-item">ক্যাপিটাল নিরাপত্তা: ইনভেস্টমেন্টের মূলধন সেফ থাকবে, শুধু কমিশন দেওয়া হবে!</li>
+            </ul>
+          </div>
+
+          <!-- Right: Form -->
+          <div class="col-md-5 mt-4">
+            <form id="buyForm3" action="{{route('frontend.locked-invest')}}" method="POST" enctype="multipart/form-data">
+              @csrf
+              <input type="hidden" name="user_id" value="<?php echo $user->id ?? ''; ?>">
+              <input type="hidden" name="package_id" id="modalPackageId3" value="">
+
+              <!-- Balance Info -->
+              <div class="border rounded p-3 mb-3 mt-3 bg-white text-center">
+                <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
+                <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? '0'}}</p>
+              </div>
+
+              <!-- Amount -->
+              <div class="mb-5">
+                <label for="modalPackageAmount3" class="form-label fw-bold">Invest Amount ($)</label>
+                <input type="number" name="amount" id="modalPackageAmount3" 
+                       class="form-control" placeholder="Enter amount" 
+                       min="100" max="10000000" required>
+                <div class="form-text">Minimum Amount must be 100$.</div>
+              </div>
+              <!-- Checkbox + Submit -->
+              <div class="row d-flex justify-content-between align-items-center mt-4">
+                <div class="form-check float-left">
+                  <input class="form-check-input" type="checkbox" id="acceptRules3">
+                  <label class="form-check-label small" for="acceptRules3">
+                    আমি সকল নিয়ম মেনে নিলাম।
+                  </label>
+                </div>
+                <?php if(empty($user)): ?>
+                  <a href="{{route('frontend.login')}}" class="btn btn-warning mb-4">Login First</a>
+                  <button id="buyButton3" type="submit" class="btn btn-primary" style="display:none" disabled>
+                    Accept & Invest
+                  </button>
+                <?php else: ?>
+                  <button id="buyButton3" type="submit" class="btn btn-primary" disabled>
                     Accept & Invest
                   </button>
                 <?php endif; ?>
@@ -1019,7 +1101,7 @@
   });
 </script> -->
 
-<!-- investment -->
+<!-- short-term-investment -->
 <script>
   const checkbox2 = document.getElementById('acceptRules2');
   const buyButton2 = document.getElementById('buyButton2');
@@ -1092,6 +1174,81 @@
     modalAmount2.value = '';
     checkbox2.checked = false;
     buyButton2.disabled = true;
+  });
+</script>
+<!-- long-term-investment -->
+<script>
+  const checkbox3 = document.getElementById('acceptRules3');
+  const buyButton3 = document.getElementById('buyButton3');
+  const buyForm3 = document.getElementById('buyForm3');
+  const userLoggedIn3 = <?php echo empty($user) ? 'false' : 'true'; ?>;
+  const userBalance3 = <?php echo $user->total_deposit_amount ?? 0; ?>;
+
+  const modalName3 = document.getElementById('modalPackageName3');
+  const modalImg3 = document.getElementById('modalPackageImg3');
+  const modalId3 = document.getElementById('modalPackageId3');
+  const modalAmount3 = document.getElementById('modalPackageAmount3');
+
+  const balanceBox3 = document.querySelector('#investmentPackageModal2 .modal-body .col-md-5 .border');
+
+  const depositButtonHtml3 = `<a href="/deposit-form" class="btn btn-warning w-100 mt-2" id="dynamicDepositBtn3">Deposit Your Account</a>`;
+
+  // Modal open
+  document.querySelectorAll('.OpenModalBtn_4').forEach(btn => {
+    btn.addEventListener('click', function () {
+      let card = this.closest('.product-card');
+      let id3 = card.getAttribute('data-id');
+      let name3 = card.getAttribute('data-name');
+      let img3 = card.getAttribute('data-img');
+
+      // fill modal
+      modalName3.textContent = name3;
+      modalImg3.src = img3;
+      modalId3.value = id3;
+
+      // clean old button
+      balanceBox3.querySelector('#dynamicDepositBtn3')?.remove();
+
+      if (!userLoggedIn3) {
+        buyButton3.style.display = "disabled";
+      } else {
+        buyButton3.style.display = "inline-block";
+
+        if (userBalance3 < 100) {
+          buyButton3.disabled = true;
+          balanceBox3.insertAdjacentHTML('afterend', depositButtonHtml3);
+        } else {
+          buyButton3.disabled = !checkbox3.checked;
+        }
+      }
+
+      new bootstrap.Modal(document.getElementById('investmentPackageModal2')).show();
+    });
+  });
+
+  // Checkbox validation
+  checkbox3.addEventListener('change', validateForm);
+  // Amount input validation
+  modalAmount3.addEventListener('input', validateForm);
+
+  function validateForm() {
+    const amount = parseFloat(modalAmount3.value) || 0;
+
+    if (userLoggedIn3 && checkbox3.checked && amount >= 100 && amount <= userBalance3) {
+      buyButton3.disabled = false;
+    } else {
+      buyButton3.disabled = true;
+    }
+  }
+
+  // Clear on close
+  document.getElementById('investmentPackageModal2').addEventListener('hidden.bs.modal', function () {
+    modalName3.textContent = 'Package Name';
+    modalImg3.src = 'images/placeholder.png';
+    modalId3.value = '';
+    modalAmount3.value = '';
+    checkbox3.checked = false;
+    buyButton3.disabled = true;
   });
 </script>
 

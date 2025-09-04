@@ -297,6 +297,44 @@ class UserCo extends Controller
         
         $input = $request->all(); 
         $input['payment_status'] = 1;
+        $input['investment_type'] = "flexible";
+        // Save to DB
+        $deposit = TInvest::create($input);
+
+        $user->total_deposit_amount = $user->total_deposit_amount - $request->amount;
+        $user->total_invest_amount = $user->total_invest_amount + $request->amount;
+        $user->save();
+
+        // Flash a success message
+        // session()->flash('success', 'Deposit on processing wait for confirmation message.');
+        return redirect()->route('frontend-dashboard');  //->with('success','Deposit on processing wait for confirmation message.');
+    }
+
+    public function lockedInvestForm(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'package_id' => 'required',
+            'amount' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $user = User::find($request->user_id);
+
+        if($request->amount<100 || $user->total_deposit_amount<$request->amount ){
+            return redirect()->route('deposit'); 
+        }
+        
+        $input = $request->all(); 
+        $input['payment_status'] = 1;
+        $input['investment_type'] = "locked";
         // Save to DB
         $deposit = TInvest::create($input);
 
@@ -648,7 +686,11 @@ class UserCo extends Controller
 
         $user = User::find($request->user_id);
         $invest = TInvest::find($request->invest_id);
-        $isCancelable = $invest->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
+        if($invest->invest_type == "Flexible"){
+            $isCancelable = $invest->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
+        }else{
+            $isCancelable = $invest->created_at->diffInDays(now()) >= 30;
+        }
 
         if($isCancelable){
             $user->total_invest_amount = $user->total_invest_amount - $invest->amount;

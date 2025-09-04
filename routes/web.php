@@ -78,6 +78,8 @@ Route::post('/buy-package/funded', [UserCo::class, 'buyFundedPackage'])->name('b
 
 Route::post('/invest-form', [UserCo::class, 'investForm'])->name('frontend.invest');
 
+Route::post('/locked-invest-form', [UserCo::class, 'lockedInvestForm'])->name('frontend.locked-invest');
+
 Route::get('/withdraw-form', [UserCo::class, 'withdrawForm'])->name('withdraw');
 
 Route::post('/withdraw-form/store', [UserCo::class, 'withdrawFormStore'])->name('withdraw-form.store');

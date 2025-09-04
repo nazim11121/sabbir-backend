@@ -487,8 +487,16 @@
                    <span class="text-end flex-shrink-0" style="width: 90px; color: #ffc107">Pending</span>
                 @endif
                 @php
-                  $isCancelable = $investment->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
-                  $investmentStatus = $investment->payment_status == 2;
+                  if($investment->investent_type =="flexible")
+                    $isCancelable = $investment->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
+                    $investmentStatus = $investment->payment_status == 2;
+                  elseif($investment->investent_type =="locked") {
+                    $isCancelable = $investment->created_at->diffInDays(\Carbon\Carbon::now()) >= 30;
+                    $investmentStatus = $investment->payment_status == 2;
+                  }else{
+                    $isCancelable = $investment->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
+                    $investmentStatus = $investment->payment_status == 2;
+                  }
                 @endphp
                 <form action="{{route('invest.cancel')}}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this investment?');">
                   @csrf
