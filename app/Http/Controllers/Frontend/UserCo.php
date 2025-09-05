@@ -361,7 +361,7 @@ class UserCo extends Controller
             $data->payment_status = 1;
             $data->save();
             $user = User::find($data->user_id);
-            $user->total_deposit_amount =  $user->total_deposit_amount + $data->amount;
+            $user->total_deposit_amount =  (float)($user->total_deposit_amount) + (float)($data->amount);
             $user->save();
         }
 
@@ -379,7 +379,7 @@ class UserCo extends Controller
         $data->save();
 
         $user = User::find($data->user_id);
-        $user->total_invest_amount =  $user->total_invest_amount + $data->amount;
+        $user->total_invest_amount =  (float)($user->total_invest_amount) + (float)($data->amount);
         $user->save();
 
         return redirect()->route('invest-list')->with('success', 'Invest Accepted Success');
@@ -496,8 +496,8 @@ class UserCo extends Controller
             $data->payment_status = 1;
             $data->save();
             $user = User::find($data->user_id);
-            $user->total_withdraw_amount =  $user->total_withdraw_amount + $data->amount;
-            $user->total_deposit_amount =  $user->total_deposit_amount - $data->amount;
+            $user->total_withdraw_amount =  (float)($user->total_withdraw_amount) + (float)($data->amount);
+            $user->total_deposit_amount =  (float)($user->total_deposit_amount) - (float)($data->amount);
             $user->save();
         }
         return redirect()->route('withdraw-request-list')->with('success', 'Status Update Success');
