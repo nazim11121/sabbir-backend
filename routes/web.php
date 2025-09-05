@@ -131,7 +131,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/commission/store', [UserCo::class, 'commissionStore'])->name('commission.store');
     Route::get('/commission/edit/{id}', [UserCo::class, 'commissionEdit'])->name('commission.edit');
     Route::match(['put','patch'],'/commission/update/{id}', [UserCo::class, 'commissionUpdate'])->name('commission.update');
-    Route::get('/commission/delete/{id}', [UserCo::class, 'commissionDelete'])->name('commission.delete');
+    Route::delete('/commission/delete/{id}', [UserCo::class, 'commissionDelete'])->name('commission.delete');
 
     Route::get('/review-list', [UserCo::class, 'reviewList'])->name('review.list');
     Route::get('/review/create', [UserCo::class, 'reviewCreate'])->name('review.create');

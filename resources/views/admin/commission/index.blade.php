@@ -25,7 +25,7 @@
                                             <th>Amount</th>
                                             <th>Remarks</th>
                                             <th>Status</th>
-                                            <!-- <th class="text-center">Action</th> -->
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,14 +58,14 @@
                                                         @endcan
 
                                                         @can('business-category-delete-btn')
-                                                            <!-- <form action="{{ route('package.destroy', $value->id) }}"
+                                                            <form action="{{ route('commission.delete', $value->id) }}"
                                                                 method="POST" onsubmit="return confirm('Are you sure you want to delete this?')">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" class="btn btn-danger btn-sm mx-2 d-inline-flex align-items-center">
                                                                     <i class="fa fa-trash mr-1"></i> Delete
                                                                 </button>
-                                                            </form> -->
+                                                            </form>
                                                         @endcan
                                                     </div>
                                                 </td>

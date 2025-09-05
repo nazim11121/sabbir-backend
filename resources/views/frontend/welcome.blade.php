@@ -325,31 +325,6 @@
           </span>
         </a>
       </div>
-      <!-- Notification Modal -->
-      <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              @if(count($user->unread_notifications) > 0)
-                <ul class="list-group">
-                  @foreach($user->unread_notifications as $notify)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <span>{{ $notify->commission_type ?? 'N/A' }}</span>
-                      <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
-                    </li>
-                  @endforeach
-                </ul>
-              @else
-                <p class="text-muted text-center">No new notifications</p>
-              @endif
-            </div>
-          </div>
-        </div>
-      </div>
 
       <!-- Deposit Button -->
       <a href="#" class="btn btn-info btn-sm d-flex align-items-center money-bag-icon" style="margin-left: 5px;">
@@ -387,6 +362,33 @@
 
   </div>
 </nav>
+@if($user)
+<!-- Notification Modal -->
+      <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              @if(count($user->unread_notifications) > 0)
+                <ul class="list-group">
+                  @foreach($user->unread_notifications as $notify)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span>{{ $notify->commission_type ?? 'N/A' }}</span>
+                      <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
+                    </li>
+                  @endforeach
+                </ul>
+              @else
+                <p class="text-muted text-center">No new notifications</p>
+              @endif
+            </div>
+          </div>
+        </div>
+      </div>
+@endif
 
 <!-- ===== Mobile Navbar (Bottom Fixed) ===== -->
 <nav class="navbar fixed-bottom bg-white border-top d-lg-none">
@@ -706,7 +708,7 @@
         </div>
       @endforeach
     @else
-      <div class="order-card d-flex justify-content-between">
+      <!-- <div class="order-card d-flex justify-content-between">
         <span><strong>Md Ashik Hosan</strong> – 50$ Diamond</span>
         <span class="text-success">Level5</span>
       </div>
@@ -717,7 +719,7 @@
       <div class="order-card d-flex justify-content-between">
         <span><strong>Md Eakosh</strong> – 10$ Bronze</span>
         <span class="text-success">Level2</span>
-      </div>
+      </div> -->
     @endif
   </div>
   <!-- ===== App Download & Telegram ===== -->
@@ -790,7 +792,7 @@
             
             <!-- Left Side Image -->
             <div class="col-md-6">
-              <img src="images/popup/popup.jpg" class="img-fluid w-100 h-100" alt="Promo Banner" style="object-fit: cover;">
+              <img src="images/popup/popup.webp" class="img-fluid w-100 h-100" alt="Promo Banner" style="object-fit: cover;">
             </div>
 
             <!-- Right Side Text -->

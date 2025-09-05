@@ -35,6 +35,17 @@
         height: 42px;
         width: auto;
       }
+      .money-bag-icon {
+        padding: 7px;
+        font-weight: 500;
+        font-size: 11px;
+      }
+      .notification-icon {
+        margin-left: -25px;
+      }
+    }
+    .navbar .d-flex {
+      flex-wrap: nowrap !important;
     }
 
     .card-custom {
@@ -119,45 +130,89 @@
     <a class="navbar-brand d-flex align-items-center" href="/">
       <img src="{{ asset('images/logo/logo.jpg') }}" alt="logo" class="me-2">
     </a>
-
     <!-- Auth Buttons -->
     <div class="d-flex align-items-center gap-2 flex-shrink-0">
       <!-- Contact Us (Desktop only) -->
       <a href="#contactUs" class="btn btn-sm d-none d-lg-inline">Contact Us</a>
 
       @if($user)
-        <!-- Deposit Button -->
-        <a href="#" class="btn btn-info btn-sm d-flex align-items-center">
-          <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
+    <!-- Auth Buttons -->
+    <!-- <div class="d-flex align-items-center flex-nowrap gap-2"> -->
+    
+      <!-- Notification Bell -->
+      <div class="position-relative notification-icon">
+        <a role="button" class="text-dark fs-5" data-bs-toggle="modal" data-bs-target="#notificationModal">
+          <i class="bi bi-bell"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="padding: 6px;font-size: 10px;">
+            {{ count($user->unread_notifications) ?? 0 }}
+          </span>
         </a>
-        <div class="dropdown">
-          <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" alt="User" width="40" height="40" class="rounded-circle">
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <form action="{{ route('logout.user') }}" method="POST">
-                @csrf
-                <button type="submit" class="dropdown-item text-danger">
-                  <i class="bi bi-box-arrow-right me-2"></i> Logout
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
+      </div>
+
+      
+
+      <!-- Deposit Button -->
+      <a href="#" class="btn btn-info btn-sm d-flex align-items-center money-bag-icon" style="margin-left: 5px;">
+        <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
+      </a>
+
+      <!-- Profile Image -->
+      <div class="dropdown">
+        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" 
+              alt="User" width="40" height="40" class="rounded-circle">
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+          <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <form action="{{ route('logout.user') }}" method="POST">
+              @csrf
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
       @else
         <!-- Login (Always show) -->
         <a href="{{ route('frontend.login') }}" class="btn btn-primary btn-sm">Login</a>
       @endif
     </div>
+
   </div>
 </nav>
+<!-- Notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+              <!-- ✅ Proper dismiss button -->
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              @if(count($user->unread_notifications) > 0)
+                <ul class="list-group">
+                  @foreach($user->unread_notifications as $notify)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span>{{ $notify->commission_type ?? 'N/A' }}</span>
+                      <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
+                    </li>
+                  @endforeach
+                </ul>
+              @else
+                <p class="text-muted text-center">No new notifications</p>
+              @endif
+            </div>
+          </div>
+        </div>
+</div>
 
 <!-- ===== Mobile Navbar (Bottom Fixed) ===== -->
 <nav class="navbar fixed-bottom bg-white border-top d-lg-none">

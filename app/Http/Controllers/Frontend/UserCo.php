@@ -259,7 +259,7 @@ class UserCo extends Controller
         }
 
         $input = $request->all(); 
-        $input['payment_status'] = 1; 
+        $input['payment_status'] = 0; 
         $deposit = BuyPackage::create($input);
         $amountConvert = $request->amount;
 
@@ -543,7 +543,7 @@ class UserCo extends Controller
             'user_id' => 'required',
             'commission_type' => 'nullable|string|max:100',
             'percentage' => 'nullable|numeric|min:1|max:100',
-            'amount' => 'nullable|numeric|min:10',
+            'amount' => 'required|numeric|min:1',
             'remarks' => 'nullable|string|max:255',
         ]);
 
@@ -557,8 +557,11 @@ class UserCo extends Controller
         ]);
 
         $user = User::find($request->user_id);
-        $user = $user->total_commission_amount + $request->amount;
-        $user->total_deposit_amount = $user->total_deposit_amount + $request->amount;
+        $totalDeposit = (float) ($user->total_deposit_amount ?? 0.00);
+        $amount = (float) $request->amount;
+        $sum = $totalDeposit + $amount;
+        $user->total_commission_amount = (float) ($user->total_commission_amount ?? 0.00) + $amount;
+        $user->total_deposit_amount = $sum;
         $user->save();
 
         return redirect()->route('commission.list')->with('success', 'Commission submitted successfully.');
@@ -581,25 +584,38 @@ class UserCo extends Controller
             'remarks' => 'nullable|string|max:255',
         ]);
 
-        Commission::updateOrCreate(
-            [
-                'user_id' => $request->user_id, 
-                'commission_type' => $request->commission_type,
-            ],
-            [
-                'percentage' => $request->percentage,
-                'amount'     => $request->amount,
-                'remarks'    => $request->remarks,
-                'created_by' => auth()->id(),
-            ]
-        );
+        $comData = Commission::find($id);
+        $comData->user_id = $request->user_id;
+        $comData->commission_type = $request->commission_type;
+        $comData->percentage = $request->percentage;
+        $comData->amount = $request->amount;
+        $comData->remarks = $request->remarks;
+        $comData->created_by = auth()->id();
+        $comData->save();
+
+        $user = User::find($request->user_id);
+        $totalDeposit = (float) ($user->total_deposit_amount ?? 0.00);
+        $amount = (float) $request->amount;
+        $sum = $totalDeposit + $amount;
+        $user->total_commission_amount = (float) ($user->total_commission_amount ?? 0.00) + $amount;
+        $user->total_deposit_amount = $sum;
+        $user->save();
 
         return redirect()->route('commission.list')->with('success', 'Commission updated successfully.');
     }
 
     public function commissionDelete($id)
     {
-        Commission::find($id)->delete();
+        $data = Commission::find($id);
+        $user = User::find($data->user_id);
+        $totalDeposit = (float) ($user->total_deposit_amount ?? 0.00);
+        $amount = (float) $data->amount;
+        $minus = $totalDeposit - $amount;
+        $user->total_commission_amount = (float) ($user->total_commission_amount ?? 0.00) - $amount;
+        $user->total_deposit_amount = $minus;
+        $user->save();
+
+        $data->delete();
         return redirect()->back()->with('warning', 'Commission deleted successfully.');
     }
 

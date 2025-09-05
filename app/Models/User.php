@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
-use App\Traits\LogsCustomActivity;
-use Spatie\Activitylog\LogOptions;
+// use App\Traits\LogsCustomActivity;
+// use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, LogsCustomActivity;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes; //, LogsCustomActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -46,6 +46,9 @@ class User extends Authenticatable
         'level',
         'nid_image',
         'total_deposit_amount',
+        'total_invest_amount',
+        'total_commissiom_amount',
+        'total_withdraw_amount',
         'status'
     ];
 
@@ -143,13 +146,13 @@ class User extends Authenticatable
         ->count();
     }
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-        ->logOnly(['name', 'first_name', 'last_name', 'email', 'phone_number', 'password', 'google_id', 'account_type',
-        'otp', 'otp_expires_at', 'otp_sttaus', 'owner_id'])
-        ->logOnlyDirty();
-    }
+    // public function getActivitylogOptions(): LogOptions
+    // {
+    //     return LogOptions::defaults()
+    //     ->logOnly(['name', 'first_name', 'last_name', 'email', 'phone_number', 'password', 'google_id', 'account_type',
+    //     'otp', 'otp_expires_at', 'otp_sttaus', 'owner_id'])
+    //     ->logOnlyDirty();
+    // }
 
     public function unread_notifications(){
         return $this->hasMany(Commission::class, 'user_id')->where('status', 1)->orderBy('id', 'desc');
