@@ -4,6 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BD FUNDED TRADER</title>
+  <link rel="icon" href="{{asset('images/favicon.png')}}" type="image/x-icon">
+  <!-- Open Graph (used by Facebook, WhatsApp, LinkedIn, etc.) -->
+  <meta property="og:title" content="BD Funded Trader" />
+  <meta property="og:description" content="Get funded to trade with BD Funded Trader. No risk, all reward." />
+  <meta property="og:image" content="https://bdfundedtrader.com/images/logo/logo.jpg" />
+  <meta property="og:url" content="https://bdfundedtrader.com" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter Card (used by X/Twitter) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BD Funded Trader" />
+  <meta name="twitter:description" content="Get funded to trade with BD Funded Trader. No risk, all reward." />
+  <meta name="twitter:image" content="https://bdfundedtrader.com/images/logo/logo.jpg" />
 
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,6 +37,17 @@
         height: 42px;
         width: auto;
       }
+      .money-bag-icon {
+        padding: 7px;
+        font-weight: 500;
+        font-size: 11px;
+      }
+      .notification-icon {
+        margin-left: -25px;
+      }
+    }
+    .navbar .d-flex {
+      flex-wrap: nowrap !important;
     }
 
     .money-btn { transition: all .3s ease; }
@@ -100,40 +123,59 @@
   $data = session('referrer');
   $users = $data ? App\Models\User::find($data->id) : null;
 @endphp
-<!-- ===== Navbar ===== -->
+<!-- ===== Navbar (Responsive) ===== -->
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
-  <div class="container d-flex justify-content-between align-items-center">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap flex-lg-nowrap">
+    @php
+      $data = session('referrer');
+      $user = $data ? App\Models\User::find($data->id) : null;
+    @endphp
+
     <!-- Brand Logo -->
     <a class="navbar-brand d-flex align-items-center" href="/">
       <img src="{{ asset('images/logo/logo.jpg') }}" alt="logo" class="me-2">
     </a>
 
-    <div class="d-flex align-items-center gap-2">
-      <a href="#contactUs" class="btn btn-sm d-none d-lg-inline">Contact Us</a>
-      <a href="#" class="btn btn-info btn-sm d-flex align-items-center">
-        <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
+    <!-- Auth Buttons -->
+    <div class="d-flex align-items-center flex-nowrap gap-2">
+    
+    <!-- Notification Bell -->
+    <div class="position-relative notification-icon>
+      <a href="#" class="text-dark fs-5" data-bs-toggle="modal" data-bs-target="#notificationModal">
+        <i class="bi bi-bell"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="padding: 6px;font-size: 10px;">
+          {{ count($user->unread_notifications) ?? 0 }}
+        </span>
       </a>
-      <div class="dropdown">
-        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" alt="User" width="40" class="rounded-circle">
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-          <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li>
-            <form action="{{ route('logout.user') }}" method="POST">
-              @csrf
-              <button type="submit" class="dropdown-item text-danger">
-                <i class="bi bi-box-arrow-right me-2"></i> Logout
-              </button>
-            </form>
-          </li>
-        </ul>
-      </div>
+    </div>
+
+    <!-- Deposit Button -->
+    <a href="#" class="btn btn-info btn-sm d-flex align-items-center money-bag-icon" style="margin-left: 5px;">
+      <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
+    </a>
+
+    <!-- Profile Image -->
+    <div class="dropdown">
+      <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" 
+             alt="User" width="40" height="40" class="rounded-circle">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+        <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <form action="{{ route('logout.user') }}" method="POST">
+            @csrf
+            <button type="submit" class="dropdown-item text-danger">
+              <i class="bi bi-box-arrow-right me-2"></i> Logout
+            </button>
+          </form>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
@@ -176,10 +218,10 @@
 <div class="container text-center mt-5">
   <!-- Profile Image with Notification Badge -->
   <div class="position-relative d-inline-block">
-    <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#notificationModal">
+    <!-- <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#notificationModal">
       <span class="position-absolute start-10 badge rounded-pill bg-danger">
         {{ count($user->unread_notifications) ?? 0 }}
-      </span>
+      </span> -->
       <img 
         src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" 
         alt="Profile" 
@@ -187,7 +229,7 @@
         id="profileImage"
         style="width:120px; height:120px; object-fit:cover;"
       >
-    </button>
+    <!-- </button> -->
 
     <!-- Edit Button -->
     <button class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle" 
@@ -236,20 +278,25 @@
 </form>
 
 @php
-  $referredUsers = \App\Models\User::where('refer_code', $user->own_refer_code)->pluck('id');
-  $referredStats = \App\Models\BuyPackage::whereIn('user_id', $referredUsers)
-    ->where('payment_status', 1)
-    ->selectRaw('COUNT(package_id) as total_packages, SUM(amount) as total_amount')
-    ->first();
-  $totalPackages = $referredStats->total_packages;
-  $totalAmount = $referredStats->total_amount;
+  if($user->own_refer_code){
+    $referredUsers = \App\Models\User::where('refer_code', $user->own_refer_code)->pluck('id');
+    $referredStats = \App\Models\BuyPackage::whereIn('user_id', $referredUsers)
+      ->where('payment_status', 1)
+      ->selectRaw('COUNT(package_id) as total_packages, SUM(amount) as total_amount')
+      ->first();
+    $totalPackages = $referredStats->total_packages;
+    $totalAmount = $referredStats->total_amount;
+  }else{
+    $totalPackages = 0;
+    $totalAmount = 0;
+  }
 @endphp
 <!-- ===== Info Cards ===== -->
 <div class="container mt-4">
   <div class="row g-3">
     <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $user->total_invest ?? 0 }} $</h5><small>Invest Amount</small></div></div>
     <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $user->total_deposit ?? 0 }} $</h5><small>Deposit Amount</small></div></div>
-    <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $user->total_referral_count ?? 0 }}</h5><small>Total Refer Register</small></div></div>
+    <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $user->total_referral_count ?? 0 }}</h5><small>Total Referral</small></div></div>
     <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $totalPackages ?? 0 }}</h5><small>Total FTD</small></div></div>
   </div>
 </div>
@@ -259,8 +306,9 @@
   <div class="card card-custom p-4">
     <h6 class="fw-bold mb-3"><i class="bi bi-wallet2 me-2"></i>Account Information</h6>
     <div class="row g-3 text-center">
-      <div class="col-md-6"><div class="info-box"><h5>{{ $user->total_deposit_amount ?? 0.00 }} $</h5><small>Available Balance</small></div></div>
-      <div class="col-md-6"><div class="info-box"><h5><i class="bi bi-patch-check-fill text-primary"></i></h5><small>{{ $user->level }}!</small></div></div>
+      <div class="col-md-4"><div class="info-box"><h5>{{ $user->flexible_investment_sum ?? 0.00 }} $</h5><small>Flexible Investment</small></div></div>
+      <div class="col-md-4"><div class="info-box"><h5>{{ $user->locked_investment_sum ?? 0.00 }} $</h5><small>Locked Investment</small></div></div>
+      <div class="col-md-4"><div class="info-box"><h5><i class="bi bi-patch-check-fill text-primary"></i></h5><small>{{ $user->level }}!</small></div></div>
     </div>
   </div>
 </div>
@@ -466,9 +514,9 @@
               <strong>{{ $investment->created_at->format('d-m-Y') }}</strong>
             </span>
 
-            <!-- Order ID -->
-            <span class="text-secondary text-truncate" style="width: 120px;">
-              {{ $investment->order_id }}
+            <!-- Investment Type -->
+            <span class="text-warning text-truncate" style="width: 120px;">
+              {{ ucfirst($investment->investment_type ?? '') }} Invest
             </span>
 
             <!-- Amount -->
@@ -487,10 +535,10 @@
                    <span class="text-end flex-shrink-0" style="width: 90px; color: #ffc107">Pending</span>
                 @endif
                 @php
-                  if($investment->investent_type =="flexible")
+                  if($investment->investent_type =="flexible"){
                     $isCancelable = $investment->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
                     $investmentStatus = $investment->payment_status == 2;
-                  elseif($investment->investent_type =="locked") {
+                  }elseif($investment->investent_type =="locked") {
                     $isCancelable = $investment->created_at->diffInDays(\Carbon\Carbon::now()) >= 30;
                     $investmentStatus = $investment->payment_status == 2;
                   }else{

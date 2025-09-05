@@ -151,7 +151,7 @@ class UserCo extends Controller
                 return view('frontend.dashboard', compact('user'));
                 // return redirect()->route('user-dashboard')->with('success','Login successfully');
             } else {
-                return redirect()->route('frontend.login')->with('error','Invalid email or password');
+                return redirect()->route('frontend.login'); //->with('error','Invalid email or password');
             }
 
     }

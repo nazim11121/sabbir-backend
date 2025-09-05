@@ -108,6 +108,16 @@ class User extends Authenticatable
         return $this->invests()->where('payment_status', 1)->sum('amount');
     }
 
+    public function getFlexibleInvestmentSumAttribute()
+    {
+        return $this->invests()->where('payment_status', 1)->where('investment_type', 'flexible')->sum('amount');
+    }
+
+    public function getLockedInvestmentSumAttribute()
+    {
+        return $this->invests()->where('payment_status', 1)->where('investment_type', 'locked')->sum('amount');
+    }
+
     public function getTotalWithdrawAttribute()
     {
         return $this->withdraws()->where('payment_status', 1)->sum('amount');

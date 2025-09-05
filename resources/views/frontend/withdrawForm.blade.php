@@ -4,6 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BD FUNDED TRADER</title>
+  <link rel="icon" href="{{asset('images/favicon.png')}}" type="image/x-icon">
+  <!-- Open Graph (used by Facebook, WhatsApp, LinkedIn, etc.) -->
+  <meta property="og:title" content="BD Funded Trader" />
+  <meta property="og:description" content="Get funded to trade with BD Funded Trader. No risk, all reward." />
+  <meta property="og:image" content="https://bdfundedtrader.com/images/logo/logo.jpg" />
+  <meta property="og:url" content="https://bdfundedtrader.com" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter Card (used by X/Twitter) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BD Funded Trader" />
+  <meta name="twitter:description" content="Get funded to trade with BD Funded Trader. No risk, all reward." />
+  <meta name="twitter:image" content="https://bdfundedtrader.com/images/logo/logo.jpg" />
 
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,8 +35,18 @@
         height: 42px;
         width: auto;
       }
+      .money-bag-icon {
+        padding: 7px;
+        font-weight: 500;
+        font-size: 11px;
+      }
+      .notification-icon {
+        margin-left: -25px;
+      }
     }
-
+    .navbar .d-flex {
+      flex-wrap: nowrap !important;
+    }
     .card-custom {
       border-radius: 1rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -108,44 +130,73 @@
     </a>
 
     <!-- Auth Buttons -->
-    <div class="d-flex align-items-center gap-2 flex-shrink-0">
-      <!-- Contact Us (Desktop only) -->
-      <a href="#contactUs" class="btn btn-sm d-none d-lg-inline">Contact Us</a>
+    <div class="d-flex align-items-center flex-nowrap gap-2">
+    
+    <!-- Notification Bell -->
+    <div class="position-relative notification-icon>
+      <a href="#" class="text-dark fs-5" data-bs-toggle="modal" data-bs-target="#notificationModal">
+        <i class="bi bi-bell"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="padding: 6px;font-size: 10px;">
+          {{ count($user->unread_notifications) ?? 0 }}
+        </span>
+      </a>
+    </div>
 
-      @if($user)
-        <!-- Deposit Button -->
-        <a href="#" class="btn btn-info btn-sm d-flex align-items-center">
-          <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
-        </a>
-        <div class="dropdown">
-          <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User" width="40" class="rounded-circle">
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <form action="{{ route('logout.user') }}" method="POST">
-                @csrf
-                <button type="submit" class="dropdown-item text-danger">
-                  <i class="bi bi-box-arrow-right me-2"></i> Logout
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
-      @else
-        <!-- Login (Always show) -->
-        <a href="{{ route('frontend.login') }}" class="btn btn-primary btn-sm">Login</a>
-      @endif
+    <!-- Deposit Button -->
+    <a href="#" class="btn btn-info btn-sm d-flex align-items-center money-bag-icon" style="margin-left: 5px;">
+      <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
+    </a>
+
+    <!-- Profile Image -->
+    <div class="dropdown">
+      <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" 
+             alt="User" width="40" height="40" class="rounded-circle">
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+        <li><a class="dropdown-item" href="{{ route('frontend-dashboard') }}"><i class="bi bi-person-circle me-2"></i> Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{{ route('deposit') }}"><i class="bi bi-coin me-2"></i> Deposit</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{{ route('withdraw') }}"><i class="bi bi-cash me-2"></i> Withdraw</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <form action="{{ route('logout.user') }}" method="POST">
+            @csrf
+            <button type="submit" class="dropdown-item text-danger">
+              <i class="bi bi-box-arrow-right me-2"></i> Logout
+            </button>
+          </form>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
-
+<!-- Notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @if(count($user->unread_notifications) > 0)
+          <ul class="list-group">
+            @foreach($user->unread_notifications as $notify)
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ $notify->commission_type ?? 'N/A' }}</span>
+                <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
+              </li>
+            @endforeach
+          </ul>
+        @else
+          <p class="text-muted text-center">No new notifications</p>
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
 <!-- ===== Mobile Navbar (Bottom Fixed) ===== -->
 <nav class="navbar fixed-bottom bg-white border-top d-lg-none">
   <div class="container d-flex justify-content-around text-center">

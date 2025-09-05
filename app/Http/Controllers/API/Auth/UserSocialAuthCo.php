@@ -139,13 +139,15 @@ class UserSocialAuthCo extends Controller
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
                     'password' => bcrypt(uniqid()), // random password
+                    'own_refer_code' => rand(4,9999),
+                    'avatar' => $googleUser->getAvatar(),
                 ]);
             }
      
         Auth::login($user);
         session(['referrer' => $user]);
-
-        return view('frontend.dashboard', compact('user'));
+        return redirect('https://bdfundedtrader.com/profile') ->with('user', $user);
+        // return view('frontend.dashboard', compact('user'));
         // return redirect('/home');
     }
     // Task: need to update when flatter update

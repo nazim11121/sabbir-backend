@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BD FUNDED TRADER</title>
+  <link rel="icon" href="{{asset('images/favicon.png')}}" type="image/x-icon">
+  <!-- Open Graph (used by Facebook, WhatsApp, LinkedIn, etc.) -->
+  <meta property="og:title" content="BD Funded Trader" />
+  <meta property="og:description" content="Get funded to trade with BD Funded Trader. No risk, all reward." />
+  <meta property="og:image" content="https://bdfundedtrader.com/images/logo/logo.jpg" />
+  <meta property="og:url" content="https://bdfundedtrader.com" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter Card (used by X/Twitter) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BD Funded Trader" />
+  <meta name="twitter:description" content="Get funded to trade with BD Funded Trader. No risk, all reward." />
+  <meta name="twitter:image" content="https://bdfundedtrader.com/images/logo/logo.jpg" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
