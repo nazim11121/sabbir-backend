@@ -44,6 +44,11 @@
         margin-left: -25px;
       }
     }
+    @media (max-width: 343px) {
+        .product-card {
+          width: 100px;
+      }
+    }
     .navbar .d-flex {
       flex-wrap: nowrap !important;
     }
