@@ -262,7 +262,15 @@ class UserCo extends Controller
         $input = $request->all(); 
 
         $amountConvert = (float)($request->amount);
-        if($amountConvert > (float)($user->total_deposit_amount)){
+        $exists = BuyPackage::where('user_id', $request->user_id)
+            ->where('package_id', $request->package_id)
+            ->where('payment_status', 0) // pending status
+            ->exists();
+
+        if ($exists) {
+            return redirect()->route('frontend-dashboard');//back()->with('error', 'You already purchased this package, please wait for approval.');
+        }
+        if($amountConvert > $user->total_deposit_amount){
             return redirect()->route('deposit'); 
         }
         $input['payment_status'] = 0; 
