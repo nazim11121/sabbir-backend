@@ -281,7 +281,7 @@
   if($user->own_refer_code){
     $referredUsers = \App\Models\User::where('refer_code', $user->own_refer_code)->pluck('id');
     $referredStats = \App\Models\BuyPackage::whereIn('user_id', $referredUsers)
-      ->where('payment_status', 1)
+      ->where('payment_status', 0)
       ->selectRaw('COUNT(package_id) as total_packages, SUM(amount) as total_amount')
       ->first();
     $totalPackages = $referredStats->total_packages;
