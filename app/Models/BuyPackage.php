@@ -15,4 +15,8 @@ class BuyPackage extends Model
     public function users(){
         return $this->belongsTo(User::class, 'user_id','id');
     }
+
+    public function packages(){
+        return $this->belongsTo(Package::class, 'package_id','id');
+    }
 }
