@@ -258,13 +258,26 @@ class UserCo extends Controller
             ], 422);
         }
 
+        $user = User::find($request->user_id);
         $input = $request->all(); 
+
+        $amountConvert = (float)($request->amount);
+        $exists = BuyPackage::where('user_id', $request->user_id)
+            ->where('package_id', $request->package_id)
+            ->where('payment_status', 0) // pending status
+            ->exists();
+
+        if ($exists) {
+            return redirect()->route('frontend-dashboard');//back()->with('error', 'You already purchased this package, please wait for approval.');
+        }
+        if($amountConvert > $user->total_deposit_amount){
+            return redirect()->route('deposit'); 
+        }
         $input['payment_status'] = 0; 
         $deposit = BuyPackage::create($input);
-        $amountConvert = $request->amount;
-
+        
         $user = User::find($request->user_id);
-        $user->total_deposit_amount = $user->total_deposit_amount - $amountConvert;
+        $user->total_deposit_amount =(float)($user->total_deposit_amount) - $amountConvert;
         $user->save();
 
         // Send mail via queue
@@ -290,19 +303,23 @@ class UserCo extends Controller
         }
 
         $user = User::find($request->user_id);
+        $amountConvert = (float)($request->amount);
 
-        if($request->amount<100 || $user->total_deposit_amount<$request->amount ){
+        if($request->amount<100 || (float)($user->total_deposit_amount) < $amountConvert ){
             return redirect()->route('deposit'); 
         }
         
         $input = $request->all(); 
+        
+        if($amountConvert > (float)($user->total_deposit_amount)){
+            return redirect()->route('deposit'); 
+        }
         $input['payment_status'] = 1;
         $input['investment_type'] = "flexible";
-        // Save to DB
         $deposit = TInvest::create($input);
 
-        $user->total_deposit_amount = $user->total_deposit_amount - $request->amount;
-        $user->total_invest_amount = $user->total_invest_amount + $request->amount;
+        $user->total_deposit_amount = (float)($user->total_deposit_amount) - $amountConvert;
+        $user->total_invest_amount = (float)($user->total_invest_amount) + $amountConvert;
         $user->save();
 
         // Flash a success message
@@ -327,19 +344,24 @@ class UserCo extends Controller
         }
 
         $user = User::find($request->user_id);
+        $amountConvert = (float)($request->amount);
 
-        if($request->amount<100 || $user->total_deposit_amount<$request->amount ){
+        if($request->amount<100 || (float)($user->total_deposit_amount) < $amountConvert ){
             return redirect()->route('deposit'); 
         }
         
+        if($amountConvert > (float)($user->total_deposit_amount)){
+            return redirect()->route('deposit'); 
+        }
+
         $input = $request->all(); 
         $input['payment_status'] = 1;
         $input['investment_type'] = "locked";
         // Save to DB
         $deposit = TInvest::create($input);
 
-        $user->total_deposit_amount = $user->total_deposit_amount - $request->amount;
-        $user->total_invest_amount = $user->total_invest_amount + $request->amount;
+        $user->total_deposit_amount = (float)($user->total_deposit_amount) - $amountConvert;
+        $user->total_invest_amount = (float)($user->total_invest_amount) + $amountConvert;
         $user->save();
 
         // Flash a success message
@@ -470,6 +492,24 @@ class UserCo extends Controller
             'amount' => 'required|numeric|min:10',
             'binance_id' => 'required|string|max:255',
         ]);
+
+        $user = User::find($request->user_id);
+        $amountConvert = (float)($request->amount);
+
+        if($amountConvert > (float)($user->total_deposit_amount)){
+            return response()->json(['success' => false, 'message' => 'Insufficient balance.']);
+        }
+
+        $withdrawAmountPending = Withdraw::where('user_id', $request->user_id)->where('payment_status', 0)->sum('amount');;
+        $draftTotal = ($user->total_deposit_amount - $withdrawAmountPending);
+        if($draftTotal < $amountConvert){
+            return response()->json(['success' => false]);
+        }
+
+
+        if($amountConvert > (float)($user->total_deposit_amount)){
+            return response()->json(['success' => false, 'message' => 'Insufficient balance.']);
+        }
 
         // For example:
         Withdraw::create([

@@ -71,7 +71,7 @@
               
                 @if(getCompanyInfo())
                     <img class="logo-abbr" src="{{ asset('/' . (getCompanyInfo()->logo ?? 'images/logo.png')) }}" alt="">
-                    <p class="brand-title my-4" style="font-size:2rem"><strong>{{getCompanyInfo()->system_name}}</strong></p>
+                    <p class="brand-title1 ml-2 my-4"><strong>{{getCompanyInfo()->system_name}}</strong></p>
                 @else
                     <img class="logo-abbr" src="{{asset('assets/images/logo.png')}}" alt="">
                     <img class="logo-compact" src="{{asset('assets/images/logo-text.png')}}" alt="">

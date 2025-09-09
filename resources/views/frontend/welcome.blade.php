@@ -1143,6 +1143,13 @@
   });
 
 </script>
+<script>
+  document.getElementById("buyForm").addEventListener("submit", function () {
+    let btn = document.getElementById("buyButton");
+    btn.disabled = true;
+    btn.innerText = "Processing...";
+  });
+</script>
 <!-- <script>
   buyForm.addEventListener('submit', function (e) {
     e.preventDefault(); 
