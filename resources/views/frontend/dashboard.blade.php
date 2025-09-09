@@ -409,7 +409,7 @@
       @forelse($user->buyPackages as $index => $package)
         <div class="mb-3">
           <div class="d-flex justify-content-between">
-            <strong>Package ID: {{ $package->package_id }}</strong>
+            <strong>Package Name: {{ $package->packages->name }}</strong>
             <small>{{ $package->created_at->format('d-m-Y') }}</small>
           </div>
           <div class="text-muted mb-2">

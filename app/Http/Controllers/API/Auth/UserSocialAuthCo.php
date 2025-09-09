@@ -127,28 +127,44 @@ class UserSocialAuthCo extends Controller
      * @return \Illuminate\Http\Response
      */
     // for webTest
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
-        $googleUser = Socialite::driver('google')->stateless()->user();
-
+        try {
+            // Check if we received the authorization code
+            if (!$request->has('code')) {
+                \Log::error('Google callback missing code parameter', [
+                    'params' => $request->all()
+                ]);
+                return redirect('/login')->withErrors(['error' => 'Authorization failed']);
+            }
+            
+            $googleUser = Socialite::driver('google')->stateless()->user();
+            
             $user = User::where('email', $googleUser->getEmail())->first();
-
+            
             if (!$user) {
                 $user = User::create([
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
-                    'password' => bcrypt(uniqid()), // random password
+                    'password' => bcrypt(uniqid()),
                     'own_refer_code' => rand(4,9999),
                     'avatar' => $googleUser->getAvatar(),
                 ]);
             }
-     
-        Auth::login($user);
-        session(['referrer' => $user]);
-        return redirect('https://bdfundedtrader.com/profile') ->with('user', $user);
-        // return view('frontend.dashboard', compact('user'));
-        // return redirect('/home');
+            
+            Auth::login($user);
+            session(['referrer' => $user]);
+            
+            return redirect('https://bdfundedtrader.com/profile')->with('user', $user);
+            
+        } catch (\Exception $e) {
+            \Log::error('Google OAuth Error', [
+                'message' => $e->getMessage(),
+                'request_params' => $request->all()
+            ]);
+            return redirect('/login')->withErrors(['error' => 'Authentication failed']);
+        }
     }
     // Task: need to update when flatter update
     public function googleDataStore(Request $request){     
