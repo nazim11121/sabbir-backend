@@ -43,7 +43,7 @@
         font-size: 11px;
       }
       .notification-icon {
-        margin-left: -25px;
+        margin-left: -25px!important;
       }
     }
     .navbar .d-flex {
@@ -140,18 +140,18 @@
     <div class="d-flex align-items-center flex-nowrap gap-2">
     
     <!-- Notification Bell -->
-    <div class="position-relative notification-icon>
+    <div class="position-relative notification-icon">
       <a href="#" class="text-dark fs-5" data-bs-toggle="modal" data-bs-target="#notificationModal">
         <i class="bi bi-bell"></i>
         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="padding: 6px;font-size: 10px;">
-          {{ count($user->unread_notifications) ?? 0 }}
+          {{ $user->allRelevantNotifications()->count() ?? 0 }}
         </span>
       </a>
     </div>
 
     <!-- Deposit Button -->
     <a href="#" class="btn btn-info btn-sm d-flex align-items-center money-bag-icon" style="margin-left: 5px;">
-      <i class="bi bi-wallet2 me-1"></i><span>{{ intval($user->total_deposit_amount ?? 0) }} $</span>
+      <i class="bi bi-wallet2 me-1"></i><span>{{ ($user->total_deposit_amount ?? 0) }} $</span>
     </a>
 
     <!-- Profile Image -->
@@ -253,19 +253,29 @@
         <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        @if(count($user->unread_notifications) > 0)
-          <ul class="list-group">
-            @foreach($user->unread_notifications as $notify)
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>{{ $notify->commission_type ?? 'N/A' }}</span>
-                <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
-              </li>
-            @endforeach
-          </ul>
-        @else
-          <p class="text-muted text-center">No new notifications</p>
-        @endif
+      <div class="modal-body" style="max-height: 300px; overflow-y: auto;">
+          @if($user->allRelevantNotifications()->count())
+              <ul class="list-group">
+                  @foreach($user->allRelevantNotifications() as $notify)
+                      <li class="list-group-item d-flex align-items-center gap-3">
+                          @if($notify->image)
+                              <img src="{{ asset($notify->image) }}" alt="Notification Image" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                          @endif
+
+                          <div class="flex-grow-1">
+                              <p class="mb-1 fw-semibold">{{ $notify->remarks ?? 'N/A' }}</p>
+                              <small class="text-muted">{{ $notify->created_at->diffForHumans() }}</small>
+                          </div>
+
+                          <span class="badge @if($notify->user_id == 0) bg-primary @else bg-secondary @endif text-white">
+                              {{ $notify->user_id == 0 ? 'Global' : 'Personal' }}
+                          </span>
+                      </li>
+                  @endforeach
+              </ul>
+          @else
+              <p class="text-muted text-center mb-0">No notifications found.</p>
+          @endif
       </div>
     </div>
   </div>
@@ -294,7 +304,7 @@
 <!-- ===== Info Cards ===== -->
 <div class="container mt-4">
   <div class="row g-3">
-    <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $user->total_invest ?? 0 }} $</h5><small>Invest Amount</small></div></div>
+    <div class="col-6 col-md-3"><div class="info-box"><h5>{{ intval($user->total_invest) ?? 0 }} </h5><small>Buy Share</small></div></div>
     <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $user->total_deposit ?? 0 }} $</h5><small>Deposit Amount</small></div></div>
     <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $user->total_referral_count ?? 0 }}</h5><small>Total Referral</small></div></div>
     <div class="col-6 col-md-3"><div class="info-box"><h5>{{ $totalPackages ?? 0 }}</h5><small>Total FTD</small></div></div>
@@ -306,8 +316,8 @@
   <div class="card card-custom p-4">
     <h6 class="fw-bold mb-3"><i class="bi bi-wallet2 me-2"></i>Account Information</h6>
     <div class="row g-3 text-center">
-      <div class="col-md-4"><div class="info-box"><h5>{{ $user->flexible_investment_sum ?? 0.00 }} $</h5><small>Flexible Investment</small></div></div>
-      <div class="col-md-4"><div class="info-box"><h5>{{ $user->locked_investment_sum ?? 0.00 }} $</h5><small>Locked Investment</small></div></div>
+      <div class="col-md-4"><div class="info-box"><h5>{{ number_format($user->total_commission_amount + $user->total_withdraw, 2) ?? 0.00 }} $ <!--flexible_investment_sum --></h5><small>All Earning</small></div></div>
+      <div class="col-md-4"><div class="info-box"><h5>{{ $user->total_withdraw ?? 0.00 }} $ <!--locked_investment_sum --></h5><small>All Withdraw</small></div></div>
       <div class="col-md-4"><div class="info-box"><h5><i class="bi bi-patch-check-fill text-primary"></i></h5><small>{{ $user->level }}!</small></div></div>
     </div>
   </div>
@@ -392,7 +402,7 @@
   <div class="card card-custom p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h6 class="fw-bold mb-0">
-        <i class="bi bi-box-seam me-2"></i>Purchased Funded Packages
+        <i class="bi bi-box-seam me-2"></i>Purchased Packages History
       </h6>
       <button class="btn btn-sm btn-outline-secondary d-flex align-items-center"
               type="button"
@@ -487,12 +497,12 @@
   }
 </script>
 
-<!-- ===== Invest History ===== -->
+<!-- ===== Invest/Buy Share History ===== -->
 <div class="container my-4">
   <div class="card card-custom p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h6 class="fw-bold mb-0">
-        <i class="bi bi-cash-coin me-2"></i>Investment History
+        <i class="bi bi-cash-coin me-2"></i>Buy Share History
       </h6>
       <button class="btn btn-sm btn-outline-secondary d-flex align-items-center"
               type="button"
@@ -516,12 +526,12 @@
 
             <!-- Investment Type -->
             <span class="text-warning text-truncate" style="width: 120px;">
-              {{ ucfirst($investment->investment_type ?? '') }} Invest
+              {{ ucfirst($investment->investment_type ?? '') }} Share
             </span>
 
             <!-- Amount -->
             <span class="text-primary text-end flex-shrink-0" style="width: 90px;">
-              + {{ $investment->amount }} $
+              + {{ intval($investment->amount) }} 
             </span>
 
             <!-- Status -->
@@ -560,7 +570,7 @@
                             ''
                           @endif
                           >
-                      Cancel
+                      Sell
                   </button>
                 </form>
           </div>
@@ -655,10 +665,10 @@
         <div class="col-md-4 text-start text-md-start">
           <h5 class="fw-bold mb-3">SUPPORT CENTER</h5>
           <div class="border rounded d-flex align-items-start p-2 mb-3">
-            <a href="https://t.me/bd_funded_support"><i class="bi bi-telegram fs-1 text-info me-2"></i></a>
+            <a href="mailto:support@bdfundedtrader.com"><i class="bi bi-envelope fs-1 text-info me-2"></i></a>
             <div>
               <strong style="font-size: 13px;font-weight: 500;">Help line [9AM-12PM]</strong><br>
-              <small style="font-size: 13px;color: rgb(173, 173, 173);font-weight: 500;">টেলিগ্রামে সাপোর্ট</small>
+              <small style="font-size: 13px;color: rgb(173, 173, 173);font-weight: 500;">ই-মেইল সাপোর্ট</small>
             </div>
           </div>
         </div>
@@ -670,7 +680,7 @@
     </div>
   </footer>
   <!-- ===== Floating Buttons ===== -->
-  <div class="floating-buttons">
+  <!-- <div class="floating-buttons">
     <div id="chat-buttons">
       <a href="https://t.me/bd_funded_support" class="btn-floating bg-primary">
         <i class="bi bi-telegram"></i>
@@ -679,7 +689,7 @@
     <a href="#" class="btn-floating bg-danger" onclick="toggleChatButtons()" id="toggle-button">
       <i class="bi bi-telephone" id="toggle-icon"></i>
     </a>
-  </div>
+  </div> -->
 
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -751,6 +761,18 @@
     }
   });
 </script>
-
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/68d42747ae823e19250b7c27/1j5ubiskt';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>

@@ -31,6 +31,8 @@ use App\Http\Controllers\Admin\AdminCreedTagsCo;
 use App\Http\Controllers\Admin\AdminCsvImportCo;
 use App\Http\Controllers\Admin\AdminLocationCo;
 use App\Http\Controllers\Admin\AdminRestaurantCo;
+use App\Http\Controllers\Admin\Notification\NotificationCo;
+use App\Http\Controllers\Admin\MailAccountController;
 use App\Http\Controllers\API\Auth\UserSocialAuthCo;
 use App\Http\Controllers\Frontend\UserCo;
 use App\Http\Controllers\ProfileController;
@@ -144,6 +146,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/package', PackageCo::class);
     Route::resource('/slider', SliderCo::class);
     Route::resource('/notice', NoticeCo::class);
+
+    Route::resource('/notification', NotificationCo::class);
+
+    Route::get('/binance', [UserCo::class, 'getBinanceDeposits'])->name('binance.pull');
+
+    Route::resource('mail-accounts', MailAccountController::class);
+    
+    Route::get('/mail/fetch-now', [MailAccountController::class, 'fetchNow'])
+        ->name('mail.fetch-now');
 
     Route::group(['prefix'  => 'assign-role', 'as' => 'assign-role.'], function () {
         Route::controller(AdminAssignRoleCo::class)->group(function () {

@@ -101,6 +101,11 @@ class User extends Authenticatable
         return $this->hasMany(Review::class, 'user_id')->orderBy('id', 'desc');
     }
 
+    public function getTotalWithdrawAttribute()
+    {
+        return $this->withdraws()->where('payment_status', 1)->sum('amount');
+    }
+
     public function getTotalDepositAttribute()
     {
         return $this->deposits()->where('payment_status', 1)->sum('amount');
@@ -119,11 +124,6 @@ class User extends Authenticatable
     public function getLockedInvestmentSumAttribute()
     {
         return $this->invests()->where('payment_status', 1)->where('investment_type', 'locked')->sum('amount');
-    }
-
-    public function getTotalWithdrawAttribute()
-    {
-        return $this->withdraws()->where('payment_status', 1)->sum('amount');
     }
 
     public function referrals()
@@ -156,6 +156,21 @@ class User extends Authenticatable
 
     public function unread_notifications(){
         return $this->hasMany(Commission::class, 'user_id')->where('status', 1)->orderBy('id', 'desc');
+    }
+
+    public function allRelevantNotifications()
+    {
+        return Notification::where(function ($q) {
+                    $q->where('user_id', $this->id)
+                    ->orWhere('user_id', 0);
+                })
+                ->where('status', 1)
+                ->orderBy('id', 'desc')
+                ->get();
+    }
+
+    public function mailAccount(){
+        return $this->belongsTo(MailAccount::class, 'id','user_id');
     }
 
     protected static function boot()

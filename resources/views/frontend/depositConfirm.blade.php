@@ -47,7 +47,7 @@
       background: #fafafa;
     }
     .provider-logo {
-      max-width: 180px;
+      max-width: 200px;
       border-radius: 8px;
     }
     .pay-btn {
@@ -94,9 +94,10 @@
     </div>
 
     <!-- Binance ID -->
-    <div class="text-center fw-bold mt-4 mb-3 text-white bg-primary rounded p-2">
+    <!-- <div class="text-center fw-bold mt-4 mb-3 text-white bg-primary rounded p-2">
       Binance ID : <span id="binanceText">👉892208461</span>
-    </div>
+      Address : <span id="binanceText">TAPRhxNnfCZYSW9rkzGoE26kV5Q2qa3PQk</span>
+    </div> -->
 
     <!-- Payment Form -->
     <form action="{{ route('deposit-confirm.store') }}" method="POST" enctype="multipart/form-data">
@@ -104,7 +105,7 @@
 
       <!-- Hidden Inputs -->
       <input type="hidden" name="user_id" id="user_id" value="{{$data->user_id}}">
-      <input type="hidden" name="binance_id" id="binance_id" value="892208461">
+      <input type="hidden" name="binance_id" id="binance_id" value="TAPRhxNnfCZYSW9rkzGoE26kV5Q2qa3PQk">
       <input type="hidden" name="amount" id="amount" value="{{$data->amount}}">
 
       <!-- QR / Provider -->
@@ -118,19 +119,19 @@
 
       <!-- Order ID Field -->
       <div class="mt-4">
-        <label for="order_id" class="form-label fw-semibold">Order ID</label>
-        <input type="number" class="form-control" id="order_id" name="order_id" 
-               placeholder="Enter your order ID">
+        <label for="order_id" class="form-label fw-semibold">Transaction ID(Txid)<span class="requiredStar text-danger">*</span></label>
+        <input type="text" class="form-control" id="order_id" name="order_id" 
+               placeholder="Enter your Txid ID">
       </div>
 
       <!-- Upload Proof -->
-      <div class="mt-4">
+      <!-- <div class="mt-4">
         <label for="payment_proof" class="form-label fw-semibold">Upload Payment Proof</label>
         <input class="form-control" type="file" id="deposit_proof" name="deposit_proof" accept="image/*" onchange="previewImage(event)" required>
         <div class="mt-3 text-center">
           <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded shadow-sm d-none" style="max-height: 200px;">
         </div>
-      </div>
+      </div> -->
 
       <!-- Pay Button -->
       <button type="submit" class="pay-btn mt-4">Pay <span id="amountText">{{$data->amount}}.00</span> $</button>

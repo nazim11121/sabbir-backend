@@ -122,8 +122,20 @@
             @endcan
 
             @can('contact-creed')
+                <li class="{{ setSidebarActive(['notification.*']) }}"><a href="{{ route('notification.index') }}" aria-expanded="false">
+                        <i class="fas fa-envelope"></i><span class="nav-text">Notification List</span></a>
+                </li>
+            @endcan
+
+            @can('contact-creed')
                 <li class="{{ setSidebarActive(['review.*']) }}"><a href="{{ route('review.list') }}" aria-expanded="false">
                         <i class="fas fa-envelope"></i><span class="nav-text">Review List</span></a>
+                </li>
+            @endcan
+
+            @can('contact-creed')
+                <li class="{{ setSidebarActive(['mail-accounts.*']) }}"><a href="{{ route('mail-accounts.index') }}" aria-expanded="false">
+                        <i class="fas fa-envelope"></i><span class="nav-text">Mail Accounts List</span></a>
                 </li>
             @endcan
 

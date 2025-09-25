@@ -241,10 +241,10 @@
         <div class="col-md-4 text-start text-md-start">
           <h5 class="fw-bold mb-3">SUPPORT CENTER</h5>
           <div class="border rounded d-flex align-items-start p-2 mb-3">
-            <a href="https://t.me/bd_funded_support"><i class="bi bi-telegram fs-1 text-info me-2"></i></a>
+            <a href="mailto:support@bdfundedtrader.com"><i class="bi bi-envelope fs-1 text-info me-2"></i></a>
             <div>
               <strong style="font-size: 13px;font-weight: 500;">Help line [9AM-12PM]</strong><br>
-              <small style="font-size: 13px;color: rgb(173, 173, 173);font-weight: 500;">টেলিগ্রামে সাপোর্ট</small>
+              <small style="font-size: 13px;color: rgb(173, 173, 173);font-weight: 500;">ই-মেইল সাপোর্ট</small>
             </div>
           </div>
         </div>
@@ -256,7 +256,7 @@
     </div>
   </footer>
   <!-- ===== Floating Buttons ===== -->
-  <div class="floating-buttons">
+  <!-- <div class="floating-buttons">
     <div id="chat-buttons">
       <a href="https://t.me/bd_funded_support" class="btn-floating bg-primary">
         <i class="bi bi-telegram"></i>
@@ -265,7 +265,7 @@
     <a href="#" class="btn-floating bg-danger" onclick="toggleChatButtons()" id="toggle-button">
       <i class="bi bi-telephone" id="toggle-icon"></i>
     </a>
-  </div>
+  </div> -->
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -339,5 +339,18 @@ confirmPassword.addEventListener("input", checkPasswords);
       });
     });
 </script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/68d42747ae823e19250b7c27/1j5ubiskt';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>

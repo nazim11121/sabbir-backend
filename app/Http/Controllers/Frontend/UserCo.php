@@ -17,7 +17,10 @@ use App\Models\Withdraw;
 use App\Models\Slider;
 use App\Models\Notice;
 use App\Models\Commission;
+use App\Models\Notification;
 use App\Models\Review;
+use App\Models\BinanceDeposit;
+use App\Models\MailAccount;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\TAdminUserRequest;
 use DB;
@@ -28,6 +31,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Carbon\Carbon;
 use Auth;
 use Flasher\Laravel\Facade\Flasher;
 use Illuminate\Support\Facades\Mail;
@@ -35,7 +39,9 @@ use App\Mail\ForgotPasswordMail;
 use App\Mail\PurchasePackageMail;
 use App\Mail\SuccessPackageMail;
 use App\Mail\FailedPackageMail;
+use App\Jobs\FetchBinanceDeposits;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Http;
 
 class UserCo extends Controller
 {
@@ -48,11 +54,13 @@ class UserCo extends Controller
         $packages = Package::where('status', 1)->get();
         $services = Package::where('category_id', 1)->where('status', 1)->get();
         $funded   = Package::where('category_id', 2)->where('status', 1)->get();
+        $quotex   = Package::where('category_id', 6)->where('status', 1)->get();
+        $forex    = Package::where('category_id', 7)->where('status', 1)->get();
         $slider   = Slider::orderBy('hierarchy', 'ASC')->where('status', 1)->get();
         $notice   = Notice::where('status', 1)->orderBy('id', 'DESC')->first();
         $reviews  = Review::with('user')->where('status', 1)->get();
 
-        return view('frontend.welcome',compact(['packages','services','funded','slider','notice','reviews']));
+        return view('frontend.welcome',compact(['packages','services','funded','quotex','forex','slider','notice','reviews']));
     }
     
     /**
@@ -86,7 +94,6 @@ class UserCo extends Controller
         }
         
         $input = $request->except('nid_image'); 
-        // dd($request);
         $input['password'] = Hash::make($input['password']);
         $input['own_refer_code'] = rand(4,9999);
         $input['level'] = "Level 1";
@@ -106,6 +113,22 @@ class UserCo extends Controller
                 $data->nid_image = $imagePaths;
                 $data->save();
             }
+        }
+
+        $referCodeCheck = $request->refer_code;
+        $matchUser = User::where('own_refer_code', $referCodeCheck)->first()?->id;
+        if($referCodeCheck && $matchUser){
+            $commissionAdd = new Commission();
+            $commissionAdd->user_id = $matchUser;
+            $commissionAdd->commission_type = 'For Referral';
+            $commissionAdd->percentage = null;
+            $commissionAdd->amount = 0.10;
+            $commissionAdd->save();
+
+            $userUpdate = User::find($matchUser);
+            $userUpdate->total_deposit_amount = (float) $userUpdate->total_deposit_amount + (float) $commissionAdd->amount;
+            $userUpdate->total_commission_amount = (float) $userUpdate->total_commission_amount + (float) $commissionAdd->amount;
+            $userUpdate->save();
         }
 
         $user = User::with(['buyPackages','deposits','invests'])->where('id', $userStore->id)->first();
@@ -132,7 +155,7 @@ class UserCo extends Controller
             }
 
             // $credentials = $request->validated();
-            $admin = User::with(['buyPackages','deposits','invests'])->where('email', $request->email)->first();
+            $admin = User::with(['buyPackages','deposits','invests','mailAccount'])->where('email', $request->email)->first();
 
             if ($admin && Hash::check($request->password, $admin->password)){ 
                 $user = $admin; 
@@ -144,7 +167,7 @@ class UserCo extends Controller
                 // array_walk_recursive($user, function (&$item) {
                 //     $item = $item ?? '';
                 // });
-                // dd($user);
+              
                 Auth::login($user);
                 session(['referrer' => $user]);
 
@@ -207,7 +230,7 @@ class UserCo extends Controller
             'binance_id' => 'required',
             'amount' => 'required|string',
             'order_id' => 'nullable',
-            'deposit_proof' => 'required|image',
+            'deposit_proof' => 'nullable|image',
         ]);
 
         if ($validator->fails()) {
@@ -218,19 +241,38 @@ class UserCo extends Controller
             ], 422);
         }
         
-        $input = $request->except('deposit_proof'); 
+        $input = $request->all(); 
         // Handle file upload
-        if ($request->hasFile('deposit_proof')) {
-            $image      = $request->file('deposit_proof');
-            $imageName  = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/depositProof'), $imageName);
+        // if ($request->hasFile('deposit_proof')) {
+        //     $image      = $request->file('deposit_proof');
+        //     $imageName  = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+        //     $image->move(public_path('images/depositProof'), $imageName);
 
-            $input['deposit_proof'] = 'images/depositProof/' . $imageName;
+        //     $input['deposit_proof'] = 'images/depositProof/' . $imageName;
+        // }
+        $order_id = $request->order_id;
+        preg_match('/\d+/', $order_id, $matches);
+        $number = $matches[0];
+        $match = BinanceDeposit::where('txId', 'LIKE', '%' . $number . '%')->first();
+
+        $input['order_id'] = $number;
+        if($match && $match->user_id==''){
+            $input['payment_status'] = 1;
+            $user = User::find($request->user_id);
+            $user->total_deposit_amount =  (float)($user->total_deposit_amount) + (float)($match->amount);
+            $user->save();
+            $binance = BinanceDeposit::find($match->id);
+            $binance->user_id = $request->user_id;
+            $binance->save();
+            $notify = new Notification();
+            $notify->user_id = $request->user_id;
+            $notify->type = 'Auto';
+            $notify->category = 'Binance Deposit';
+            $notify->remarks = "Your Deposit " . round($match->amount, 2) . " success";
+            $notify->save();
+        }else{
+            $input['payment_status'] = 0;
         }
-
-        $input['payment_status'] = 0;
-
-        // Save to DB
         $deposit = TDeposit::create($input);
 
         // $user = User::find($request->user_id);
@@ -273,6 +315,7 @@ class UserCo extends Controller
         if($amountConvert > $user->total_deposit_amount){
             return redirect()->route('deposit'); 
         }
+      
         $input['payment_status'] = 0; 
         $deposit = BuyPackage::create($input);
         
@@ -280,6 +323,28 @@ class UserCo extends Controller
         $user->total_deposit_amount =(float)($user->total_deposit_amount) - $amountConvert;
         $user->save();
 
+        $referCodeCheck = $user->refer_code ?? '';
+        $matchUser = User::where('own_refer_code', $referCodeCheck)->first()?->id;
+        if($referCodeCheck && $matchUser){
+            $commissionAdd = new Commission();
+            $commissionAdd->user_id = $matchUser;
+            $commissionAdd->commission_type = 'For FTD';
+            $commissionAdd->percentage = null;
+            $commissionAdd->amount = 2.00;
+            $commissionAdd->save();
+
+            $userUpdate = User::find($matchUser);
+            $userUpdate->total_deposit_amount = (float) $userUpdate->total_deposit_amount + (float) $commissionAdd->amount;
+            $userUpdate->total_commission_amount = (float) $userUpdate->total_commission_amount + (float) $commissionAdd->amount;
+            $userUpdate->save();
+        }
+
+        $quotexAccountId = MailAccount::where('user_id', null)->where('status', 1)->get()->pluck('id')->first();
+        $quotexAccount = MailAccount::find($quotexAccountId);
+        $quotexAccount->user_id = $request->user_id;
+        $quotexAccount->to_mail = $user->email;
+        $quotexAccount->status = 0;
+        $quotexAccount->save();
         // Send mail via queue
         Mail::to($user->email)->queue(new PurchasePackageMail($user));
 
@@ -303,23 +368,19 @@ class UserCo extends Controller
         }
 
         $user = User::find($request->user_id);
-        $amountConvert = (float)($request->amount);
-
-        if($request->amount<100 || (float)($user->total_deposit_amount) < $amountConvert ){
-            return redirect()->route('deposit'); 
-        }
+        $noOfShare = (float)($request->amount*100);
         
         $input = $request->all(); 
         
-        if($amountConvert > (float)($user->total_deposit_amount)){
+        if($noOfShare > (float)($user->total_deposit_amount)){
             return redirect()->route('deposit'); 
         }
         $input['payment_status'] = 1;
         $input['investment_type'] = "flexible";
         $deposit = TInvest::create($input);
 
-        $user->total_deposit_amount = (float)($user->total_deposit_amount) - $amountConvert;
-        $user->total_invest_amount = (float)($user->total_invest_amount) + $amountConvert;
+        $user->total_deposit_amount = (float)($user->total_deposit_amount) - $noOfShare;
+        $user->total_invest_amount = (float)($user->total_invest_amount) + $noOfShare;
         $user->save();
 
         // Flash a success message
@@ -344,13 +405,9 @@ class UserCo extends Controller
         }
 
         $user = User::find($request->user_id);
-        $amountConvert = (float)($request->amount);
-
-        if($request->amount<100 || (float)($user->total_deposit_amount) < $amountConvert ){
-            return redirect()->route('deposit'); 
-        }
+        $noOfShare = (float)($request->amount);
         
-        if($amountConvert > (float)($user->total_deposit_amount)){
+        if($noOfShare > (float)($user->total_deposit_amount)){
             return redirect()->route('deposit'); 
         }
 
@@ -360,8 +417,8 @@ class UserCo extends Controller
         // Save to DB
         $deposit = TInvest::create($input);
 
-        $user->total_deposit_amount = (float)($user->total_deposit_amount) - $amountConvert;
-        $user->total_invest_amount = (float)($user->total_invest_amount) + $amountConvert;
+        $user->total_deposit_amount = (float)($user->total_deposit_amount) - $noOfShare;
+        $user->total_invest_amount = (float)($user->total_invest_amount) + $noOfShare;
         $user->save();
 
         // Flash a success message
@@ -511,13 +568,23 @@ class UserCo extends Controller
             return response()->json(['success' => false, 'message' => 'Insufficient balance.']);
         }
 
-        // For example:
         Withdraw::create([
             'user_id' => $request->user_id,
             'amount' => $request->amount,
             'binance_id' => $request->binance_id,
             'payment_status' => 0, // Pending status
         ]);
+
+        $balance = User::find($request->user_id);
+        $balance->total_deposit_amount = $user->total_deposit_amount - $amountConvert;
+        $balance->save();
+
+        $notify = new Notification();
+        $notify->user_id = $request->user_id;
+        $notify->type = 'Auto';
+        $notify->category = 'Withdraw Request';
+        $notify->remarks = "Your Withdraw " . round($amountConvert, 2) . " success";
+        $notify->save();
 
         return response()->json(['success' => true]);
     }
@@ -529,13 +596,16 @@ class UserCo extends Controller
 
     public function withdrawConfirmStatus($id, $id2){
         $data = Withdraw::find($id);
+        $user = User::find($data->user_id);
         if($id2==2){
             $data->payment_status = 2;
             $data->save();
+            $user->total_deposit_amount =  $user->total_deposit_amount + (float)($data->amount);
+            $user->save();
         }elseif($id2==1) {
             $data->payment_status = 1;
             $data->save();
-            $user = User::find($data->user_id);
+            
             $user->total_withdraw_amount =  (float)($user->total_withdraw_amount) + (float)($data->amount);
             $user->total_deposit_amount =  (float)($user->total_deposit_amount) - (float)($data->amount);
             $user->save();
@@ -825,6 +895,51 @@ class UserCo extends Controller
         }
     }
 
+    // binance deposite
+    public function getBinanceDeposits()
+    {
+        FetchBinanceDeposits::dispatch();
+
+        return response()->json(['message' => 'Fetch Binance deposits job dispatched.']);
+    }
+
+    // public function getBinanceDeposits()
+    // {
+    //     $apiKey = env('BINANCE_API_KEY');
+    //     $secret = env('BINANCE_API_SECRET');
+    
+    //     $timestamp = now()->getTimestampMs(); // milliseconds
+    
+    //     $params = http_build_query([
+    //         'timestamp' => $timestamp,
+    //         'recvWindow' => 60000 // optional, increases request window
+    //     ]);
+    
+    //     $signature = hash_hmac('sha256', $params, $secret);
+    
+    //     $url = "https://api.binance.com/api/v3/account?$params&signature=$signature";
+    
+    //     $response = Http::withHeaders([
+    //         'X-MBX-APIKEY' => $apiKey
+    //     ])->get($url);
+    
+    //     if (!$response->successful()) {
+    //         return response()->json([
+    //             'error' => true,
+    //             'message' => 'Failed to fetch balances',
+    //             'details' => $response->json(),
+    //         ], $response->status());
+    //     }
+    
+    //     $balances = collect($response->json()['balances'])
+    //         ->filter(fn ($asset) => $asset['free'] > 0 || $asset['locked'] > 0)
+    //         ->values();
+    
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $balances,
+    //     ]);
+    // }
 
     /**
      * Display the specified resource.

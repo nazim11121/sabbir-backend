@@ -25,10 +25,10 @@
                                         <tr>
                                             <th>Sl</th>
                                             <th>Name</th>
-                                            <th>Binance ID</th>
-                                            <th>Order ID</th>
+                                            <!-- <th>Binance ID</th> -->
+                                            <th>Order/Trx ID</th>
                                             <th>Amount</th>
-                                            <th>Proof</th>
+                                            <!-- <th>Proof</th> -->
                                             <th>Status</th>
                                             <th>Date</th>
                                             <th class="text-center">Action</th>
@@ -39,10 +39,10 @@
                                             <tr>
                                                 <td>{{ ++$key }}</td>
                                                 <td>{{ $value->users->name }} </br> {{ $value->users->email }}</td>
-                                                <td>{{ $value->binance_id }}</td>
+                                                <!-- <td>{{ $value->binance_id }}</td> -->
                                                 <td>{{ $value->order_id }}</td>
                                                 <td>{{ $value->amount }}</td>
-                                                <td>
+                                                <!-- <td>
                                                     <img src="{{ asset($value->deposit_proof) }}" 
                                                          alt="image" 
                                                          class="img-thumbnail proof-img" 
@@ -50,7 +50,7 @@
                                                          data-bs-toggle="modal" 
                                                          data-bs-target="#imageModal"
                                                          data-img="{{ asset($value->deposit_proof) }}">
-                                                </td>
+                                                </td> -->
                                                 <td>
                                                     @if ($value->payment_status == 1)
                                                     <span>Success</span>@else<span>Pending</span>
