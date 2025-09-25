@@ -103,7 +103,7 @@ class User extends Authenticatable
 
     public function getTotalWithdrawAttribute()
     {
-        return $this->withdraws()->where('payment_status', 1)->sum('amount');
+        return $this->withdraws()->where('payment_status','!=', 2)->sum('amount');
     }
 
     public function getTotalDepositAttribute()
@@ -164,6 +164,7 @@ class User extends Authenticatable
                     $q->where('user_id', $this->id)
                     ->orWhere('user_id', 0);
                 })
+                ->where('read_at', null)
                 ->where('status', 1)
                 ->orderBy('id', 'desc')
                 ->get();

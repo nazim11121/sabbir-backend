@@ -268,7 +268,7 @@ class UserCo extends Controller
             $notify->user_id = $request->user_id;
             $notify->type = 'Auto';
             $notify->category = 'Binance Deposit';
-            $notify->remarks = "Your Deposit " . round($match->amount, 2) . " success";
+            $notify->remarks = "Your Deposit " . round($match->amount, 2) . "$ request sent success";
             $notify->save();
         }else{
             $input['payment_status'] = 0;
@@ -578,12 +578,12 @@ class UserCo extends Controller
         $balance = User::find($request->user_id);
         $balance->total_deposit_amount = $user->total_deposit_amount - $amountConvert;
         $balance->save();
-
+ 
         $notify = new Notification();
         $notify->user_id = $request->user_id;
         $notify->type = 'Auto';
         $notify->category = 'Withdraw Request';
-        $notify->remarks = "Your Withdraw " . round($amountConvert, 2) . " success";
+        $notify->remarks = "Your Withdraw " . round($amountConvert, 2) . "$ request sent success";
         $notify->save();
 
         return response()->json(['success' => true]);

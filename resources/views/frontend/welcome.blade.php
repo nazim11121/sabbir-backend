@@ -1566,5 +1566,26 @@
   })();
 </script>
 <!--End of Tawk.to Script-->
+<!--Notification bell count Script-->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const notificationModal = document.getElementById('notificationModal');
+      notificationModal.addEventListener('show.bs.modal', function () {
+          fetch('{{ route('notifications.markRead') }}', {
+              method: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                  'Accept': 'application/json'
+              }
+          }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Set bell count to 0 immediately
+                    document.querySelector('.notification-icon .badge').textContent = '0';
+                }
+            });
+      });
+  });
+</script>
 </body>
 </html>

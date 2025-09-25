@@ -100,6 +100,21 @@ Route::post('/user/forgot-password-mail', [UserCo::class, 'forgotPasswordMail'])
 Route::get('/user/reset-password', [UserCo::class, 'showResetForm'])->name('frontend.reset-password');
 // Handle new password
 Route::post('/user/reset-password', [UserCo::class, 'resetPassword'])->name('user.reset-password-submit');
+
+Route::post('/notifications/mark-read', function () {
+    $data = session('referrer');
+    $user = $data ? App\Models\User::find($data->id) : null;
+    
+    if ($user) {
+        $user->allRelevantNotifications()
+            ->whereNull('read_at') // Collection method
+            ->each(function ($notification) {
+                $notification->update(['read_at' => now()]);
+            });
+    }
+    
+    return response()->json(['success' => true]);
+})->name('notifications.markRead');
 /*end*/
 Route::middleware(['auth', 'verified'])->group(function () {
     

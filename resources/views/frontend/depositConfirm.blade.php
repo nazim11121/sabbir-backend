@@ -122,6 +122,7 @@
         <label for="order_id" class="form-label fw-semibold">Transaction ID(Txid)<span class="requiredStar text-danger">*</span></label>
         <input type="text" class="form-control" id="order_id" name="order_id" 
                placeholder="Enter your Txid ID">
+        <span class="text-success" style="font-size:11px">Ex: Off-chain transfer 298564119363 or 298564119363</span>
       </div>
 
       <!-- Upload Proof -->
