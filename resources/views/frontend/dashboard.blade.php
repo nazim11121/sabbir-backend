@@ -218,10 +218,6 @@
 <div class="container text-center mt-5">
   <!-- Profile Image with Notification Badge -->
   <div class="position-relative d-inline-block">
-    <!-- <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#notificationModal">
-      <span class="position-absolute start-10 badge rounded-pill bg-danger">
-        {{ count($user->unread_notifications) ?? 0 }}
-      </span> -->
       <img 
         src="{{ asset('/') }}{{ $user->profile_photo ?? 'images/default.png' }}" 
         alt="Profile" 
@@ -516,70 +512,62 @@
     </div>
 
     <div class="collapse" id="investmentListCollapse">
-      @forelse($user->invests as $index => $investment)
+    @forelse($user->invests as $index => $investment)
+        @php
+            if($investment->investent_type == "flexible"){
+                $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInHours(\Carbon\Carbon::now('Asia/Dhaka')) >= 24;
+            }elseif($investment->investment_type == "locked") {
+                $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 30;
+            }else{
+                $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInHours(\Carbon\Carbon::now('Asia/Dhaka')) >= 24;
+            }
+            $investmentStatus = $investment->payment_status == 2;
+        @endphp
+
         <div class="order-card">
-          <div class="d-flex justify-content-between align-items-center text-nowrap">
-            <!-- Date -->
-            <span class="flex-shrink-0" style="width: 80px;">
-              <strong>{{ $investment->created_at->format('d-m-Y') }}</strong>
-            </span>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <!-- Date --> 
+                <span class="fw-bold flex-shrink-0">{{ $investment->created_at->format('d-m-Y') }}</span>
 
-            <!-- Investment Type -->
-            <span class="text-warning text-truncate" style="width: 120px;">
-              {{ ucfirst($investment->investment_type ?? '') }} Share
-            </span>
+                <!-- Type -->
+                <span class="text-warning text-truncate">{{ ucfirst($investment->investment_type ?? '') }} Share</span>
 
-            <!-- Amount -->
-            <span class="text-primary text-end flex-shrink-0" style="width: 90px;">
-              + {{ intval($investment->amount) }} 
-            </span>
+                <!-- Amount -->
+                <span class="text-primary">+ {{ intval($investment->amount) }}</span>
 
-            <!-- Status -->
-            <!-- <span class="text-end flex-shrink-0" style="width: 90px; color: {{ $investment->payment_status == 1 ? '#198754' : '#ffc107' }}"> -->
-              <!-- {{ $investment->payment_status == 1 ? 'Success' : 'Pending' }} -->
+                <!-- Status -->
                 @if($investment->payment_status == 1)
-                  <span class="text-end flex-shrink-0 text-success">Success</span>
+                    <span class="text-success">Success</span>
                 @elseif($investment->payment_status == 2)
-                  <span class="text-end flex-shrink-0 text-danger">Canceled</span>
+                    <span class="text-danger">Canceled</span>
                 @else
-                   <span class="text-end flex-shrink-0" style="width: 90px; color: #ffc107">Pending</span>
+                    <span class="text-warning">Pending</span>
                 @endif
-                @php
-                  if($investment->investent_type =="flexible"){
-                    $isCancelable = $investment->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
-                    $investmentStatus = $investment->payment_status == 2;
-                  }elseif($investment->investent_type =="locked") {
-                    $isCancelable = $investment->created_at->diffInDays(\Carbon\Carbon::now()) >= 30;
-                    $investmentStatus = $investment->payment_status == 2;
-                  }else{
-                    $isCancelable = $investment->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
-                    $investmentStatus = $investment->payment_status == 2;
-                  }
-                @endphp
-                <form action="{{route('invest.cancel')}}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this investment?');">
-                  @csrf
-                  <input type="hidden" name="user_id" value="{{$user->id}}">
-                  <input type="hidden" name="invest_id" value="{{$investment->id}}">
-                  <button type="submit" 
-                          class="btn btn-sm btn-danger" 
-                          @if(empty($isCancelable))
-                            disabled
-                          @elseif($investmentStatus)
-                            disabled
-                          @else
-                            ''
-                          @endif
-                          >
-                      Sell
-                  </button>
+
+                <!-- Form -->
+                <form action="{{ route('invest.cancel') }}" method="POST" 
+                      class="d-flex flex-wrap align-items-center gap-1"
+                      onsubmit="return confirm('Are you sure you want to cancel this investment?');">
+                    @csrf
+                   
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <input type="hidden" name="invest_id" value="{{ $investment->id }}">
+                    <input type="number" name="amount" value="{{ intval($investment->amount) }}" 
+                           class="form-control form-control-sm" style="max-width:40px;" min="1"
+                            max="{{ intval($investment->amount) }}" required>
+                    <button type="submit" class="btn btn-sm btn-danger"
+                        @if($investmentStatus || !$isCancelable) disabled @endif>
+                        Sell
+                    </button>
                 </form>
-          </div>
+            </div>
         </div>
         <hr>
-      @empty
+    @empty
         <p class="text-muted">No investments yet.</p>
-      @endforelse
-    </div>
+    @endforelse
+</div>
+
 
   </div>
 </div>

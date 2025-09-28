@@ -339,11 +339,11 @@
     <!-- <div class="d-flex align-items-center flex-nowrap gap-2"> -->
     
       <!-- Notification Bell -->
-      <div class="position-relative notification-icon>
+      <div class="position-relative notification-icon">
         <a href="#" class="text-dark fs-5" data-bs-toggle="modal" data-bs-target="#notificationModal">
           <i class="bi bi-bell"></i>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="padding: 6px;font-size: 10px;">
-            {{ count($user->unread_notifications) ?? 0 }}
+            {{ $user->allRelevantNotifications()->count() ?? 0 }}
           </span>
         </a>
       </div>
@@ -393,18 +393,28 @@
               <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-              @if(count($user->unread_notifications) > 0)
-                <ul class="list-group">
-                  @foreach($user->unread_notifications as $notify)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <span>{{ $notify->commission_type ?? 'N/A' }}</span>
-                      <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
-                    </li>
-                  @endforeach
-                </ul>
+            <div class="modal-body" style="max-height: 300px; overflow-y: auto;">
+              @if($user->allRelevantNotifications()->count())
+                  <ul class="list-group">
+                      @foreach($user->allRelevantNotifications() as $notify)
+                          <li class="list-group-item d-flex align-items-center gap-3">
+                              @if($notify->image)
+                                  <img src="{{ asset($notify->image) }}" alt="Notification Image" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                              @endif
+
+                              <div class="flex-grow-1">
+                                  <p class="mb-1 fw-semibold">{{ $notify->remarks ?? 'N/A' }}</p>
+                                  <small class="text-muted">{{ $notify->created_at->diffForHumans() }}</small>
+                              </div>
+
+                              <span class="badge @if($notify->user_id == 0) bg-primary @else bg-secondary @endif text-white">
+                                  {{ $notify->user_id == 0 ? 'Global' : 'Personal' }}
+                              </span>
+                          </li>
+                      @endforeach
+                  </ul>
               @else
-                <p class="text-muted text-center">No new notifications</p>
+                  <p class="text-muted text-center mb-0">No notifications found.</p>
               @endif
             </div>
           </div>
@@ -514,10 +524,10 @@
     </div>
   </div>
   <!-- ===== Quotex Fund Packages ===== -->
-  <h2 class="section-title">Quotex Fund</h2>
+  @if($quotex && count($quotex) > 0) 
+  <h2 class="section-title">𝗕𝗗 𝗤𝗨𝗢𝗧𝗘𝗫 𝗙𝗨𝗡𝗗</h2>
   <div class="container mb-5" id="funded">
     <div class="row g-3">
-      @if($quotex && count($quotex) > 0)
         @foreach($quotex as $quotexs)
           <div class="col-4 col-md-4">
             <div class="product-card openModalBtn" 
@@ -532,87 +542,15 @@
             </div>
           </div>
         @endforeach
-      @else
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="100$ fundad account" 
-            data-name="100$ fundad account" 
-            data-category="Funded Packages"
-            data-price="15" 
-            data-img="{{asset('images/funded/f1.jpg')}}">
-            <img src="{{asset('images/funded/f1.jpg')}}" alt="Topup">
-            <div class="p-2">100$ fundad account</div>
-            <h6>FEE 15$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="200$ fundad account" 
-            data-name="200$ fundad account" 
-            data-category="Funded Packages"
-            data-price="30" 
-            data-img="{{asset('images/funded/f2.jpg')}}">
-            <img src="images/funded/f2.jpg" alt="Combo">
-            <div class="p-2">200$ fundad account</div>
-            <h6>FEE 30$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="300$ fundad account" 
-            data-name="300$ fundad account" 
-            data-category="Funded Packages"
-            data-price="40" 
-            data-img="{{asset('images/funded/f3.jpg')}}">
-            <img src="images/funded/f3.jpg" alt="PUBG">
-            <div class="p-2">300$ fundad account</div>
-            <h6>FEE 40$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="400$ fundad account" 
-            data-name="400$ fundad account" 
-            data-category="Funded Packages"
-            data-price="50" 
-            data-img="{{asset('images/funded/f4.jpg')}}">
-            <img src="images/funded/f4.jpg" alt="PUBG">
-            <div class="p-2">400$ fundad account</div>
-            <h6>FEE 50$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="500$ fundad account" 
-            data-name="500$ fundad account" 
-            data-category="Funded Packages"
-            data-price="60" 
-            data-img="{{asset('images/funded/f5.jpg')}}">
-            <img src="images/funded/f5.jpg" alt="PUBG">
-            <div class="p-2">500$ fundad account</div>
-            <h6>FEE 60$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="1000$ fundad account" 
-            data-name="1000$ fundad account" 
-            data-category="Funded Packages"
-            data-price="120" 
-            data-img="{{asset('images/funded/f6.jpg')}}">
-            <img src="images/funded/f6.jpg" alt="PUBG">
-            <div class="p-2">1000$ fundad account</div>
-            <h6>FEE 120$</h6>
-          </div>
-        </div>
-      @endif
     </div>
   </div>
+  @endif
   <!-- ===== Funded Packages ===== -->
+  @if($funded && count($funded) > 0)
   <h2 class="section-title">Funded Packages</h2>
+  
   <div class="container mb-5" id="funded">
     <div class="row g-3">
-      @if($funded && count($funded) > 0)
         @foreach($funded as $fundeds)
           <div class="col-4 col-md-4">
             <div class="product-card openModalBtn" 
@@ -627,87 +565,14 @@
             </div>
           </div>
         @endforeach
-      @else
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="100$ fundad account" 
-            data-name="100$ fundad account" 
-            data-category="Funded Packages"
-            data-price="15" 
-            data-img="{{asset('images/funded/f1.jpg')}}">
-            <img src="{{asset('images/funded/f1.jpg')}}" alt="Topup">
-            <div class="p-2">100$ fundad account</div>
-            <h6>FEE 15$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="200$ fundad account" 
-            data-name="200$ fundad account" 
-            data-category="Funded Packages"
-            data-price="30" 
-            data-img="{{asset('images/funded/f2.jpg')}}">
-            <img src="images/funded/f2.jpg" alt="Combo">
-            <div class="p-2">200$ fundad account</div>
-            <h6>FEE 30$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="300$ fundad account" 
-            data-name="300$ fundad account" 
-            data-category="Funded Packages"
-            data-price="40" 
-            data-img="{{asset('images/funded/f3.jpg')}}">
-            <img src="images/funded/f3.jpg" alt="PUBG">
-            <div class="p-2">300$ fundad account</div>
-            <h6>FEE 40$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="400$ fundad account" 
-            data-name="400$ fundad account" 
-            data-category="Funded Packages"
-            data-price="50" 
-            data-img="{{asset('images/funded/f4.jpg')}}">
-            <img src="images/funded/f4.jpg" alt="PUBG">
-            <div class="p-2">400$ fundad account</div>
-            <h6>FEE 50$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="500$ fundad account" 
-            data-name="500$ fundad account" 
-            data-category="Funded Packages"
-            data-price="60" 
-            data-img="{{asset('images/funded/f5.jpg')}}">
-            <img src="images/funded/f5.jpg" alt="PUBG">
-            <div class="p-2">500$ fundad account</div>
-            <h6>FEE 60$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="1000$ fundad account" 
-            data-name="1000$ fundad account" 
-            data-category="Funded Packages"
-            data-price="120" 
-            data-img="{{asset('images/funded/f6.jpg')}}">
-            <img src="images/funded/f6.jpg" alt="PUBG">
-            <div class="p-2">1000$ fundad account</div>
-            <h6>FEE 120$</h6>
-          </div>
-        </div>
-      @endif
     </div>
   </div>
+  @endif
   <!-- ===== Forex Fund Packages ===== -->
-  <h2 class="section-title">Forex Fund</h2>
+  @if($forex && count($forex) > 0)
+  <h2 class="section-title">𝗕𝗗 𝗙𝗢𝗥𝗘𝗫 𝗙𝗨𝗡𝗗</h2>
   <div class="container mb-5" id="funded">
     <div class="row g-3">
-      @if($forex && count($forex) > 0)
         @foreach($forex as $forexs)
           <div class="col-4 col-md-4">
             <div class="product-card openModalBtn" 
@@ -722,88 +587,14 @@
             </div>
           </div>
         @endforeach
-      @else
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="100$ fundad account" 
-            data-name="100$ fundad account" 
-            data-category="Funded Packages"
-            data-price="15" 
-            data-img="{{asset('images/funded/f1.jpg')}}">
-            <img src="{{asset('images/funded/f1.jpg')}}" alt="Topup">
-            <div class="p-2">100$ fundad account</div>
-            <h6>FEE 15$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="200$ fundad account" 
-            data-name="200$ fundad account" 
-            data-category="Funded Packages"
-            data-price="30" 
-            data-img="{{asset('images/funded/f2.jpg')}}">
-            <img src="images/funded/f2.jpg" alt="Combo">
-            <div class="p-2">200$ fundad account</div>
-            <h6>FEE 30$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="300$ fundad account" 
-            data-name="300$ fundad account" 
-            data-category="Funded Packages"
-            data-price="40" 
-            data-img="{{asset('images/funded/f3.jpg')}}">
-            <img src="images/funded/f3.jpg" alt="PUBG">
-            <div class="p-2">300$ fundad account</div>
-            <h6>FEE 40$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="400$ fundad account" 
-            data-name="400$ fundad account" 
-            data-category="Funded Packages"
-            data-price="50" 
-            data-img="{{asset('images/funded/f4.jpg')}}">
-            <img src="images/funded/f4.jpg" alt="PUBG">
-            <div class="p-2">400$ fundad account</div>
-            <h6>FEE 50$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="500$ fundad account" 
-            data-name="500$ fundad account" 
-            data-category="Funded Packages"
-            data-price="60" 
-            data-img="{{asset('images/funded/f5.jpg')}}">
-            <img src="images/funded/f5.jpg" alt="PUBG">
-            <div class="p-2">500$ fundad account</div>
-            <h6>FEE 60$</h6>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card openModalBtn" 
-            data-id="1000$ fundad account" 
-            data-name="1000$ fundad account" 
-            data-category="Funded Packages"
-            data-price="120" 
-            data-img="{{asset('images/funded/f6.jpg')}}">
-            <img src="images/funded/f6.jpg" alt="PUBG">
-            <div class="p-2">1000$ fundad account</div>
-            <h6>FEE 120$</h6>
-          </div>
-        </div>
-      @endif
     </div>
   </div>
+  @endif
   <!-- ===== Our Services ===== -->
-  <h2 class="section-title">Our Services</h2>
+  @if($services && count($services) > 0)
+  <h2 class="section-title">𝗕𝗗 𝗙𝗨𝗡𝗗 𝗜𝗡𝗩𝗘𝗦𝗧 𝗖𝗢𝗠𝗣𝗔𝗡𝗬</h2>
   <div class="container mb-4">
     <div class="row justify-content-center">
-      <!--  -->
-      @if($services && count($services) > 0)
         @foreach($services as $service)
           <div class="col-4 col-md-4">
             <div class="product-card OpenModalBtn_{{ strtolower(str_replace(' ', '', $service->id)) }}" 
@@ -829,43 +620,9 @@
             </div>
           </div>
         @endforeach
-      @else
-        <div class="col-4 col-md-4">
-          <div class="product-card OpenModalBtn_2" 
-            data-id="Trusted Company Investment" 
-            data-name="Trusted Company Investment" 
-            data-category="Our Services"
-            data-img="{{asset('images/service/investment.jpg')}}">
-            <img src="images/service/investment.jpg" alt="Offer">
-            <div class="p-2">Trusted Company Investment</div>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card loanOpenModalBtn" 
-            data-id="Get Company Loan and Start Trading" 
-            data-name="Get Company Loan and Start Trading" 
-            data-category="Our Services"
-            data-price="" 
-            data-img="{{asset('images/service/loan.jpg')}}">
-            <img src="images/service/loan.jpg" alt="Offer">
-            <div class="p-2">Get Company Loan and Start Trading</div>
-          </div>
-        </div>
-        <div class="col-4 col-md-4">
-          <div class="product-card tournamentOpenModalBtn" 
-            data-id="500$ Tournament" 
-            data-name="500$ Tournament" 
-            data-category="Our Services"
-            data-price="20" 
-            data-img="{{asset('images/service/tournament.jpg')}}">
-            <img src="images/service/tournament.jpg" alt="Offer">
-            <div class="p-2">500$ Tournament</div>
-            <h6>FEE 20$</h6>
-          </div>
-        </div>
-      @endif
     </div>
   </div>
+  @endif
   <!-- ===== Our Social Media ===== -->
   <h2 class="section-title">Our Social Media</h2>
   <div class="container mb-5">

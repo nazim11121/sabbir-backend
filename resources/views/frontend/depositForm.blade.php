@@ -144,7 +144,7 @@
         <a role="button" class="text-dark fs-5" data-bs-toggle="modal" data-bs-target="#notificationModal">
           <i class="bi bi-bell"></i>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="padding: 6px;font-size: 10px;">
-            {{ count($user->unread_notifications) ?? 0 }}
+            {{ $user->allRelevantNotifications()->count() ?? 0 }}
           </span>
         </a>
       </div>
@@ -187,29 +187,38 @@
 </nav>
 <!-- Notification Modal -->
 <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
-              <!-- ✅ Proper dismiss button -->
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              @if(count($user->unread_notifications) > 0)
-                <ul class="list-group">
-                  @foreach($user->unread_notifications as $notify)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <span>{{ $notify->commission_type ?? 'N/A' }}</span>
-                      <span class="fw-bold text-success">+ {{ $notify->amount ?? 0 }} $</span>
-                    </li>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 300px; overflow-y: auto;">
+          @if($user->allRelevantNotifications()->count())
+              <ul class="list-group">
+                  @foreach($user->allRelevantNotifications() as $notify)
+                      <li class="list-group-item d-flex align-items-center gap-3">
+                          @if($notify->image)
+                              <img src="{{ asset($notify->image) }}" alt="Notification Image" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                          @endif
+
+                          <div class="flex-grow-1">
+                              <p class="mb-1 fw-semibold">{{ $notify->remarks ?? 'N/A' }}</p>
+                              <small class="text-muted">{{ $notify->created_at->diffForHumans() }}</small>
+                          </div>
+
+                          <span class="badge @if($notify->user_id == 0) bg-primary @else bg-secondary @endif text-white">
+                              {{ $notify->user_id == 0 ? 'Global' : 'Personal' }}
+                          </span>
+                      </li>
                   @endforeach
-                </ul>
-              @else
-                <p class="text-muted text-center">No new notifications</p>
-              @endif
-            </div>
-          </div>
-        </div>
+              </ul>
+          @else
+              <p class="text-muted text-center mb-0">No notifications found.</p>
+          @endif
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== Mobile Navbar (Bottom Fixed) ===== -->

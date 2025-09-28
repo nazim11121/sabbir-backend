@@ -340,11 +340,13 @@ class UserCo extends Controller
         }
 
         $quotexAccountId = MailAccount::where('user_id', null)->where('status', 1)->get()->pluck('id')->first();
-        $quotexAccount = MailAccount::find($quotexAccountId);
-        $quotexAccount->user_id = $request->user_id;
-        $quotexAccount->to_mail = $user->email;
-        $quotexAccount->status = 0;
-        $quotexAccount->save();
+        if(!empty($quotexAccountId)){
+            $quotexAccount = MailAccount::find($quotexAccountId);
+            $quotexAccount->user_id = $request->user_id;
+            $quotexAccount->to_mail = $user->email;
+            $quotexAccount->status = 0;
+            $quotexAccount->save();
+        }
         // Send mail via queue
         Mail::to($user->email)->queue(new PurchasePackageMail($user));
 
@@ -808,22 +810,26 @@ class UserCo extends Controller
         $request->validate([
             'user_id' => 'required',
             'invest_id' => 'required',
+            'amount' => 'required',
         ]);
-
+        
         $user = User::find($request->user_id);
         $invest = TInvest::find($request->invest_id);
         if($invest->invest_type == "Flexible"){
-            $isCancelable = $invest->created_at->diffInHours(\Carbon\Carbon::now()) >= 24;
+            $isCancelable = $invest->created_at->timezone('Asia/Dhaka')->diffInHours(\Carbon\Carbon::now('Asia/Dhaka')) >= 24;
         }else{
-            $isCancelable = $invest->created_at->diffInDays(now()) >= 30;
+            $isCancelable = $invest->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 30;
         }
 
-        if($isCancelable){
-            $user->total_invest_amount = $user->total_invest_amount - $invest->amount;
-            $user->total_deposit_amount = $user->total_deposit_amount + $invest->amount;
+        if($request->amount <= $invest->amount){
+            $user->total_invest_amount = $user->total_invest_amount - $request->amount*100;
+            $user->total_deposit_amount = $user->total_deposit_amount + $request->amount*100;
             $user->save();
 
-            $invest->payment_status = 2;
+            $invest->amount = $invest->amount - $request->amount;
+            if($invest->amount == 0){
+                $invest->payment_status = 2;
+            }
             $invest->save();
 
             return redirect()->route('frontend-dashboard')->with('success','Investment cancelled and amount refunded to available balance.');
@@ -1008,4 +1014,5 @@ class UserCo extends Controller
         TAdminUser::find($id)->delete();
         return redirect()->route('users.index')->with('warning','User deleted successfully');
     }
+
 }
