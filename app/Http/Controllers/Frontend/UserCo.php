@@ -339,13 +339,29 @@ class UserCo extends Controller
             $userUpdate->save();
         }
 
-        $quotexAccountId = MailAccount::where('user_id', null)->where('status', 1)->get()->pluck('id')->first();
-        if(!empty($quotexAccountId)){
-            $quotexAccount = MailAccount::find($quotexAccountId);
-            $quotexAccount->user_id = $request->user_id;
-            $quotexAccount->to_mail = $user->email;
-            $quotexAccount->status = 0;
-            $quotexAccount->save();
+        $packageCategory = Package::find($request->package_id)->category_id;
+
+        if($packageCategory==7){
+
+            $quotexAccountId = MailAccount::where('name', 'Forex')->where('user_id', null)->where('status', 1)->get()->pluck('id')->first();
+            if(!empty($quotexAccountId)){
+                $quotexAccount = MailAccount::find($quotexAccountId);
+                $quotexAccount->user_id = $request->user_id;
+                $quotexAccount->to_mail = $user->email;
+                $quotexAccount->status = 0;
+                $quotexAccount->save();
+            }
+
+        }else{
+
+            $quotexAccountId = MailAccount::where('name', 'Quotex')->where('user_id', null)->where('status', 1)->get()->pluck('id')->first();
+            if(!empty($quotexAccountId)){
+                $quotexAccount = MailAccount::find($quotexAccountId);
+                $quotexAccount->user_id = $request->user_id;
+                $quotexAccount->to_mail = $user->email;
+                $quotexAccount->status = 0;
+                $quotexAccount->save();
+            }
         }
         // Send mail via queue
         Mail::to($user->email)->queue(new PurchasePackageMail($user));
@@ -407,7 +423,7 @@ class UserCo extends Controller
         }
 
         $user = User::find($request->user_id);
-        $noOfShare = (float)($request->amount);
+        $noOfShare = (float)($request->amount*100);
         
         if($noOfShare > (float)($user->total_deposit_amount)){
             return redirect()->route('deposit'); 

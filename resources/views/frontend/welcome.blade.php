@@ -532,7 +532,7 @@
           <div class="col-4 col-md-4">
             <div class="product-card openModalBtn" 
               data-id="{{ $quotexs->id }}" 
-              data-name="{{ $quotexs->id }}" 
+              data-name="{{ $quotexs->name }}" 
               data-category="Funded Packages"
               data-price="{{ $quotexs->price }}" 
               data-img="{{ asset('/' . $quotexs->image) }}">
@@ -555,7 +555,7 @@
           <div class="col-4 col-md-4">
             <div class="product-card openModalBtn" 
               data-id="{{ $fundeds->id }}" 
-              data-name="{{ $fundeds->id }}" 
+              data-name="{{ $fundeds->name }}" 
               data-category="Funded Packages"
               data-price="{{ $fundeds->price }}" 
               data-img="{{ asset('/' . $fundeds->image) }}">
@@ -577,7 +577,7 @@
           <div class="col-4 col-md-4">
             <div class="product-card openModalBtn" 
               data-id="{{ $forexs->id }}" 
-              data-name="{{ $forexs->id }}" 
+              data-name="{{ $forexs->name }}" 
               data-category="Funded Packages"
               data-price="{{ $forexs->price }}" 
               data-img="{{ asset('/' . $forexs->image) }}">
