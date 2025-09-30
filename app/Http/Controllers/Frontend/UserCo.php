@@ -521,6 +521,44 @@ class UserCo extends Controller
         return redirect()->route('invest-list')->with('success', 'Invest Accepted Success');
     }
 
+    public function copyConfirmStatus($id, $user_id, Request $request){
+        
+        $request->validate([
+            'returnAmount' => 'required|numeric|min:0',
+        ]);
+        $data = TInvest::find($id);
+        if ($data->user_id != $user_id) {
+            return redirect()->back()->with('error', 'Invalid user');
+        }
+        $data->payment_status = 2;
+        $data->return_amount = $request->returnAmount; 
+        $data->updated_at = Carbon::now();
+        $data->save();
+
+        $user = User::find($user_id);
+        $user->total_deposit_amount =  (float)($user->total_deposit_amount) + (float)($request->returnAmount);
+        $user->total_invest_amount =  (float)($user->total_invest_amount) - (float)($data->amount);
+        $user->save();
+
+        Commission::create([
+            'user_id' => $user_id, 
+            'commission_type' => 'copy', 
+            'percentage' => null, 
+            'amount' => $data->returnAmount - $data->amount,
+            'remarks' => 'Return of copy investment',
+            'created_by' => auth()->id(),
+        ]);
+
+        $notify = new Notification();
+        $notify->user_id = $user_id;
+        $notify->type = 'Auto';
+        $notify->category = 'Return from copy investment';
+        $notify->remarks = "Your Return " . round($request->returnAmount, 2) . "$ added successfull";
+        $notify->save();
+
+        return redirect()->route('invest-list')->with('success', 'Invest Returned/Cancelled Success');
+    }
+
     public function buyPackageList(){
         $datas = BuyPackage::orderBy('id', 'DESC')->get();
         return view('admin.buyPackage.index', compact('datas'));
@@ -870,17 +908,23 @@ class UserCo extends Controller
         
         $user = User::find($request->user_id);
         $invest = TInvest::find($request->invest_id);
-        dd($request->amount);
+      
         if($invest->investment_type == "flexible"){
-            $isCancelable = $invest->created_at->timezone('Asia/Dhaka')->diffInHours(\Carbon\Carbon::now('Asia/Dhaka')) >= 24;
+            $isCancelable = $invest->created_at->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 7;
         }elseif($invest->investment_type == "locked"){
             $isCancelable = $invest->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 30;
         }else{
-            $isCancelable = false; // copy invest cannot be cancelled
+            $isCancelable = true;
         }
+    
 
-        if($invest->investment_type == "copy" && $request->amount == $invest->amount){
+        if($invest->investment_type == "copy" && (float)($request->amount) == $invest->amount){
+                
+                $invest->payment_status = 0;
+                $invest->save();
 
+                return redirect()->route('frontend-dashboard')->with('success','Investment cancel processing.');
+             
         }else{
 
             if($request->amount <= $invest->amount){

@@ -135,7 +135,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/invest-list', [UserCo::class, 'investList'])->name('invest-list');
     Route::get('/invest-accept/status/{id}', [UserCo::class, 'investConfirmStatus'])->name('invest-accept.status');
-    
+    // copy
+    Route::post('/copy-accept-status/{id}/{user_id}', [UserCo::class, 'copyConfirmStatus'])->name('copy-accept.status');
 
     Route::get('/buy-packages-list', [UserCo::class, 'buyPackageList'])->name('buy-packages-list');
     Route::post('/buy-packages/todo-list', [UserCo::class, 'buyPackagesTodoList'])->name('buy-packages.todo-list');

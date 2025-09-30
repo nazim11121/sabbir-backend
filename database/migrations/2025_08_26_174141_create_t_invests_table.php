@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('category_id', 100)->nullable();
             $table->string('package_id', 100)->nullable();
             $table->decimal('amount', 10,2)->nullable();
+            $table->decimal('return_amount', 10,2)->nullable();
             $table->string('order_id', 100)->nullable();
             $table->string('invest_proof', 191)->nullable();
             $table->boolean('payment_status', 2)->default(1)->comment('1=Success, 0=Processing, 2=Failed');

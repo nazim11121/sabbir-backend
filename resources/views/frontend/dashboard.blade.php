@@ -252,9 +252,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" style="max-height: 300px; overflow-y: auto;">
-          @if($user->allRelevantNotifications()->count())
               <ul class="list-group">
-                  @foreach($user->allRelevantNotifications() as $notify)
+                  @foreach($user->allRelevantNotifications2() as $notify)
                       <li class="list-group-item d-flex align-items-center gap-3">
                           @if($notify->image)
                               <img src="{{ asset($notify->image) }}" alt="Notification Image" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
@@ -271,9 +270,7 @@
                       </li>
                   @endforeach
               </ul>
-          @else
-              <p class="text-muted text-center mb-0">No notifications found.</p>
-          @endif
+              <!-- <p class="text-muted text-center mb-0">No notifications found.</p> -->
       </div>
     </div>
   </div>
@@ -517,11 +514,11 @@
     @forelse($user->invests as $index => $investment)
         @php
             if($investment->investent_type == "flexible"){
-                $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInHours(\Carbon\Carbon::now('Asia/Dhaka')) >= 24;
+                $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 7;
             }elseif($investment->investment_type == "locked") {
                 $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 30;
             }else{
-                $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInHours(\Carbon\Carbon::now('Asia/Dhaka')) >= 24;
+                $isCancelable = $investment->created_at->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 7;
             }
             $investmentStatus = $investment->payment_status == 2;
         @endphp
@@ -555,7 +552,8 @@
                     <input type="hidden" name="user_id" value="{{ $user->id }}">
                     <input type="hidden" name="invest_id" value="{{ $investment->id }}">
                     @if($investment->investment_type==='copy')
-                      <button type="submit" class="btn btn-sm btn-danger">
+                      <input type="hidden" name="amount" value="{{ intval($investment->amount) }}">
+                      <button type="submit" class="btn btn-sm btn-danger" @if($investment->payment_status!=1) disabled @endif>
                           Cancel
                       </button>
                     @else

@@ -24,11 +24,11 @@ class AddShareCommission implements ShouldQueue
         $investments = TInvest::where('payment_status', 1)->get();
 
         foreach ($investments as $invest) {
-            // Total 24h periods passed
+            // Total 7days periods passed
             $daysPassed = intval($invest->created_at->timezone('Asia/Dhaka')->diffInDays(now('Asia/Dhaka')));
-            if ($daysPassed <= 0) continue;
+            if ($daysPassed <= 7) continue;
 
-            // Per-day rate based on type
+            // Per-7days rate based on type
             $rate = $invest->investment_type === 'flexible' ? 4 : 5;
             $commissionType = $invest->investment_type === 'flexible' ? 'flexible' : 'locked';
 

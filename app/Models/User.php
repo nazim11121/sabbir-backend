@@ -170,6 +170,17 @@ class User extends Authenticatable
                 ->get();
     }
 
+    public function allRelevantNotifications2()
+    {
+        return Notification::where(function ($q) {
+                    $q->where('user_id', $this->id)
+                    ->orWhere('user_id', 0);
+                })
+                ->where('status', 1)
+                ->orderBy('id', 'desc')
+                ->get();
+    }
+
     public function mailAccount(){
         return $this->belongsTo(MailAccount::class, 'id','user_id')->orderBy('id', 'desc');
     }
