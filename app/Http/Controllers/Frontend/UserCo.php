@@ -444,6 +444,45 @@ class UserCo extends Controller
         return redirect()->route('frontend-dashboard');  //->with('success','Deposit on processing wait for confirmation message.');
     }
 
+    // copy invest form
+    public function copyInvestForm(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'package_id' => 'required',
+            'amount' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $user = User::find($request->user_id);
+        $convertAmount = (float)($request->amount);
+        
+        if($convertAmount > (float)($user->total_deposit_amount)){
+            return redirect()->route('deposit'); 
+        }
+
+        $input = $request->all(); 
+        $input['payment_status'] = 1;
+        $input['investment_type'] = "copy";
+        // Save to DB
+        $deposit = TInvest::create($input);
+
+        $user->total_deposit_amount = (float)($user->total_deposit_amount) - $convertAmount;
+        $user->total_invest_amount = (float)($user->total_invest_amount) + $convertAmount;
+        $user->save();
+
+        // Flash a success message
+        // session()->flash('success', 'Deposit on processing wait for confirmation message.');
+        return redirect()->route('frontend-dashboard');  //->with('success','Deposit on processing wait for confirmation message.');
+    }
+
     public function depositList(){
         $datas = TDeposit::orderBy('id', 'DESC')->get();
         return view('admin.deposit.index', compact('datas'));
@@ -831,26 +870,34 @@ class UserCo extends Controller
         
         $user = User::find($request->user_id);
         $invest = TInvest::find($request->invest_id);
-        if($invest->invest_type == "Flexible"){
+        dd($request->amount);
+        if($invest->investment_type == "flexible"){
             $isCancelable = $invest->created_at->timezone('Asia/Dhaka')->diffInHours(\Carbon\Carbon::now('Asia/Dhaka')) >= 24;
-        }else{
+        }elseif($invest->investment_type == "locked"){
             $isCancelable = $invest->timezone('Asia/Dhaka')->diffInDays(\Carbon\Carbon::now('Asia/Dhaka')) >= 30;
+        }else{
+            $isCancelable = false; // copy invest cannot be cancelled
         }
 
-        if($request->amount <= $invest->amount){
-            $user->total_invest_amount = $user->total_invest_amount - $request->amount*100;
-            $user->total_deposit_amount = $user->total_deposit_amount + $request->amount*100;
-            $user->save();
+        if($invest->investment_type == "copy" && $request->amount == $invest->amount){
 
-            $invest->amount = $invest->amount - $request->amount;
-            if($invest->amount == 0){
-                $invest->payment_status = 2;
-            }
-            $invest->save();
-
-            return redirect()->route('frontend-dashboard')->with('success','Investment cancelled and amount refunded to available balance.');
         }else{
-            return redirect()->route('frontend-dashboard')->with('error','Investment can only be cancelled after 7 days.');
+
+            if($request->amount <= $invest->amount){
+                $user->total_invest_amount = $user->total_invest_amount - $request->amount*100;
+                $user->total_deposit_amount = $user->total_deposit_amount + $request->amount*100;
+                $user->save();
+
+                $invest->amount = $invest->amount - $request->amount;
+                if($invest->amount == 0){
+                    $invest->payment_status = 2;
+                }
+                $invest->save();
+
+                return redirect()->route('frontend-dashboard')->with('success','Investment cancelled and amount refunded to available balance.');
+            }else{
+                return redirect()->route('frontend-dashboard')->with('error','Investment can only be cancelled after complete period.');
+            }
         }
     }
 

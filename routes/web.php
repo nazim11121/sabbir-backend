@@ -82,6 +82,8 @@ Route::post('/invest-form', [UserCo::class, 'investForm'])->name('frontend.inves
 
 Route::post('/locked-invest-form', [UserCo::class, 'lockedInvestForm'])->name('frontend.locked-invest');
 
+Route::post('/copy-inveest-form', [UserCo::class, 'copyInvestForm'])->name('frontend.copy-invest');
+
 Route::get('/withdraw-form', [UserCo::class, 'withdrawForm'])->name('withdraw');
 
 Route::post('/withdraw-form/store', [UserCo::class, 'withdrawFormStore'])->name('withdraw-form.store');

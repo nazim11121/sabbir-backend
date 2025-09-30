@@ -24,7 +24,7 @@
     /* ===== Base Styles ===== */
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background: #f9fafb;
+      background: #1B1B32; //#f9fafb;
     }
     .navbar-brand img { height: 76px;width: 175px; }
     .navbar-footer img { height: 70px;width: 140px; }
@@ -59,7 +59,7 @@
 
     /* ===== Footer ===== */
     .footer {
-      background: #081149;
+      background: #222240;
       padding: 2rem 0;
     }
     .footer h6 { font-weight: 600; margin-bottom: .5rem; }

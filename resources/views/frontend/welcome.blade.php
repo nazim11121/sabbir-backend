@@ -24,9 +24,11 @@
     /* ===== Base Styles ===== */
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background: #f9fafb;
+      background: #1B1B32; //#f9fafb;
+      color: white;
       font-weight: 600;
     }
+    .modal-content { color: black;}
     .navbar-brand img { height: 76px;width: 175px; }
     .navbar-footer img { height: 70px;width: 140px; }
     .banner img { width: 100%; border-radius: .5rem; }
@@ -69,6 +71,18 @@
       0%   { transform: translateX(0%); }
       100% { transform: translateX(-100%); }
     }
+
+    @keyframes bgColorChange {
+      0%   { background-color: #2196f3; }   /* Bright Blue */
+      25%  { background-color: #00bcd4; }   /* Cyan */
+      50%  { background-color: #009688; }   /* Teal */
+      75%  { background-color: #4caf50; }   /* Green */
+      100% { background-color: #2196f3; }   /* Back to Bright Blue */
+    }
+
+    .notice-banner {
+      animation: bgColorChange 5s linear infinite;
+    }
     /* ===== Section Titles ===== */
     .section-title {
       font-weight: 600;
@@ -78,16 +92,71 @@
 
     /* ===== Product Card ===== */
     .product-card {
-      border: 1px solid #e5e7eb;
+      border: 1px solid #042361ff;
       border-radius: .5rem;
       background: #fff;
+      color: black;
       text-align: center;
       transition: all .2s;
+      animation: floatUpDown 3s ease-in-out infinite, burnFlicker 2s ease-in-out infinite;
+      /* Reflective box shadow effect */
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2), 0 4px 20px rgba(32, 201, 151, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes floatUpDown {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-6px); }
+      100% { transform: translateY(0); }
+    }
+    /* Flickering fire animation */
+    @keyframes burnFlicker {
+      0% {
+        box-shadow:
+          0 0 6px rgba(173, 216, 230, 0.5),   /* light blue */
+          0 0 12px rgba(100, 149, 237, 0.6),  /* cornflower blue */
+          0 0 18px rgba(0, 0, 128, 0.4);      /* navy */
+      }
+      20% {
+        box-shadow:
+          0 0 8px rgba(173, 216, 230, 0.6),
+          0 0 14px rgba(100, 149, 237, 0.7),
+          0 0 20px rgba(0, 0, 128, 0.5);
+      }
+      40% {
+        box-shadow:
+          0 0 7px rgba(173, 216, 230, 0.5),
+          0 0 13px rgba(135, 206, 250, 0.6),
+          0 0 18px rgba(0, 0, 139, 0.3);      /* dark navy */
+      }
+      60% {
+        box-shadow:
+          0 0 9px rgba(173, 216, 230, 0.7),
+          0 0 15px rgba(135, 206, 235, 0.8),  /* sky blue */
+          0 0 22px rgba(0, 0, 128, 0.5);
+      }
+      80% {
+        box-shadow:
+          0 0 7px rgba(173, 216, 230, 0.6),
+          0 0 13px rgba(100, 149, 237, 0.7),
+          0 0 18px rgba(0, 0, 128, 0.4);
+      }
+      100% {
+        box-shadow:
+          0 0 6px rgba(173, 216, 230, 0.5),
+          0 0 12px rgba(135, 206, 250, 0.6),
+          0 0 16px rgba(0, 0, 139, 0.3);
+      }
     }
     .product-card:hover {
-      box-shadow: 0 6px 18px rgba(0,0,0,.1);
-      transform: translateY(-3px);
+      transform: translateY(-8px);
+      box-shadow:
+        0 0 20px rgba(255, 80, 0, 0.7),
+        0 0 40px rgba(255, 120, 0, 0.8),
+        0 0 60px rgba(255, 200, 0, 0.6),
+        0 0 80px rgba(255, 0, 0, 0.5);
     }
+    
     .product-card img {
       width: 100%;
       max-height: 348px;
@@ -106,7 +175,7 @@
 
     /* ===== Footer ===== */
     .footer {
-      background: #081149;
+      background: #222240;
       padding: 2rem 0;
     }
     .footer h6 { font-weight: 600; margin-bottom: .5rem; }
@@ -226,10 +295,21 @@
       background: linear-gradient(135deg, #28a745, #20c997);
       color: #fff;
       font-weight: bold;
-      font-size: 0.8rem;
+      font-size: .9rem;
       letter-spacing: 0.5px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
+      /* Animated border */
+      border: 3px solid #a33434ff;
+      animation: borderReflect 2s infinite;
+    }
+
+    @keyframes borderReflect {
+      0%   { border-color: rgba(255, 255, 255, 0.3); }
+      25%  { border-color: rgba(255, 255, 255, 0.6); }
+      50%  { border-color: rgba(255, 255, 255, 1); }
+      75%  { border-color: rgba(255, 255, 255, 0.6); }
+      100% { border-color: rgba(255, 255, 255, 0.3); }
     }
 
     .fee-badge:hover {
@@ -481,10 +561,9 @@
 <!-- ===== Notice ===== -->
 @if($notice)
 <div class="container mt-3">
-  <div class="p-3 rounded" style="background: #2191c1; overflow: hidden; position: relative;">
-    <!-- <h2 class="text-white mb-2" style="font-size: 1.2rem;">Notice:</h2> -->
+  <div class="p-3 rounded notice-banner" style="overflow: hidden; position: relative;">
     <div class="notice-marquee">
-      <p class="text-white mb-0 small" style="font-size: .9rem;">
+      <p class="text-white mb-0 small" style="font-size: 1.1rem;">
         {{ $notice->remarks ?? '' }}
       </p>
     </div>
@@ -523,6 +602,44 @@
       @endif
     </div>
   </div>
+
+    <!-- ===== Our Services ===== -->
+  @if($services && count($services) > 0)
+  <h2 class="section-title">𝗕𝗗 𝗙𝗨𝗡𝗗 𝗜𝗡𝗩𝗘𝗦𝗧 𝗖𝗢𝗠𝗣𝗔𝗡𝗬</h2>
+  <div class="container mb-4">
+    <div class="row justify-content-center">
+        @foreach($services as $service)
+          <div class="col-4 col-md-4">
+            <div class="product-card OpenModalBtn_{{ strtolower(str_replace(' ', '', $service->id)) }}" 
+              data-id="{{ $service->name }}" 
+              data-name="{{ $service->name }}" 
+              data-category="Our Services"
+              data-price="{{ $service->price }}" 
+              data-img="{{ asset('/' . $service->image) }}">
+              <img src="{{ asset('/' . $service->image) }}" alt="Offer">
+              <div class="p-2">{{ $service->name }}</div>
+              @if($service->price)
+                <h6 class="fee-badge">FEE {{ $service->price }}$</h6>
+              @endif
+              @if($service->id == 2)
+                <h6 class="fee-badge">Flexible</h6>
+              @endif
+              @if($service->id == 3)
+                <h6 class="fee-badge">LOAN</h6>
+              @endif
+              @if($service->id == 4)
+                <h6 class="fee-badge">Locked</h6>
+              @endif
+              @if($service->id == 21)
+                <h6 class="fee-badge">Copy</h6>
+              @endif
+            </div>
+          </div>
+        @endforeach
+    </div>
+  </div>
+  @endif
+
   <!-- ===== Quotex Fund Packages ===== -->
   @if($quotex && count($quotex) > 0) 
   <h2 class="section-title">𝗕𝗗 𝗤𝗨𝗢𝗧𝗘𝗫 𝗙𝗨𝗡𝗗</h2>
@@ -548,7 +665,6 @@
   <!-- ===== Funded Packages ===== -->
   @if($funded && count($funded) > 0)
   <h2 class="section-title">Funded Packages</h2>
-  
   <div class="container mb-5" id="funded">
     <div class="row g-3">
         @foreach($funded as $fundeds)
@@ -590,45 +706,11 @@
     </div>
   </div>
   @endif
-  <!-- ===== Our Services ===== -->
-  @if($services && count($services) > 0)
-  <h2 class="section-title">𝗕𝗗 𝗙𝗨𝗡𝗗 𝗜𝗡𝗩𝗘𝗦𝗧 𝗖𝗢𝗠𝗣𝗔𝗡𝗬</h2>
-  <div class="container mb-4">
-    <div class="row justify-content-center">
-        @foreach($services as $service)
-          <div class="col-4 col-md-4">
-            <div class="product-card OpenModalBtn_{{ strtolower(str_replace(' ', '', $service->id)) }}" 
-              data-id="{{ $service->name }}" 
-              data-name="{{ $service->name }}" 
-              data-category="Our Services"
-              data-price="{{ $service->price }}" 
-              data-img="{{ asset('/' . $service->image) }}">
-              <img src="{{ asset('/' . $service->image) }}" alt="Offer">
-              <div class="p-2">{{ $service->name }}</div>
-              @if($service->price)
-                <h6 class="fee-badge">FEE {{ $service->price }}$</h6>
-              @endif
-              @if($service->id == 2)
-                <h6 class="fee-badge">Flexible</h6>
-              @endif
-              @if($service->id == 3)
-                <h6 class="fee-badge">LOAN</h6>
-              @endif
-              @if($service->id == 4)
-                <h6 class="fee-badge">Locked</h6>
-              @endif
-            </div>
-          </div>
-        @endforeach
-    </div>
-  </div>
-  @endif
   <!-- ===== Our Social Media ===== -->
-  <h2 class="section-title">Our Social Media</h2>
+ <!-- <h2 class="section-title">Our Social Media</h2>
   <div class="container mb-5">
     <div class="row justify-content-center g-3">
 
-      <!-- YouTube Card -->
       <div class="col-4 col-md-4">
         <a href="https://www.youtube.com/@Rs_Sabbir_Trader" target="_blank" class="text-decoration-none text-dark">
           <div class="product-card text-center">
@@ -639,7 +721,6 @@
         </a>
       </div>
 
-      <!-- Telegram Card -->
       <div class="col-4 col-md-4">
         <a href="https://t.me/BD_funded_trader" target="_blank" class="text-decoration-none text-dark">
           <div class="product-card text-center">
@@ -650,7 +731,6 @@
         </a>
       </div>
 
-      <!-- Tiktok Card -->
       <div class="col-4 col-md-4">
         <a href="https://www.tiktok.com/@rs_sabbir_trader99" target="_blank" class="text-decoration-none text-dark">
           <div class="product-card text-center">
@@ -661,7 +741,7 @@
         </a>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- ===== REVIWES ===== -->
   <div class="container mb-5">
@@ -764,7 +844,7 @@
             </div>
 
             <!-- Right Side Text -->
-            <div class="col-md-6 p-3 d-flex flex-column justify-content-center text-center">
+            <div class="col-md-6 p-3 d-flex flex-column justify-content-center text-center text-black">
               <h5 class="mb-3 fw-bold">Funding Balance কিভাবে পাবেন? জানতে বিস্তারিত ভিডিও দেখুন</h5>
               <a href="#" class="btn btn-primary">ক্লিক করুন</a>
             </div>
@@ -991,7 +1071,7 @@
                        class="form-control" placeholder="Enter amount" 
                        min="100" max="10000000" required>
                 <div class="form-text">Minimum Amount must be 100$.</div> -->
-                <label for="modalPackageAmount3" class="form-label fw-bold">Number of Share</label>
+                <label for="modalPackageAmount3" class="form-label fw-bold">Number of Share<span class="text-danger">*</span></label>
                 <input type="number" name="amount" id="modalPackageAmount3" 
                        class="form-control" placeholder="Enter number of share" 
                        min="1" max="10000000" required>
@@ -1009,10 +1089,109 @@
                   <?php if(empty($user)): ?>
                     <a href="{{route('frontend.login')}}" class="btn btn-warning mb-4 w-100">Login First</a>
                     <button id="buyButton3" type="submit" class="btn btn-primary w-100" style="display:none" disabled>
-                      Accept & Invest
+                      Accept & Buy Share
                     </button>
                   <?php else: ?>
                     <button id="buyButton3" type="submit" class="btn btn-primary w-100" disabled>
+                      Accept & Buy Share
+                    </button>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Copy Investment Package Modal -->
+<div class="modal fade" id="investmentPackageModal4" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <img id="modalPackageImg4" src="{{asset('images/placeholder.png')}}" alt="Package" class="me-3 rounded" style="width: 60px">
+        <div>
+          <h5 class="modal-title" id="modalPackageName4">Package Name</h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- Left: Rules -->
+          <div class="col-md-7">
+            <h6 class="mb-3">কপি ইনভেস্ট এর শর্তাবলী</h6>
+            <ul class="list-group small">
+              <li class="list-group-item">
+                ✓ Investment Range:
+                সর্বনিম্ন ইনভেস্টমেন্ট: 50$
+                সর্বোচ্চ ইনভেস্টমেন্ট: 500$
+              </li>
+              <li class="list-group-item">
+                ✓ Profit Sharing Policy:
+                আপনার Capital থেকে যত লাভ (Profit) হবে, তার মধ্যে
+                80% পাবেন আপনি (Investor)
+                20% যাবে কোম্পানি/সার্ভিস চার্জ হিসেবে
+              </li>
+              <li class="list-group-item">  
+                ✓ Withdrawal Rules:
+                Withdraw করতে পারবেন প্রতিদিন যেকোনো সময়
+                Withdrawal করার সময় আপনার প্রফিট থেকে 20% সার্ভিস চার্জ অটোমেটিক deduct হবে
+              </li>
+              <li class="list-group-item">
+                ✓ Risk & Disclaimer:
+                ট্রেডিং-এ সবসময় Risk থাকে।
+                কোম্পানি শুধুমাত্র কপি ট্রেডিং সার্ভিস দেবে, আপনার Capital Loss হলে ৭০ পার্সেন্ট আপনাকে ব্যাক দেওয়া হবে এবং ৩০% কোম্পানি বহন করবে।
+              </li>
+            </ul>
+          </div>
+
+          <!-- Right: Form -->
+          <div class="col-md-5 mt-4">
+            <form id="buyForm4" action="{{route('frontend.copy-invest')}}" method="POST" enctype="multipart/form-data">
+              @csrf
+              <input type="hidden" name="user_id" value="<?php echo $user->id ?? ''; ?>">
+              <input type="hidden" name="package_id" id="modalPackageId4" value="">
+
+              <!-- Balance Info -->
+              <div class="border rounded p-3 mb-3 mt-3 bg-white text-center">
+                <h6>আপনার অ্যাকাউন্ট ব্যালেন্স</h6>
+                <p class="fs-5 fw-bold text-success">$ {{$user->total_deposit_amount ?? '0'}}</p>
+              </div>
+
+              <!-- Amount -->
+              <div class="mb-5">
+                <!-- <label for="modalPackageAmount3" class="form-label fw-bold">Invest Amount ($)</label>
+                <input type="number" name="amount" id="modalPackageAmount3" 
+                       class="form-control" placeholder="Enter amount" 
+                       min="100" max="10000000" required>
+                <div class="form-text">Minimum Amount must be 100$.</div> -->
+                <label for="modalPackageAmount4" class="form-label fw-bold">Amount<span class="text-danger">*</span></label>
+                <input type="number" name="amount" id="modalPackageAmount4" 
+                       class="form-control" placeholder="Enter amount" 
+                       min="50" max="500" required>
+                <div class="form-text">Amount must be 50$ to 500$.</div>
+              </div>
+              <!-- Checkbox + Submit -->
+              <div class="row d-flex justify-content-between align-items-center mt-4">
+                <div class="col-md-10">
+                  <div class="form-check float-left">
+                    <input class="form-check-input" type="checkbox" id="acceptRules4">
+                    <label class="form-check-label small" for="acceptRules4">
+                      আমি সকল নিয়ম মেনে নিলাম।
+                    </label>
+                  </div>
+                  <?php if(empty($user)): ?>
+                    <a href="{{route('frontend.login')}}" class="btn btn-warning mb-4 w-100">Login First</a>
+                    <button id="buyButton4" type="submit" class="btn btn-primary w-100" style="display:none" disabled>
+                      Accept & Invest
+                    </button>
+                  <?php else: ?>
+                    <button id="buyButton4" type="submit" class="btn btn-primary w-100" disabled>
                       Accept & Invest
                     </button>
                   <?php endif; ?>
@@ -1286,6 +1465,82 @@
     modalAmount3.value = '';
     checkbox3.checked = false;
     buyButton3.disabled = true;
+  });
+</script>
+
+<!-- copy-investment -->
+<script>
+  const checkbox4 = document.getElementById('acceptRules4');
+  const buyButton4 = document.getElementById('buyButton4');
+  const buyForm4 = document.getElementById('buyForm4');
+  const userLoggedIn4 = <?php echo empty($user) ? 'false' : 'true'; ?>;
+  const userBalance4 = <?php echo $user->total_deposit_amount ?? 0; ?>;
+
+  const modalName4 = document.getElementById('modalPackageName4');
+  const modalImg4 = document.getElementById('modalPackageImg4');
+  const modalId4 = document.getElementById('modalPackageId4');
+  const modalAmount4 = document.getElementById('modalPackageAmount4');
+
+  const balanceBox4 = document.querySelector('#investmentPackageModal4 .modal-body .col-md-5 .border');
+
+  const depositButtonHtml4 = `<a href="/deposit-form" class="btn btn-warning w-100 mt-2" id="dynamicDepositBtn4">Deposit Your Account</a>`;
+
+  // Modal open
+  document.querySelectorAll('.OpenModalBtn_21').forEach(btn => {
+    btn.addEventListener('click', function () {
+      let card = this.closest('.product-card');
+      let id4 = card.getAttribute('data-id');
+      let name4 = card.getAttribute('data-name');
+      let img4 = card.getAttribute('data-img');
+
+      // fill modal
+      modalName4.textContent = name4;
+      modalImg4.src = img4;
+      modalId4.value = id4;
+
+      // clean old button
+      balanceBox4.querySelector('#dynamicDepositBtn4')?.remove();
+
+      if (!userLoggedIn4) {
+        buyButton4.style.display = "disabled";
+      } else {
+        buyButton4.style.display = "inline-block";
+
+        if (userBalance4 < 50) {
+          buyButton4.disabled = true;
+          balanceBox4.insertAdjacentHTML('afterend', depositButtonHtml4);
+        } else {
+          buyButton4.disabled = !checkbox4.checked;
+        }
+      }
+
+      new bootstrap.Modal(document.getElementById('investmentPackageModal4')).show();
+    });
+  });
+
+  // Checkbox validation
+  checkbox4.addEventListener('change', validateForm);
+  // Amount input validation
+  modalAmount4.addEventListener('input', validateForm);
+
+  function validateForm() {
+    const amount = parseFloat(modalAmount4.value) || 0;
+
+    if (userLoggedIn4 && checkbox4.checked && amount >= 50 && amount <= 500 && amount <= userBalance4) {
+      buyButton4.disabled = false;
+    } else {
+      buyButton4.disabled = true;
+    }
+  }
+
+  // Clear on close
+  document.getElementById('investmentPackageModal4').addEventListener('hidden.bs.modal', function () {
+    modalName4.textContent = 'Package Name';
+    modalImg4.src = 'images/placeholder.png';
+    modalId4.value = '';
+    modalAmount4.value = '';
+    checkbox4.checked = false;
+    buyButton4.disabled = true;
   });
 </script>
 

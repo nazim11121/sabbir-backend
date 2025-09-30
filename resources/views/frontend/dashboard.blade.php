@@ -27,7 +27,8 @@
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background: #f9fafb;
+      background: #1B1B32;
+      color: white;
     }
     .navbar-brand img { height: 76px;width: 175px; }
     .navbar-footer img { height: 70px;width: 140px; }
@@ -58,6 +59,7 @@
     .card-custom { border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
     .info-box {
+      color: black;
       background: #fff;
       padding: 15px;
       border-radius: 12px;
@@ -67,7 +69,7 @@
     .info-box h5 { margin: 0; font-weight: bold; }
     .info-box small { color: #555; }
 
-    .footer { background: #081149; padding: 2rem 0; }
+    .footer { background: #222240; padding: 2rem 0; }
     .footer h6 { font-weight: 600; margin-bottom: .5rem; }
 
     .app-btn {
@@ -235,7 +237,7 @@
   </div>
 
   <h5 class="fw-bold mt-3">{{ $user->name }}</h5>
-  <p class="text-muted">
+  <p class="">
     Available Balance: 
     <span class="fw-bold">{{ $user->total_deposit_amount ?? 0 }} $</span> 
     <button class="btn btn-sm btn-light border ms-1"><i class="bi bi-arrow-clockwise"></i></button>
@@ -552,13 +554,19 @@
                    
                     <input type="hidden" name="user_id" value="{{ $user->id }}">
                     <input type="hidden" name="invest_id" value="{{ $investment->id }}">
-                    <input type="number" name="amount" value="{{ intval($investment->amount) }}" 
+                    @if($investment->investment_type==='copy')
+                      <button type="submit" class="btn btn-sm btn-danger">
+                          Cancel
+                      </button>
+                    @else
+                      <input type="number" name="amount" value="{{ intval($investment->amount) }}" 
                            class="form-control form-control-sm" style="max-width:40px;" min="1"
                             max="{{ intval($investment->amount) }}" required>
-                    <button type="submit" class="btn btn-sm btn-danger"
-                        @if($investmentStatus || !$isCancelable) disabled @endif>
-                        Sell
-                    </button>
+                      <button type="submit" class="btn btn-sm btn-danger"
+                          @if($investmentStatus || !$isCancelable) disabled @endif>
+                          Sell
+                      </button>
+                    @endif
                 </form>
             </div>
         </div>
